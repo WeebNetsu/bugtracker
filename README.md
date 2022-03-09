@@ -9,4 +9,4 @@ This is a simple basic bug tracker app...
 ## TODO:
 
 -   Implement kanban (todo/busy/completed) layout
-    -   We can use the material dropdown thing we use in long-covid to move from one side to another
+    -   We can use the material dropdown instead of drag/drop

@@ -48,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({ hideCompleted, setHideCompleted, delete
                             component="div"
                             sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
                         >
-                            TODO 4 ME
+                            BUG TRACKER
                         </Typography>
 
                         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -95,7 +95,7 @@ const Header: React.FC<HeaderProps> = ({ hideCompleted, setHideCompleted, delete
                             component="div"
                             sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
                         >
-                            TODO 4 ME
+                            BUG TRACKER
                         </Typography>
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} onClick={handleCloseNavMenu}>
                             {buttons.map((btn) => (

@@ -1,3 +1,24 @@
 {
-  "tasks": []
+  "tasks": [
+    {
+      "text": "Eat Pizza",
+      "checked": false,
+      "id": 1
+    },
+    {
+      "text": "Bake Cake",
+      "checked": false,
+      "id": 2
+    },
+    {
+      "text": "Ride bike",
+      "checked": true,
+      "id": 3
+    },
+    {
+      "text": "Walk dog",
+      "checked": false,
+      "id": 4
+    }
+  ]
 }
