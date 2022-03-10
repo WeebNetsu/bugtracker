@@ -1,6 +1,6 @@
-import { Container } from '@mui/material';
+import { Container, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import Task from '../../models/task';
+import Task, { STATUS } from '../../models/task';
 import AddTask from './components/addTask';
 import Header from './components/header';
 import TaskList from './components/taskList';
@@ -113,12 +113,22 @@ const Homepage: React.FC = () => {
 
     return (
         <>
-            <Header deleteAllTasks={deleteTask} setHideCompleted={setHideCompleted} hideCompleted={hideCompleted} />
+            {/* <Header deleteAllTasks={deleteTask} setHideCompleted={setHideCompleted} hideCompleted={hideCompleted} /> */}
 
             <Container maxWidth="xl">
                 <p style={{ color: "red" }}>{error}</p>
 
-                <TaskList hideCompleted={hideCompleted} tasks={tasks} deleteTask={deleteTask} checkTask={checkTask} />
+                <Grid container spacing={2}>
+                    <Grid item md={4}>
+                        <TaskList hideCompleted={hideCompleted} tasks={tasks} deleteTask={deleteTask} checkTask={checkTask} status={STATUS.TODO} />
+                    </Grid>
+                    <Grid item md={4}>
+                        <TaskList hideCompleted={hideCompleted} tasks={tasks} deleteTask={deleteTask} checkTask={checkTask} status={STATUS.DOING} />
+                    </Grid>
+                    <Grid item md={4}>
+                        <TaskList hideCompleted={hideCompleted} tasks={tasks} deleteTask={deleteTask} checkTask={checkTask} status={STATUS.COMPLETED} />
+                    </Grid>
+                </Grid>
 
                 <AddTask addTask={addTask} />
             </Container>

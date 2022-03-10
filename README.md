@@ -8,5 +8,6 @@ This is a simple basic bug tracker app...
 
 ## TODO:
 
--   Implement kanban (todo/busy/completed) layout
-    -   We can use the material dropdown instead of drag/drop
+-   Add new "add task", maybe make a popup model?
+-   Add new 'delete all' functionality
+-   Add ability to move tasks between statuses

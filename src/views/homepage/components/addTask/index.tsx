@@ -1,6 +1,6 @@
 import { Box, IconButton, TextField } from '@mui/material';
 import React, { useRef, useState } from 'react';
-import Task from '../../../../models/task';
+import Task, { STATUS } from '../../../../models/task';
 import AddIcon from '@mui/icons-material/Add';
 
 interface AddTaskProps {
@@ -17,7 +17,7 @@ const AddTask: React.FC<AddTaskProps> = ({ addTask }) => {
         if (taskInputRef.current) {
             addTask({
                 text: taskInputRef.current.value,
-                checked: false
+                status: STATUS.TODO
             });
 
             setError('');
