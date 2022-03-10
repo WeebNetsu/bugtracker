@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Task, { STATUS } from '../../../../models/task';
-import { Box, Grid, IconButton, Menu, MenuItem, Paper, Typography } from '@mui/material';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { Grid, IconButton, Menu, MenuItem, Paper, Typography } from '@mui/material';
 import useWindowDimensions from '../../../../utils/window';
 import AddIcon from '@mui/icons-material/Add';
 import AddTask from '../addTask';
@@ -18,18 +17,8 @@ interface TodoListProps {
 const TaskList: React.FC<TodoListProps> = ({ tasks, deleteTask, checkTask, addTask, status }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [showAddTask, setShowAddTask] = useState(false);
-    const [availableMoves, setAvailableMoves] = useState<STATUS[]>([STATUS.DOING, STATUS.COMPLETED]); // default = todo
     const openAddMenu = Boolean(anchorEl);
-    const openMoveMenu = Boolean(anchorEl);
     const { height } = useWindowDimensions();
-
-    useEffect(() => {
-        if (status === STATUS.COMPLETED) {
-            setAvailableMoves([STATUS.TODO, STATUS.DOING])
-        } else if (status === STATUS.DOING) {
-            setAvailableMoves([STATUS.TODO, STATUS.COMPLETED])
-        }
-    }, [])
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
