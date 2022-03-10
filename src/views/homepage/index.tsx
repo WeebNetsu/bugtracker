@@ -1,14 +1,11 @@
 import { Container, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import Task, { STATUS } from '../../models/task';
-import AddTask from './components/addTask';
-import Header from './components/header';
 import TaskList from './components/taskList';
 
 const Homepage: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [error, setError] = useState("");
-    const [hideCompleted, setHideCompleted] = useState(false);
 
     useEffect(() => {
         setNewTasks();
@@ -111,6 +108,8 @@ const Homepage: React.FC = () => {
         }
     }
 
+    const visibleStatuses = [STATUS.TODO, STATUS.DOING, STATUS.COMPLETED]
+
     return (
         <>
             {/* <Header deleteAllTasks={deleteTask} setHideCompleted={setHideCompleted} hideCompleted={hideCompleted} /> */}
@@ -119,18 +118,12 @@ const Homepage: React.FC = () => {
                 <p style={{ color: "red" }}>{error}</p>
 
                 <Grid container spacing={2}>
-                    <Grid item md={4}>
-                        <TaskList hideCompleted={hideCompleted} tasks={tasks} deleteTask={deleteTask} checkTask={checkTask} status={STATUS.TODO} />
-                    </Grid>
-                    <Grid item md={4}>
-                        <TaskList hideCompleted={hideCompleted} tasks={tasks} deleteTask={deleteTask} checkTask={checkTask} status={STATUS.DOING} />
-                    </Grid>
-                    <Grid item md={4}>
-                        <TaskList hideCompleted={hideCompleted} tasks={tasks} deleteTask={deleteTask} checkTask={checkTask} status={STATUS.COMPLETED} />
-                    </Grid>
+                    {visibleStatuses.map((status) => (
+                        <Grid key={status} item md={4}>
+                            <TaskList tasks={tasks} addTask={addTask} deleteTask={deleteTask} checkTask={checkTask} status={status} />
+                        </Grid>
+                    ))}
                 </Grid>
-
-                <AddTask addTask={addTask} />
             </Container>
         </>
     )

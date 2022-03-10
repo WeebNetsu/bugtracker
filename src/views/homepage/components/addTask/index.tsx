@@ -1,23 +1,37 @@
-import { Box, IconButton, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, TextField } from '@mui/material';
 import React, { useRef, useState } from 'react';
 import Task, { STATUS } from '../../../../models/task';
-import AddIcon from '@mui/icons-material/Add';
+import { TransitionProps } from '@mui/material/transitions';
 
 interface AddTaskProps {
     addTask: (task: Task) => void
+    show: boolean
+    setShow: (x: boolean) => void
+    status: STATUS
 }
 
-const AddTask: React.FC<AddTaskProps> = ({ addTask }) => {
+const Transition = React.forwardRef(function Transition(
+    props: TransitionProps & {
+        children: React.ReactElement<any, any>;
+    },
+    ref: React.Ref<unknown>,
+) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const AddTask: React.FC<AddTaskProps> = ({ addTask, show, setShow, status }) => {
     const taskInputRef = useRef<HTMLInputElement>(null);
     const [error, setError] = useState('');
 
-    function handleSubmit(e: React.FormEvent) {
-        e.preventDefault();
+    const handleClose = () => {
+        setShow(false);
+    };
 
+    function handleSubmit() {
         if (taskInputRef.current) {
             addTask({
                 text: taskInputRef.current.value,
-                status: STATUS.TODO
+                status
             });
 
             setError('');
@@ -28,16 +42,25 @@ const AddTask: React.FC<AddTaskProps> = ({ addTask }) => {
     }
 
     return (
-        <Box component={"form"} sx={{ textAlign: "center", mt: 3 }} onSubmit={handleSubmit}>
-            <TextField id="outlined-basic" label="Add new task" inputRef={taskInputRef} variant="outlined" required sx={{ mr: 2 }} />
-            {/* <Button variant='contained' type='submit'>Add Task</Button> */}
-            <IconButton aria-label="add" type='submit'>
-                <AddIcon />
-            </IconButton>
+        <Dialog
+            open={show}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={handleClose}
+            aria-describedby="alert-dialog-slide-description"
+        >
+            <DialogTitle>{"Add Task"}</DialogTitle>
+            <DialogContent>
+                <TextField id="outlined-basic" label="Add new task" inputRef={taskInputRef} variant="outlined" required sx={{ mt: 2 }} />
 
-            <p style={{ color: "red" }}>{error}</p>
-        </Box>
-    )
+                <p style={{ color: "red" }}>{error}</p>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleSubmit}>Add</Button>
+            </DialogActions>
+        </Dialog>
+    );
 }
 
 export default AddTask;

@@ -1,23 +1,36 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Task, { STATUS } from '../../../../models/task';
-import { Button, Checkbox, FormControlLabel, Grid, IconButton, Menu, MenuItem, Paper, Typography } from '@mui/material';
+import { Box, Grid, IconButton, Menu, MenuItem, Paper, Typography } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import useWindowDimensions from '../../../../utils/window';
 import AddIcon from '@mui/icons-material/Add';
+import AddTask from '../addTask';
+import TaskItem from './components/taskItem';
 
 interface TodoListProps {
     tasks: Task[]
     deleteTask: (id: number) => void
     checkTask: (id: number) => void
-    hideCompleted: boolean
+    addTask: (task: Task) => void
     status: STATUS
 }
 
-const TaskList: React.FC<TodoListProps> = ({ tasks, deleteTask, checkTask, hideCompleted, status }) => {
+const TaskList: React.FC<TodoListProps> = ({ tasks, deleteTask, checkTask, addTask, status }) => {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [showAddTask, setShowAddTask] = useState(false);
+    const [availableMoves, setAvailableMoves] = useState<STATUS[]>([STATUS.DOING, STATUS.COMPLETED]); // default = todo
+    const openAddMenu = Boolean(anchorEl);
+    const openMoveMenu = Boolean(anchorEl);
+    const { height } = useWindowDimensions();
 
+    useEffect(() => {
+        if (status === STATUS.COMPLETED) {
+            setAvailableMoves([STATUS.TODO, STATUS.DOING])
+        } else if (status === STATUS.DOING) {
+            setAvailableMoves([STATUS.TODO, STATUS.COMPLETED])
+        }
+    }, [])
 
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -25,24 +38,17 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, deleteTask, checkTask, hideC
         setAnchorEl(null);
     };
 
-
-
-
-    // const allTasks = tasks.filter(task => hideCompleted ? !task.checked : true)
     const allTasks = tasks.filter(task => {
         if (status === STATUS.COMPLETED) return task.status === STATUS.COMPLETED
         if (status === STATUS.DOING) return task.status === STATUS.DOING
         return task.status === STATUS.TODO
     })
 
-    const { height } = useWindowDimensions();
-
-    const paperHeight = height * (70 / 100)
+    const paperHeight = height * (85 / 100)
 
     return (
         <>
-
-            <Paper elevation={3} sx={{ mt: 2, mb: 2, p: 2, minHeight: `${paperHeight}px` }}>
+            <Paper elevation={3} sx={{ mt: 2, mb: 2, p: 2, minHeight: `400px`, height: `${paperHeight}px`, overflowY: "scroll" }}>
                 <Grid container spacing={2}>
                     <Grid item lg={9}>
                         <Typography variant="h3" component="h3" sx={{ textAlign: "center" }}>
@@ -54,10 +60,11 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, deleteTask, checkTask, hideC
                         <Typography variant="h6" component="h3" sx={{ textAlign: "right" }}>
                             <IconButton
                                 aria-label="add"
+                                id="add-button"
                                 onClick={handleClick}
-                                aria-controls={open ? 'basic-menu' : undefined}
+                                aria-controls={openAddMenu ? 'basic-menu' : undefined}
                                 aria-haspopup="true"
-                                aria-expanded={open ? 'true' : undefined}
+                                aria-expanded={openAddMenu ? 'true' : undefined}
                             >
                                 <AddIcon />
                             </IconButton>
@@ -66,37 +73,23 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, deleteTask, checkTask, hideC
                         <Menu
                             id="basic-menu"
                             anchorEl={anchorEl}
-                            open={open}
+                            open={openAddMenu}
                             onClose={handleClose}
+                            onClick={handleClose}
                             MenuListProps={{
-                                'aria-labelledby': 'basic-button',
+                                'aria-labelledby': 'add-button',
                             }}
                         >
-                            <MenuItem onClick={handleClose}>Add Task</MenuItem>
+                            <MenuItem onClick={() => setShowAddTask(true)}>Add Task</MenuItem>
                             <MenuItem onClick={handleClose}>Delete All</MenuItem>
                         </Menu>
                     </Grid>
                 </Grid>
 
-                {allTasks.map(task => (
-                    <Paper elevation={3} key={task.id} sx={{ mt: 2, mb: 2, p: 2, cursor: "pointer" }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={8} onClick={() => checkTask(task.id ?? -1)}>
-                                <Typography variant="h6" component="p">
-                                    {task.text}
-                                </Typography>
-                                {/* <FormControlLabel control={<Checkbox checked={!!task.checked} />} label={task.text} /> */}
-                            </Grid>
-
-                            <Grid item xs={3} sx={{ textAlign: "right" }}>
-                                <IconButton onClick={() => deleteTask(task.id ?? -1)} color="primary" component="span">
-                                    <HighlightOffIcon />
-                                </IconButton>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                ))}
+                {allTasks.map(task => (<TaskItem deleteTask={deleteTask} status={status} task={task} key={task.id} />))}
             </Paper>
+
+            <AddTask status={status} addTask={addTask} setShow={setShowAddTask} show={showAddTask} />
         </>
     )
 }

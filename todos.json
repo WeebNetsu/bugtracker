@@ -1,9 +1,21 @@
 {
-	"tasks": [
-		{
-			"text": "Eat Pizza",
-			"status": "TODO",
-			"id": 1
-		}
-	]
+  "tasks": [
+    {
+      "text": "Eat Pizza",
+      "status": "TODO",
+      "id": 1,
+      "checked": true
+    },
+    {
+      "text": "asdasdas",
+      "status": "TODO",
+      "id": 2,
+      "checked": false
+    },
+    {
+      "text": "asdsad",
+      "status": "TODO",
+      "id": 3
+    }
+  ]
 }
