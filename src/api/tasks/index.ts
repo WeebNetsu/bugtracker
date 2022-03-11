@@ -61,7 +61,7 @@ export async function deleteTask(item: { id?: number, tasks?: Task[] }): Promise
     }
 }
 
-export async function updateTask(taskId: number, update: { status?: STATUS, text?: string }): Promise<Task> {
+export async function updateTask(taskId: number, update: { status?: STATUS, text?: string, comment?: string }): Promise<Task> {
     if (taskId < 0) {
         throw new Error("Could not find that task, please refreash the page");
     }

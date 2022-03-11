@@ -24,6 +24,7 @@ const Transition = React.forwardRef(function Transition(
 
 const AddTask: React.FC<AddTaskProps> = ({ show, setShow, status, setTasks }) => {
     const taskInputRef = useRef<HTMLInputElement>(null);
+    const commentInputRef = useRef<HTMLInputElement>(null);
     const [error, setError] = useState<MessageSnackDisplay>({
         message: "",
         show: false,
@@ -41,10 +42,16 @@ const AddTask: React.FC<AddTaskProps> = ({ show, setShow, status, setTasks }) =>
             try {
                 const newTask = await addTask({
                     text: taskInputRef.current.value,
-                    status
+                    status,
+                    comment: commentInputRef.current?.value
                 });
 
                 taskInputRef.current.value = ""
+
+                if (commentInputRef.current) {
+                    commentInputRef.current.value = ""
+                }
+
                 setTasks((tasks: Task[]) => [...tasks, newTask]); // server automatically added an id
             } catch (err: any) {
                 setError({
@@ -73,7 +80,24 @@ const AddTask: React.FC<AddTaskProps> = ({ show, setShow, status, setTasks }) =>
             <Box component="form" onSubmit={handleSubmit}>
                 <DialogTitle>{"Add Task"}</DialogTitle>
                 <DialogContent>
-                    <TextField id="outlined-basic" label="Add new task" inputRef={taskInputRef} variant="outlined" required sx={{ mt: 2 }} />
+                    <TextField
+                        label="Add new task"
+                        inputRef={taskInputRef}
+                        variant="outlined"
+                        required
+                        placeholder="Refactor the HTML"
+                        fullWidth
+                        sx={{ mt: 2 }}
+                    />
+
+                    <TextField
+                        label="Description"
+                        placeholder="Here I have to do..."
+                        multiline
+                        fullWidth
+                        sx={{ mt: 2 }}
+                        inputRef={commentInputRef}
+                    />
                 </DialogContent>
 
                 <DialogActions>

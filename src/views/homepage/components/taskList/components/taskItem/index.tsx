@@ -1,17 +1,16 @@
 import { Paper, Grid, Typography, IconButton, Box, Button, TextField } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import React, { useRef, useState } from 'react';
-import Task, { STATUS } from '../../../../../../models/task';
+import Task from '../../../../../../models/task';
 import { deleteTask, updateTask } from '../../../../../../api/tasks';
 import MessageSnack, { MessageSnackDisplay } from '../../../../../components/messageSnack';
 
 interface TaskItemProps {
     task: Task
     setTasks: any
-    status: STATUS
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ task, setTasks, status }) => {
+const TaskItem: React.FC<TaskItemProps> = ({ task, setTasks }) => {
     const [editMode, setEditMode] = useState(false);
     const [error, setError] = useState<MessageSnackDisplay>({
         message: "",
@@ -20,6 +19,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, setTasks, status }) => {
     });
 
     const taskEditRef = useRef<HTMLInputElement>(null);
+    const commentEditRef = useRef<HTMLInputElement>(null);
 
     const dragStart = (e: any) => {
         e.dataTransfer.setData('taskId', task.id);
@@ -49,6 +49,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, setTasks, status }) => {
             try {
                 const updatedTask = await updateTask(task.id, {
                     text: taskEditRef.current.value,
+                    comment: commentEditRef.current?.value
                 });
 
                 setTasks((tasks: Task[]) => tasks.map(task => task.id === updatedTask.id ? updatedTask : task));
@@ -81,15 +82,38 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, setTasks, status }) => {
                     <Grid item xs={8}>
                         {editMode ? (
                             <Box component="form" onSubmit={handleSubmit}>
-                                <TextField id="outlined-basic" autoFocus label="Edit task" defaultValue={task.text} inputRef={taskEditRef} variant="standard" required sx={{ mt: 2 }} />
+                                <TextField
+                                    autoFocus
+                                    label="Edit Task"
+                                    defaultValue={task.text}
+                                    inputRef={taskEditRef}
+                                    variant="standard"
+                                    required
+                                    sx={{ mt: 2 }}
+                                />
+
+                                <TextField
+                                    label="Edit Description"
+                                    defaultValue={task.comment}
+                                    variant="standard"
+                                    multiline
+                                    fullWidth
+                                    sx={{ mt: 2 }}
+                                    inputRef={commentEditRef}
+                                />
 
                                 <Button onClick={() => setEditMode(false)} type="button">Cancel</Button>
                                 <Button type="submit">Update</Button>
                             </Box>
                         ) : (
-                            <Typography variant="h6" component="p">
-                                {task.text}
-                            </Typography>
+                            <>
+                                <Typography variant="h6" component="p">
+                                    {task.text}
+                                </Typography>
+                                <Typography variant="body2" component="p">
+                                    {task.comment}
+                                </Typography>
+                            </>
                         )}
 
                     </Grid>

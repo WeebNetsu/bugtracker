@@ -142,7 +142,7 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, status, setTasks }) => {
                     </Grid>
                 </Grid>
 
-                {allTasks.map(task => (<TaskItem status={status} setTasks={setTasks} task={task} key={task.id} />))}
+                {allTasks.map(task => (<TaskItem setTasks={setTasks} task={task} key={task.id} />))}
             </Paper>
 
             <AddTask setTasks={setTasks} status={status} setShow={setShowAddTask} show={showAddTask} />
