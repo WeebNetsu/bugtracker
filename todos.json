@@ -3,19 +3,17 @@
     {
       "text": "Eat Pizza",
       "status": "TODO",
-      "id": 1,
-      "checked": true
+      "id": 6
     },
     {
-      "text": "asdasdas",
-      "status": "TODO",
-      "id": 2,
-      "checked": false
+      "text": "swim",
+      "status": "DOING",
+      "id": 7
     },
     {
-      "text": "asdsad",
-      "status": "TODO",
-      "id": 3
+      "text": "jog",
+      "status": "COMPLETED",
+      "id": 8
     }
   ]
 }

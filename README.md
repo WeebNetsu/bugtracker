@@ -9,4 +9,4 @@ This is a simple basic bug tracker app...
 ## TODO:
 
 -   Add new 'delete all' functionality
--   move tasks between statuses functionality
+-   Add 'edit' button to card

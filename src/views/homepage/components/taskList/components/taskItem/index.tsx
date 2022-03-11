@@ -1,77 +1,67 @@
-import { Paper, Grid, Box, Typography, Menu, MenuItem, IconButton } from '@mui/material';
+import { Paper, Grid, Typography, IconButton } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import React, { useEffect, useState } from 'react';
-import Task, { STATUS } from '../../../../../../models/task';
+import React, { useState } from 'react';
+import Task from '../../../../../../models/task';
+import { deleteTask } from '../../../../../../api/tasks';
+import MessageSnack, { MessageSnackDisplay } from '../../../../../components/messageSnack';
 
 interface TaskItemProps {
     task: Task
-    status: STATUS
-    deleteTask: (taskId: number) => void
+    setTasks: any
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ task, status, deleteTask }) => {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [availableMoves, setAvailableMoves] = useState<STATUS[]>([STATUS.DOING, STATUS.COMPLETED]); // default = todo
-    const openMoveMenu = Boolean(anchorEl);
+const TaskItem: React.FC<TaskItemProps> = ({ task, setTasks }) => {
+    const [error, setError] = useState<MessageSnackDisplay>({
+        message: "",
+        show: false,
+        error: true
+    });
 
-    useEffect(() => {
-        if (status === STATUS.COMPLETED) {
-            setAvailableMoves([STATUS.TODO, STATUS.DOING])
-        } else if (status === STATUS.DOING) {
-            setAvailableMoves([STATUS.TODO, STATUS.COMPLETED])
+    const dragStart = (e: any) => {
+        e.dataTransfer.setData('taskId', task.id);
+    }
+
+    const dragOver = (e: any) => {
+        e.stopPropagation();
+    }
+
+    const handleDelete = () => {
+        try {
+            deleteTask({ id: task.id ?? -1 })
+            setTasks((tasks: Task[]) => tasks.filter((tsk) => tsk.id !== task.id));
+        } catch (err: any) {
+            setError({
+                message: err.toString(),
+                show: true,
+                error: true
+            })
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+    }
 
     return (
-        <Paper elevation={3} sx={{ mt: 2, mb: 2, p: 2, cursor: "pointer" }}>
-            <Grid container spacing={2}>
-                <Grid item xs={8}>
-                    <Box
-                        component="span"
-                        id="move-button"
-                        onClick={handleClick}
-                        aria-label="move"
-                        aria-controls={openMoveMenu ? 'basic-move-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={openMoveMenu ? 'true' : undefined}
-                    >
+        <div
+            onDragStart={dragStart}
+            onDragOver={dragOver}
+            draggable={true}
+        >
+            <Paper elevation={3} sx={{ mt: 2, mb: 2, p: 2, cursor: "pointer" }}>
+                <Grid container spacing={2}>
+                    <Grid item xs={8}>
                         <Typography variant="h6" component="p">
                             {task.text}
                         </Typography>
-                    </Box>
+                    </Grid>
 
+                    <Grid item xs={3} sx={{ textAlign: "right" }}>
+                        <IconButton onClick={handleDelete} color="primary" component="span">
+                            <HighlightOffIcon />
+                        </IconButton>
+                    </Grid>
                 </Grid>
+            </Paper>
 
-                <Menu
-                    id="basic-move-menu"
-                    anchorEl={anchorEl}
-                    open={openMoveMenu}
-                    onClose={handleClose}
-                    onClick={handleClose}
-                    MenuListProps={{
-                        'aria-labelledby': 'move-button',
-                    }}
-                >
-                    {availableMoves.map(move => (
-                        <MenuItem onClick={handleClose} key={move}>{move}</MenuItem>
-                    ))}
-                </Menu>
-
-                <Grid item xs={3} sx={{ textAlign: "right" }}>
-                    <IconButton onClick={() => deleteTask(task.id ?? -1)} color="primary" component="span">
-                        <HighlightOffIcon />
-                    </IconButton>
-                </Grid>
-            </Grid>
-        </Paper>
+            <MessageSnack message={error} setMessage={setError} />
+        </div>
     )
 }
 

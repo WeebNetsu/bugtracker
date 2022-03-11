@@ -5,24 +5,69 @@ import useWindowDimensions from '../../../../utils/window';
 import AddIcon from '@mui/icons-material/Add';
 import AddTask from '../addTask';
 import TaskItem from './components/taskItem';
+import { moveTask } from '../../../../api/tasks';
+import MessageSnack, { MessageSnackDisplay } from '../../../components/messageSnack';
 
 interface TodoListProps {
     tasks: Task[]
-    deleteTask: (id: number) => void
-    checkTask: (id: number) => void
-    addTask: (task: Task) => void
     status: STATUS
+    setTasks: (tasks: Task[]) => void
 }
 
-const TaskList: React.FC<TodoListProps> = ({ tasks, deleteTask, checkTask, addTask, status }) => {
+const TaskList: React.FC<TodoListProps> = ({ tasks, status, setTasks }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [showAddTask, setShowAddTask] = useState(false);
     const openAddMenu = Boolean(anchorEl);
     const { height } = useWindowDimensions();
+    const [error, setError] = useState<MessageSnackDisplay>({
+        message: "",
+        show: false,
+        error: true
+    });
+
+    const handleCardDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+
+        const taskId = parseInt(e.dataTransfer.getData("taskId"))
+        let moveStatus: STATUS | null = null;
+
+        if (e.currentTarget.className === STATUS.TODO) {
+            moveStatus = STATUS.TODO
+        } else if (e.currentTarget.className === STATUS.DOING) {
+            moveStatus = STATUS.DOING
+        } else if (e.currentTarget.className === STATUS.COMPLETED) {
+            moveStatus = STATUS.COMPLETED
+        }
+
+        if (taskId && moveStatus) {
+            try {
+                const movedTask = await moveTask(taskId, moveStatus);
+
+                setTasks(tasks.map(task => task.id === movedTask.id ? { ...task, status: movedTask.status } : task))
+            } catch (err: any) {
+                setError({
+                    message: err.toString(),
+                    show: true,
+                    error: true
+                })
+            }
+        }
+    }
+
+    const handleCardDragOver = (e: React.DragEvent<HTMLDivElement>) => { // required for drag/drop to work
+        e.preventDefault();
+    }
+
+    // const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    //     e.preventDefault();
+    //     console.log(e.currentTarget.className)
+    //     e.dataTransfer.setData("overStatus", e.currentTarget.className)
+    // }
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
@@ -36,7 +81,12 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, deleteTask, checkTask, addTa
     const paperHeight = height * (85 / 100)
 
     return (
-        <>
+        <div
+            onDrop={handleCardDrop}
+            onDragOver={handleCardDragOver}
+            // onDragEnter={handleDragEnter}
+            className={status}
+        >
             <Paper elevation={3} sx={{ mt: 2, mb: 2, p: 2, minHeight: `400px`, height: `${paperHeight}px`, overflowY: "scroll" }}>
                 <Grid container spacing={2}>
                     <Grid item lg={9}>
@@ -75,11 +125,13 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, deleteTask, checkTask, addTa
                     </Grid>
                 </Grid>
 
-                {allTasks.map(task => (<TaskItem deleteTask={deleteTask} status={status} task={task} key={task.id} />))}
+                {allTasks.map(task => (<TaskItem setTasks={setTasks} task={task} key={task.id} />))}
             </Paper>
 
-            <AddTask status={status} addTask={addTask} setShow={setShowAddTask} show={showAddTask} />
-        </>
+            <AddTask setTasks={setTasks} status={status} setShow={setShowAddTask} show={showAddTask} />
+
+            <MessageSnack message={error} setMessage={setError} />
+        </div>
     )
 }
 

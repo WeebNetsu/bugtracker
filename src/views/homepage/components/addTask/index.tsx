@@ -1,13 +1,16 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, TextField } from '@mui/material';
 import React, { useRef, useState } from 'react';
-import Task, { STATUS } from '../../../../models/task';
+import { STATUS } from '../../../../models/task';
 import { TransitionProps } from '@mui/material/transitions';
+import MessageSnack, { MessageSnackDisplay } from '../../../components/messageSnack';
+import { addTask } from '../../../../api/tasks';
+import Task from '../../../../models/task';
 
 interface AddTaskProps {
-    addTask: (task: Task) => void
     show: boolean
     setShow: (x: boolean) => void
     status: STATUS
+    setTasks: any
 }
 
 const Transition = React.forwardRef(function Transition(
@@ -19,25 +22,41 @@ const Transition = React.forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const AddTask: React.FC<AddTaskProps> = ({ addTask, show, setShow, status }) => {
+const AddTask: React.FC<AddTaskProps> = ({ show, setShow, status, setTasks }) => {
     const taskInputRef = useRef<HTMLInputElement>(null);
-    const [error, setError] = useState('');
+    const [error, setError] = useState<MessageSnackDisplay>({
+        message: "",
+        show: false,
+        error: true
+    });
 
     const handleClose = () => {
         setShow(false);
     };
 
-    function handleSubmit() {
+    const handleAddTask = async () => {
         if (taskInputRef.current) {
-            addTask({
-                text: taskInputRef.current.value,
-                status
-            });
+            try {
+                const newTask = await addTask({
+                    text: taskInputRef.current.value,
+                    status
+                });
 
-            setError('');
-            taskInputRef.current.value = ""
+                taskInputRef.current.value = ""
+                setTasks((tasks: Task[]) => [...tasks, newTask]); // server automatically added an id
+            } catch (err: any) {
+                setError({
+                    message: err.toString(),
+                    show: true,
+                    error: true
+                })
+            }
         } else {
-            setError("No task was entered");
+            setError({
+                message: "No task was entered",
+                show: true,
+                error: true
+            })
         }
     }
 
@@ -52,13 +71,13 @@ const AddTask: React.FC<AddTaskProps> = ({ addTask, show, setShow, status }) => 
             <DialogTitle>{"Add Task"}</DialogTitle>
             <DialogContent>
                 <TextField id="outlined-basic" label="Add new task" inputRef={taskInputRef} variant="outlined" required sx={{ mt: 2 }} />
-
-                <p style={{ color: "red" }}>{error}</p>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleSubmit}>Add</Button>
+                <Button onClick={handleAddTask}>Add</Button>
             </DialogActions>
+
+            <MessageSnack message={error} setMessage={setError} />
         </Dialog>
     );
 }
