@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, TextField } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, TextField } from '@mui/material';
 import React, { useRef, useState } from 'react';
 import { STATUS } from '../../../../models/task';
 import { TransitionProps } from '@mui/material/transitions';
@@ -34,7 +34,9 @@ const AddTask: React.FC<AddTaskProps> = ({ show, setShow, status, setTasks }) =>
         setShow(false);
     };
 
-    const handleAddTask = async () => {
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
         if (taskInputRef.current) {
             try {
                 const newTask = await addTask({
@@ -68,14 +70,17 @@ const AddTask: React.FC<AddTaskProps> = ({ show, setShow, status, setTasks }) =>
             onClose={handleClose}
             aria-describedby="alert-dialog-slide-description"
         >
-            <DialogTitle>{"Add Task"}</DialogTitle>
-            <DialogContent>
-                <TextField id="outlined-basic" label="Add new task" inputRef={taskInputRef} variant="outlined" required sx={{ mt: 2 }} />
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleAddTask}>Add</Button>
-            </DialogActions>
+            <Box component="form" onSubmit={handleSubmit}>
+                <DialogTitle>{"Add Task"}</DialogTitle>
+                <DialogContent>
+                    <TextField id="outlined-basic" label="Add new task" inputRef={taskInputRef} variant="outlined" required sx={{ mt: 2 }} />
+                </DialogContent>
+
+                <DialogActions>
+                    <Button onClick={handleClose} type="button">Cancel</Button>
+                    <Button type="submit">Add</Button>
+                </DialogActions>
+            </Box>
 
             <MessageSnack message={error} setMessage={setError} />
         </Dialog>

@@ -5,18 +5,20 @@ import useWindowDimensions from '../../../../utils/window';
 import AddIcon from '@mui/icons-material/Add';
 import AddTask from '../addTask';
 import TaskItem from './components/taskItem';
-import { moveTask } from '../../../../api/tasks';
+import { deleteTask, updateTask } from '../../../../api/tasks';
 import MessageSnack, { MessageSnackDisplay } from '../../../components/messageSnack';
+import ConfirmAlert from '../../../components/confirmAlert';
 
 interface TodoListProps {
     tasks: Task[]
     status: STATUS
-    setTasks: (tasks: Task[]) => void
+    setTasks: any
 }
 
 const TaskList: React.FC<TodoListProps> = ({ tasks, status, setTasks }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [showAddTask, setShowAddTask] = useState(false);
+    const [showDeleteAllAlert, setShowDeleteAllAlert] = useState(false);
     const openAddMenu = Boolean(anchorEl);
     const { height } = useWindowDimensions();
     const [error, setError] = useState<MessageSnackDisplay>({
@@ -24,6 +26,27 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, status, setTasks }) => {
         show: false,
         error: true
     });
+
+    const allTasks = tasks.filter(task => {
+        if (status === STATUS.COMPLETED) return task.status === STATUS.COMPLETED
+        if (status === STATUS.DOING) return task.status === STATUS.DOING
+        return task.status === STATUS.TODO
+    })
+
+    const handleDeleteAllTasks = async () => {
+        try {
+            // NOTE: These tasks here! They have been filtered down to the category they are in
+            // once the below runs, it will only delete the tasks in THAT category (status)!
+            await deleteTask({ tasks: allTasks })
+            setTasks((globalTasks: Task[]) => globalTasks.filter((task) => task.status !== status));
+        } catch (err: any) {
+            setError({
+                message: err.toString(),
+                show: true,
+                error: true
+            })
+        }
+    }
 
     const handleCardDrop = async (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
@@ -41,9 +64,9 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, status, setTasks }) => {
 
         if (taskId && moveStatus) {
             try {
-                const movedTask = await moveTask(taskId, moveStatus);
+                const updatedTask = await updateTask(taskId, { status: moveStatus });
 
-                setTasks(tasks.map(task => task.id === movedTask.id ? { ...task, status: movedTask.status } : task))
+                setTasks(tasks.map(task => task.id === updatedTask.id ? updatedTask : task))
             } catch (err: any) {
                 setError({
                     message: err.toString(),
@@ -71,12 +94,6 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, status, setTasks }) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
-    const allTasks = tasks.filter(task => {
-        if (status === STATUS.COMPLETED) return task.status === STATUS.COMPLETED
-        if (status === STATUS.DOING) return task.status === STATUS.DOING
-        return task.status === STATUS.TODO
-    })
 
     const paperHeight = height * (85 / 100)
 
@@ -120,17 +137,19 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, status, setTasks }) => {
                             }}
                         >
                             <MenuItem onClick={() => setShowAddTask(true)}>Add Task</MenuItem>
-                            <MenuItem onClick={handleClose}>Delete All</MenuItem>
+                            <MenuItem onClick={() => setShowDeleteAllAlert(true)}>Delete All</MenuItem>
                         </Menu>
                     </Grid>
                 </Grid>
 
-                {allTasks.map(task => (<TaskItem setTasks={setTasks} task={task} key={task.id} />))}
+                {allTasks.map(task => (<TaskItem status={status} setTasks={setTasks} task={task} key={task.id} />))}
             </Paper>
 
             <AddTask setTasks={setTasks} status={status} setShow={setShowAddTask} show={showAddTask} />
 
             <MessageSnack message={error} setMessage={setError} />
+
+            <ConfirmAlert show={showDeleteAllAlert} setShow={setShowDeleteAllAlert} desc={`Are you sure you want to delete ALL your tasks in ${status}?`} onConfirm={handleDeleteAllTasks} />
         </div>
     )
 }

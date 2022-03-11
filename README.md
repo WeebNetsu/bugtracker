@@ -8,5 +8,4 @@ This is a simple basic bug tracker app...
 
 ## TODO:
 
--   Add new 'delete all' functionality
 -   Add 'edit' button to card
