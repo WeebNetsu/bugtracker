@@ -1,4 +1,5 @@
 import Task, { STATUS } from "../../models/task";
+// import rawTodos from '../../db.json';
 
 const API_URL = "http://localhost:5000/tasks";
 
@@ -8,6 +9,23 @@ export async function fetchTasks(id?: number): Promise<Task | Task[]> {
         const data: Task | Task[] = await res.json();
 
         return data;
+        // const tasks = rawTodos.tasks as Task[];
+
+        // if (id) return tasks.filter(task => task.id === id)[0];
+
+        // return tasks;
+
+        // fs.readFile("../../db.json", "utf8", (err: any, result: any) => {
+        //     if (err) {
+        //         console.log("An Error Occurred: " + err);
+        //         return;
+        //     }
+
+        //     // console.log(result); // Note: you cannot store result inside a variable outside the function
+        //     console.log(result);
+        // }); // the encoding is NOT utf8 by default
+
+        // return []
     } catch (err) {
         console.error(err)
         throw new Error("Could not get tasks (server error)")

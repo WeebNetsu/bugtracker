@@ -7,7 +7,7 @@
     },
     {
       "text": "asdsad",
-      "status": "DOING",
+      "status": "COMPLETED",
       "id": 4
     },
     {
@@ -17,7 +17,7 @@
     },
     {
       "text": "sadas",
-      "status": "DOING",
+      "status": "COMPLETED",
       "comment": "sadsa\nsadsa\ndasd",
       "id": 13
     },
@@ -29,13 +29,13 @@
     },
     {
       "text": "asdsada",
-      "status": "TODO",
+      "status": "DOING",
       "comment": "I am\nvery cool",
       "id": 15
     },
     {
       "text": "asdas",
-      "status": "DOING",
+      "status": "TODO",
       "comment": "sadsad",
       "id": 18
     },
