@@ -1,6 +1,5 @@
 const { app, BrowserWindow } = require("electron")
 const jsonServer = require('json-server')
-
 const isDev = require("electron-is-dev")
 const path = require("path")
 
@@ -19,7 +18,9 @@ function createWindow() {
     })
 
     const server = jsonServer.create()
-    const router = jsonServer.router('todos.json')
+    // const router = jsonServer.router(path.join(__dirname, 'todos.json'));
+    const router = jsonServer.router('todos.json');
+    // console.log(path.join(__dirname, 'todos.json'))
     const middlewares = jsonServer.defaults()
 
     server.use(middlewares)

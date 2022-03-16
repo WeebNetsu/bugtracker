@@ -22,18 +22,6 @@
       "id": 13
     },
     {
-      "text": "Bye bye",
-      "status": "TODO",
-      "comment": "asdas",
-      "id": 14
-    },
-    {
-      "text": "asdsada",
-      "status": "TODO",
-      "comment": "I am\nvery cool",
-      "id": 15
-    },
-    {
       "text": "asdas",
       "status": "DOING",
       "comment": "sadsad",
@@ -46,9 +34,9 @@
       "id": 19
     },
     {
-      "text": "sdfsd",
+      "text": "sadsadasd",
       "status": "TODO",
-      "comment": "dsfdsf",
+      "comment": "asdasdas",
       "id": 20
     }
   ]
