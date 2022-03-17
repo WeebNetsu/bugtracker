@@ -1,0 +1,62 @@
+{
+	"name": "todo-app",
+	"version": "0.1.0",
+	"private": true,
+	"dependencies": {
+		"@emotion/react": "^11.8.1",
+		"@emotion/styled": "^11.8.1",
+		"@mui/icons-material": "^5.5.0",
+		"@mui/material": "^5.5.0",
+		"@testing-library/jest-dom": "^5.16.2",
+		"@testing-library/react": "^12.1.3",
+		"@testing-library/user-event": "^13.5.0",
+		"cross-env": "^7.0.3",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2",
+		"react-scripts": "5.0.0",
+		"wait-on": "^6.0.1",
+		"web-vitals": "^2.1.4"
+	},
+	"description": "Basic kanban style todo application.",
+	"license": "MIT",
+	"author": {
+		"name": "Stephen van der Westhuizen",
+		"email": "stephenvdw.business@gmail.com",
+		"url": "https://github.com/WeebNetsu"
+	},
+	"scripts": {
+		"start": "react-scripts start",
+		"start:old": "concurrently \"react-scripts start\" \"npm run server\"",
+		"build": "react-scripts build",
+		"test": "react-scripts test",
+		"eject": "react-scripts eject",
+		"server": "json-server db.json --port 5000"
+	},
+	"eslintConfig": {
+		"extends": [
+			"react-app",
+			"react-app/jest"
+		]
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	},
+	"devDependencies": {
+		"@types/jest": "^27.4.1",
+		"@types/node": "^17.0.21",
+		"@types/react": "^17.0.40",
+		"@types/react-dom": "^17.0.13",
+		"json-server": "^0.17.0",
+		"concurrently": "^7.0.0",
+		"typescript": "^4.6.2"
+	}
+}
