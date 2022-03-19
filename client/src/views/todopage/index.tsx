@@ -2,13 +2,12 @@ import { Container, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import LoadStatus from '../../models/loadingStatus';
-import { STATUS } from '../../models/task';
+import TaskModel, { STATUS } from '../../models/task';
 import { fetchTasks, taskState } from '../../slices/tasks';
 import MessageSnack, { MessageSnackDisplay } from '../components/messageSnack';
 import TaskList from './components/taskList';
 
-const Homepage: React.FC = () => {
-    // const [tasks, setTasks] = useState<Task[]>([]);
+const Todopage: React.FC = () => {
     const [error, setError] = useState<MessageSnackDisplay>({
         message: "",
         show: false,
@@ -25,7 +24,7 @@ const Homepage: React.FC = () => {
         if (tasks.loadingStatus === LoadStatus.NOT_STARTED) {
             dispatch(fetchTasks());
         }
-    }, [dispatch, tasks.loadingStatus]);
+    }, [dispatch, tasks]);
 
     useEffect(() => {
         if (tasks.error) {
@@ -37,35 +36,8 @@ const Homepage: React.FC = () => {
         }
     }, [tasks.error])
 
-
-    // useEffect(() => {
-    //     if(tasks.loadingStatus === LoadStatus.COMPLETE){
-    //         setNewTasks();
-    //     }
-    // }, [tasks.loadingStatus])
-
     if (tasks.loadingStatus !== LoadStatus.COMPLETE) {
         return (<h1>Loading</h1>);
-    }
-
-    // const setNewTasks = async () => {
-    //     try {
-    //         const tasksFromServer: Task | Task[] = await fetchTasks();
-
-    //         if (Array.isArray(tasksFromServer)) {
-    //             setTasks(tasksFromServer ?? [])
-    //         }
-    //     } catch (err: any) {
-    //         setError({
-    //             message: err.toString(),
-    //             show: true,
-    //             error: true
-    //         })
-    //     }
-    // }
-
-    const setTasks = () => {
-        console.log("wow")
     }
 
     const visibleStatuses = [STATUS.TODO, STATUS.DOING, STATUS.COMPLETED]
@@ -78,7 +50,7 @@ const Homepage: React.FC = () => {
                 <Grid container spacing={2}>
                     {visibleStatuses.map((status) => (
                         <Grid key={status} item md={4}>
-                            <TaskList setTasks={setTasks} tasks={tasks.tasks} status={status} />
+                            <TaskList tasksSelector={tasks} status={status} />
                         </Grid>
                     ))}
                 </Grid>
@@ -89,4 +61,4 @@ const Homepage: React.FC = () => {
     )
 }
 
-export default Homepage;
+export default Todopage;

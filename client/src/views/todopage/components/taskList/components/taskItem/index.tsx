@@ -7,10 +7,9 @@ import MessageSnack, { MessageSnackDisplay } from '../../../../../components/mes
 
 interface TaskItemProps {
     task: Task
-    setTasks: any
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ task, setTasks }) => {
+const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
     const [editMode, setEditMode] = useState(false);
     const [error, setError] = useState<MessageSnackDisplay>({
         message: "",
@@ -32,7 +31,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, setTasks }) => {
     const handleDelete = () => {
         try {
             deleteTask({ id: task.id ?? -1 })
-            setTasks((tasks: Task[]) => tasks.filter((tsk) => tsk.id !== task.id));
+            // setTasks((tasks: Task[]) => tasks.filter((tsk) => tsk.id !== task.id));
         } catch (err: any) {
             setError({
                 message: err.toString(),
@@ -52,7 +51,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, setTasks }) => {
                     comment: commentEditRef.current?.value
                 });
 
-                setTasks((tasks: Task[]) => tasks.map(task => task.id === updatedTask.id ? updatedTask : task));
+                // setTasks((tasks: Task[]) => tasks.map(task => task.id === updatedTask.id ? updatedTask : task));
                 setEditMode(false);
             } catch (err: any) {
                 setError({

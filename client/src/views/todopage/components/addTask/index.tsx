@@ -1,16 +1,17 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, TextField } from '@mui/material';
-import React, { useRef, useState } from 'react';
-import { STATUS } from '../../../../models/task';
+import React, { useEffect, useRef, useState } from 'react';
+import TaskModel, { STATUS } from '../../../../models/task';
 import { TransitionProps } from '@mui/material/transitions';
 import MessageSnack, { MessageSnackDisplay } from '../../../components/messageSnack';
-import { addTask } from '../../../../api/tasks';
-import Task from '../../../../models/task';
+import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
+import LoadStatus from '../../../../models/loadingStatus';
+import { addTask, taskState, fetchTasks } from '../../../../slices/tasks';
 
 interface AddTaskProps {
     show: boolean
     setShow: (x: boolean) => void
     status: STATUS
-    setTasks: any
+    tasksSelector: taskState
 }
 
 const Transition = React.forwardRef(function Transition(
@@ -22,7 +23,10 @@ const Transition = React.forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const AddTask: React.FC<AddTaskProps> = ({ show, setShow, status, setTasks }) => {
+const AddTask: React.FC<AddTaskProps> = ({ show, setShow, status, tasksSelector }) => {
+    const dispatch = useDispatch();
+
+    const [refreshTasks, setRefreshTasks] = useState(false);
     const taskInputRef = useRef<HTMLInputElement>(null);
     const commentInputRef = useRef<HTMLInputElement>(null);
     const [error, setError] = useState<MessageSnackDisplay>({
@@ -35,24 +39,34 @@ const AddTask: React.FC<AddTaskProps> = ({ show, setShow, status, setTasks }) =>
         setShow(false);
     };
 
+    useEffect(() => {
+        if (refreshTasks && tasksSelector.loadingStatus === LoadStatus.COMPLETE) {
+            dispatch(fetchTasks());
+            setRefreshTasks(false)
+        }
+    }, [dispatch, tasksSelector, refreshTasks]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (taskInputRef.current) {
             try {
-                const newTask = await addTask({
+                const newTask = {
                     text: taskInputRef.current.value,
                     status,
                     comment: commentInputRef.current?.value
-                });
+                }
+
+                dispatch(addTask(newTask));
+                setRefreshTasks(true)
+
+                // setTasks((tasks: TaskModel[]) => [...tasks, newTask]); // server automatically added an id
 
                 taskInputRef.current.value = ""
 
                 if (commentInputRef.current) {
                     commentInputRef.current.value = ""
                 }
-
-                setTasks((tasks: Task[]) => [...tasks, newTask]); // server automatically added an id
             } catch (err: any) {
                 setError({
                     message: err.toString(),

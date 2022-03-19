@@ -8,14 +8,14 @@ import TaskItem from './components/taskItem';
 import { deleteTask, updateTask } from '../../../../api/tasks';
 import MessageSnack, { MessageSnackDisplay } from '../../../components/messageSnack';
 import ConfirmAlert from '../../../components/confirmAlert';
+import { taskState } from '../../../../slices/tasks';
 
 interface TodoListProps {
-    tasks: Task[]
+    tasksSelector: taskState
     status: STATUS
-    setTasks: any
 }
 
-const TaskList: React.FC<TodoListProps> = ({ tasks, status, setTasks }) => {
+const TaskList: React.FC<TodoListProps> = ({ tasksSelector, status }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [showAddTask, setShowAddTask] = useState(false);
     const [showDeleteAllAlert, setShowDeleteAllAlert] = useState(false);
@@ -26,6 +26,7 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, status, setTasks }) => {
         show: false,
         error: true
     });
+    const tasks = tasksSelector.tasks
 
     const allTasks = tasks.filter(task => {
         if (status === STATUS.COMPLETED) return task.status === STATUS.COMPLETED
@@ -38,7 +39,7 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, status, setTasks }) => {
             // NOTE: These tasks here! They have been filtered down to the category they are in
             // once the below runs, it will only delete the tasks in THAT category (status)!
             await deleteTask({ tasks: allTasks })
-            setTasks((globalTasks: Task[]) => globalTasks.filter((task) => task.status !== status));
+            // setTasks((globalTasks: Task[]) => globalTasks.filter((task) => task.status !== status));
         } catch (err: any) {
             setError({
                 message: err.toString(),
@@ -66,7 +67,7 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, status, setTasks }) => {
             try {
                 const updatedTask = await updateTask(taskId, { status: moveStatus });
 
-                setTasks(tasks.map(task => task.id === updatedTask.id ? updatedTask : task))
+                // setTasks(tasks.map(task => task.id === updatedTask.id ? updatedTask : task))
             } catch (err: any) {
                 setError({
                     message: err.toString(),
@@ -142,10 +143,10 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, status, setTasks }) => {
                     </Grid>
                 </Grid>
 
-                {allTasks.map(task => (<TaskItem setTasks={setTasks} task={task} key={task.id} />))}
+                {allTasks.map(task => (<TaskItem task={task} key={task.id} />))}
             </Paper>
 
-            <AddTask setTasks={setTasks} status={status} setShow={setShowAddTask} show={showAddTask} />
+            <AddTask status={status} setShow={setShowAddTask} show={showAddTask} tasksSelector={tasksSelector} />
 
             <MessageSnack message={error} setMessage={setError} />
 

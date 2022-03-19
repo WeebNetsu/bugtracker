@@ -1,56 +1,50 @@
-import Task, { STATUS } from "../models/task";
+import TaskModel, { STATUS } from "../models/task";
 import axiosConf from "./axios";
 
-const TASKS_URL = "/tasks";
-
-// export async function fetchTasks(id?: number): Promise<Task | Task[]> {
-//     try {
-//         const res = id ? await fetch(`${TASKS_URL}/${id}`) : await fetch(TASKS_URL);
-//         const data = await res.json();
-//         // todo: make this work better with new server
-//         return data.data;
-//     } catch (err) {
-//         console.error(err)
-//         throw new Error("Could not get tasks (server error)")
-//     }
-// }
+const TASKS_URL = "/tasks/";
 
 export interface TaskFetchResponse {
-    data: Task | Task[]
+    data: TaskModel | TaskModel[]
 }
 
 export const getTasks = async (id?: number): Promise<TaskFetchResponse> => {
     // send get request to /tasks and retrieve course data from server
-    const res = id ? await axiosConf.get(`${TASKS_URL}/${id}`) : await axiosConf.get(TASKS_URL);
+    const res = id ? await axiosConf.get(`${TASKS_URL}${id}`) : await axiosConf.get(TASKS_URL);
 
-    return {
-        data: res.data
-    };
+    return res.data;
+};
+
+export const setTask = async (task: TaskModel): Promise<TaskFetchResponse> => {
+    // send get request to /tasks and retrieve course data from server
+    if (!task.text?.trim()) throw new Error("No task text")
+    const res = await axiosConf.post(TASKS_URL, task);
+
+    return res.data;
 };
 
 
-export async function addTask(task: Task): Promise<Task> {
-    try {
-        if (!task.text?.trim()) throw new Error("No task text")
+// export async function addTask(task: TaskModel): Promise<TaskModel> {
+//     try {
+//         if (!task.text?.trim()) throw new Error("No task text")
 
-        const res = await fetch(TASKS_URL, {
-            "method": "POST",
-            "headers": {
-                "content-type": "application/json"
-            },
-            "body": JSON.stringify(task)
-        })
+//         const res = await fetch(TASKS_URL, {
+//             "method": "POST",
+//             "headers": {
+//                 "content-type": "application/json"
+//             },
+//             "body": JSON.stringify(task)
+//         })
 
-        const newTask: Task = await res.json();
+//         const newTask: TaskModel = await res.json();
 
-        return newTask;
-    } catch (error) {
-        console.error(error)
-        throw new Error("Could not add task.")
-    }
-}
+//         return newTask;
+//     } catch (error) {
+//         console.error(error)
+//         throw new Error("Could not add task.")
+//     }
+// }
 
-export async function deleteTask(item: { id?: number, tasks?: Task[] }): Promise<void> {
+export async function deleteTask(item: { id?: number, tasks?: TaskModel[] }): Promise<void> {
     try {
         if (item.id) {
             if (item.id < 0) throw new Error("Id is undefined (less than 0)");
@@ -75,7 +69,7 @@ export async function deleteTask(item: { id?: number, tasks?: Task[] }): Promise
     }
 }
 
-export async function updateTask(taskId: number, update: { status?: STATUS, text?: string, comment?: string }): Promise<Task> {
+export async function updateTask(taskId: number, update: { status?: STATUS, text?: string, comment?: string }): Promise<TaskModel> {
     if (taskId < 0) {
         throw new Error("Could not find that task, please refreash the page");
     }
@@ -100,7 +94,7 @@ export async function updateTask(taskId: number, update: { status?: STATUS, text
             "body": JSON.stringify(updatedTask)
         })
 
-        const data: Task = await res.json();
+        const data: TaskModel = await res.json();
         return data;
     } catch (err) {
         console.error(err)

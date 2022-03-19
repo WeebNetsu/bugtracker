@@ -1,8 +1,8 @@
 import React from 'react';
-import Homepage from './views/homepage';
+import Todopage from './views/todopage';
 
 const App: React.FC = () => {
-    return <Homepage />
+    return <Todopage />
 }
 
 export default App;
