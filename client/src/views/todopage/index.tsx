@@ -2,7 +2,7 @@ import { Container, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import LoadStatus from '../../models/loadingStatus';
-import TaskModel, { STATUS } from '../../models/task';
+import { STATUS } from '../../models/task';
 import { fetchTasks, taskState } from '../../slices/tasks';
 import MessageSnack, { MessageSnackDisplay } from '../components/messageSnack';
 import TaskList from './components/taskList';
@@ -39,7 +39,7 @@ const Todopage: React.FC = () => {
     if (tasks.loadingStatus !== LoadStatus.COMPLETE) {
         return (<h1>Loading</h1>);
     }
-
+    console.log(tasks.tasks)
     const visibleStatuses = [STATUS.TODO, STATUS.DOING, STATUS.COMPLETED]
 
     return (

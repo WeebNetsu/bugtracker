@@ -1,9 +1,9 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, TextField } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
-import TaskModel, { STATUS } from '../../../../models/task';
+import { STATUS } from '../../../../models/task';
 import { TransitionProps } from '@mui/material/transitions';
 import MessageSnack, { MessageSnackDisplay } from '../../../components/messageSnack';
-import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import LoadStatus from '../../../../models/loadingStatus';
 import { addTask, taskState, fetchTasks } from '../../../../slices/tasks';
 

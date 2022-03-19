@@ -11,6 +11,7 @@ class STATUS(str, Enum):  # use an enum to foce it to be one of the allowed
 class TaskSchema(BaseModel):
     text: str = Field(...)
     status: STATUS = Field(STATUS.TODO)
+    comment: str = Field("")
 
     # what needs to be entered on post request
     class Config:

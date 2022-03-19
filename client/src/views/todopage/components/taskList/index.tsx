@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Task, { STATUS } from '../../../../models/task';
+import { STATUS } from '../../../../models/task';
 import { Grid, IconButton, Menu, MenuItem, Paper, Typography } from '@mui/material';
 import useWindowDimensions from '../../../../utils/window';
 import AddIcon from '@mui/icons-material/Add';

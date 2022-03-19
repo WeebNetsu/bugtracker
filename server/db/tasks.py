@@ -11,6 +11,7 @@ def task_helper(task) -> dict:
         "id": str(task["_id"]),
         "text": task["text"],
         "status": task["status"],
+        "comment": task["comment"] or "",
     }
 
 
