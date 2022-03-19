@@ -1,37 +1,71 @@
 import { Container, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { fetchTasks } from '../../api/tasks';
-import Task, { STATUS } from '../../models/task';
+import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
+import LoadStatus from '../../models/loadingStatus';
+import { STATUS } from '../../models/task';
+import { fetchTasks, taskState } from '../../slices/tasks';
 import MessageSnack, { MessageSnackDisplay } from '../components/messageSnack';
 import TaskList from './components/taskList';
 
 const Homepage: React.FC = () => {
-    const [tasks, setTasks] = useState<Task[]>([]);
+    // const [tasks, setTasks] = useState<Task[]>([]);
     const [error, setError] = useState<MessageSnackDisplay>({
         message: "",
         show: false,
         error: true
     });
 
+    const dispatch = useDispatch();
+
+    const { tasks } = useSelector<RootStateOrAny, {
+        tasks: taskState
+    }>((state) => state);
+
     useEffect(() => {
-        setNewTasks();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+        if (tasks.loadingStatus === LoadStatus.NOT_STARTED) {
+            dispatch(fetchTasks());
+        }
+    }, [dispatch, tasks.loadingStatus]);
 
-    const setNewTasks = async () => {
-        try {
-            const tasksFromServer: Task | Task[] = await fetchTasks();
-
-            if (Array.isArray(tasksFromServer)) {
-                setTasks(tasksFromServer ?? [])
-            }
-        } catch (err: any) {
+    useEffect(() => {
+        if (tasks.error) {
             setError({
-                message: err.toString(),
                 show: true,
+                message: tasks.error,
                 error: true
             })
         }
+    }, [tasks.error])
+
+
+    // useEffect(() => {
+    //     if(tasks.loadingStatus === LoadStatus.COMPLETE){
+    //         setNewTasks();
+    //     }
+    // }, [tasks.loadingStatus])
+
+    if (tasks.loadingStatus !== LoadStatus.COMPLETE) {
+        return (<h1>Loading</h1>);
+    }
+
+    // const setNewTasks = async () => {
+    //     try {
+    //         const tasksFromServer: Task | Task[] = await fetchTasks();
+
+    //         if (Array.isArray(tasksFromServer)) {
+    //             setTasks(tasksFromServer ?? [])
+    //         }
+    //     } catch (err: any) {
+    //         setError({
+    //             message: err.toString(),
+    //             show: true,
+    //             error: true
+    //         })
+    //     }
+    // }
+
+    const setTasks = () => {
+        console.log("wow")
     }
 
     const visibleStatuses = [STATUS.TODO, STATUS.DOING, STATUS.COMPLETED]
@@ -44,7 +78,7 @@ const Homepage: React.FC = () => {
                 <Grid container spacing={2}>
                     {visibleStatuses.map((status) => (
                         <Grid key={status} item md={4}>
-                            <TaskList setTasks={setTasks} tasks={tasks} status={status} />
+                            <TaskList setTasks={setTasks} tasks={tasks.tasks} status={status} />
                         </Grid>
                     ))}
                 </Grid>

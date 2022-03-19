@@ -4,7 +4,7 @@ export enum STATUS {
     COMPLETED = "COMPLETED",
 }
 
-export default interface Task {
+export default interface TaskModel {
     id?: number
     text: string
     status: STATUS

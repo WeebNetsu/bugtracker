@@ -12,10 +12,10 @@ class TaskSchema(BaseModel):
     text: str = Field(...)
     status: STATUS = Field(STATUS.TODO)
 
+    # what needs to be entered on post request
     class Config:
         schema_extra = {
             "example": {
-                "_id": "asdasd32",
                 "text": "What to do next",
                 "status": STATUS.TODO,
             }

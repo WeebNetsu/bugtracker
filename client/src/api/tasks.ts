@@ -1,24 +1,39 @@
-import Task, { STATUS } from "../../models/task";
+import Task, { STATUS } from "../models/task";
+import axiosConf from "./axios";
 
-const API_URL = "http://localhost:8000/tasks";
+const TASKS_URL = "/tasks";
 
-export async function fetchTasks(id?: number): Promise<Task | Task[]> {
-    try {
-        const res = id ? await fetch(`${API_URL}/${id}`) : await fetch(API_URL);
-        const data = await res.json();
-        // todo: make this work better with new server
-        return data.data;
-    } catch (err) {
-        console.error(err)
-        throw new Error("Could not get tasks (server error)")
-    }
+// export async function fetchTasks(id?: number): Promise<Task | Task[]> {
+//     try {
+//         const res = id ? await fetch(`${TASKS_URL}/${id}`) : await fetch(TASKS_URL);
+//         const data = await res.json();
+//         // todo: make this work better with new server
+//         return data.data;
+//     } catch (err) {
+//         console.error(err)
+//         throw new Error("Could not get tasks (server error)")
+//     }
+// }
+
+export interface TaskFetchResponse {
+    data: Task | Task[]
 }
+
+export const getTasks = async (id?: number): Promise<TaskFetchResponse> => {
+    // send get request to /tasks and retrieve course data from server
+    const res = id ? await axiosConf.get(`${TASKS_URL}/${id}`) : await axiosConf.get(TASKS_URL);
+
+    return {
+        data: res.data
+    };
+};
+
 
 export async function addTask(task: Task): Promise<Task> {
     try {
         if (!task.text?.trim()) throw new Error("No task text")
 
-        const res = await fetch(API_URL, {
+        const res = await fetch(TASKS_URL, {
             "method": "POST",
             "headers": {
                 "content-type": "application/json"
@@ -40,12 +55,12 @@ export async function deleteTask(item: { id?: number, tasks?: Task[] }): Promise
         if (item.id) {
             if (item.id < 0) throw new Error("Id is undefined (less than 0)");
 
-            await fetch(`${API_URL}/${item.id}`, {
+            await fetch(`${TASKS_URL}/${item.id}`, {
                 "method": "DELETE"// sends a requiest to the server to delete the data
             })
         } else if (item.tasks) {
             const toBeDeleted = item.tasks.map(async (task) => {
-                return await fetch(`${API_URL}/${task.id}`, {
+                return await fetch(`${TASKS_URL}/${task.id}`, {
                     "method": "DELETE" // sends a requiest to the server to delete the data
                 })
             })
@@ -74,10 +89,10 @@ export async function updateTask(taskId: number, update: { status?: STATUS, text
     }
 
     try {
-        const task = await fetchTasks(taskId);
+        const task = await getTasks(taskId);
         const updatedTask = { ...task, ...update };
 
-        const res = await fetch(`${API_URL}/${taskId}`, {
+        const res = await fetch(`${TASKS_URL}/${taskId}`, {
             "method": "PUT",
             "headers": {
                 "content-type": "application/json"
