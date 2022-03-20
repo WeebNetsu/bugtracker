@@ -1,4 +1,4 @@
-import TaskModel, { STATUS } from "../models/task";
+import TaskModel, { InsertTaskModel, UpdateTaskModel } from "../models/task";
 import axiosConf from "./axios";
 
 const TASKS_URL = "/tasks/";
@@ -7,42 +7,20 @@ export interface TaskFetchResponse {
     data: TaskModel | TaskModel[]
 }
 
-export const getTasks = async (id?: number): Promise<TaskFetchResponse> => {
+export const getTasks = async (id?: string): Promise<TaskFetchResponse> => {
     // send get request to /tasks and retrieve course data from server
     const res = id ? await axiosConf.get(`${TASKS_URL}${id}`) : await axiosConf.get(TASKS_URL);
 
     return res.data;
 };
 
-export const setTask = async (task: TaskModel): Promise<TaskFetchResponse> => {
+export const setTask = async (task: InsertTaskModel): Promise<TaskFetchResponse> => {
     // send get request to /tasks and retrieve course data from server
     if (!task.text?.trim()) throw new Error("No task text")
     const res = await axiosConf.post(TASKS_URL, task);
 
     return res.data;
 };
-
-
-// export async function addTask(task: TaskModel): Promise<TaskModel> {
-//     try {
-//         if (!task.text?.trim()) throw new Error("No task text")
-
-//         const res = await fetch(TASKS_URL, {
-//             "method": "POST",
-//             "headers": {
-//                 "content-type": "application/json"
-//             },
-//             "body": JSON.stringify(task)
-//         })
-
-//         const newTask: TaskModel = await res.json();
-
-//         return newTask;
-//     } catch (error) {
-//         console.error(error)
-//         throw new Error("Could not add task.")
-//     }
-// }
 
 export async function deleteTask(item: { id?: number, tasks?: TaskModel[] }): Promise<void> {
     try {
@@ -69,35 +47,42 @@ export async function deleteTask(item: { id?: number, tasks?: TaskModel[] }): Pr
     }
 }
 
-export async function updateTask(taskId: number, update: { status?: STATUS, text?: string, comment?: string }): Promise<TaskModel> {
-    if (taskId < 0) {
-        throw new Error("Could not find that task, please refreash the page");
-    }
+export const updateSetTask = async (taskId: string, update: UpdateTaskModel): Promise<TaskFetchResponse> => {
+    // send get request to /tasks and retrieve course data from server
+    const res = await axiosConf.put(TASKS_URL + taskId, update);
 
-    if (!update.status && !update.text) {
-        throw new Error("No status or update was passed in.");
-    }
+    return res.data;
+};
 
-    if (update.text && update.text.trim().length < 1) {
-        throw new Error("Update text should be valid text");
-    }
+// export async function updateTask(taskId: number, update: { status?: STATUS, text?: string, comment?: string }): Promise<TaskModel> {
+//     if (taskId < 0) {
+//         throw new Error("Could not find that task, please refreash the page");
+//     }
 
-    try {
-        const task = await getTasks(taskId);
-        const updatedTask = { ...task, ...update };
+//     if (!update.status && !update.text) {
+//         throw new Error("No status or update was passed in.");
+//     }
 
-        const res = await fetch(`${TASKS_URL}/${taskId}`, {
-            "method": "PUT",
-            "headers": {
-                "content-type": "application/json"
-            },
-            "body": JSON.stringify(updatedTask)
-        })
+//     if (update.text && update.text.trim().length < 1) {
+//         throw new Error("Update text should be valid text");
+//     }
 
-        const data: TaskModel = await res.json();
-        return data;
-    } catch (err) {
-        console.error(err)
-        throw new Error("Could not update task (server error)")
-    }
-}
+//     try {
+//         const task = await getTasks(taskId);
+//         const updatedTask = { ...task, ...update };
+
+//         const res = await fetch(`${TASKS_URL}/${taskId}`, {
+//             "method": "PUT",
+//             "headers": {
+//                 "content-type": "application/json"
+//             },
+//             "body": JSON.stringify(updatedTask)
+//         })
+
+//         const data: TaskModel = await res.json();
+//         return data;
+//     } catch (err) {
+//         console.error(err)
+//         throw new Error("Could not update task (server error)")
+//     }
+// }

@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel, Field
 from enum import Enum
 
@@ -19,5 +20,21 @@ class TaskSchema(BaseModel):
             "example": {
                 "text": "What to do next",
                 "status": STATUS.TODO,
+                "comment": "I am Groot",
+            }
+        }
+
+
+class UpdateTaskSchema(BaseModel):
+    text: Optional[str]
+    status: Optional[STATUS]
+    comment: Optional[str]
+
+    # what needs to be entered on post request
+    class Config:
+        schema_extra = {
+            "example": {
+                "text": "What to do next 2",
+                "status": STATUS.COMPLETED,
             }
         }

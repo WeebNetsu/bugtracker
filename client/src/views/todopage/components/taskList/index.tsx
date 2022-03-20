@@ -5,7 +5,7 @@ import useWindowDimensions from '../../../../utils/window';
 import AddIcon from '@mui/icons-material/Add';
 import AddTask from '../addTask';
 import TaskItem from './components/taskItem';
-import { deleteTask, updateTask } from '../../../../api/tasks';
+import { deleteTask } from '../../../../api/tasks';
 import MessageSnack, { MessageSnackDisplay } from '../../../components/messageSnack';
 import ConfirmAlert from '../../../components/confirmAlert';
 import { taskState } from '../../../../slices/tasks';
@@ -65,7 +65,7 @@ const TaskList: React.FC<TodoListProps> = ({ tasksSelector, status }) => {
 
         if (taskId && moveStatus) {
             try {
-                const updatedTask = await updateTask(taskId, { status: moveStatus });
+                // const updatedTask = await updateTask(taskId, { status: moveStatus });
 
                 // setTasks(tasks.map(task => task.id === updatedTask.id ? updatedTask : task))
             } catch (err: any) {
@@ -143,7 +143,7 @@ const TaskList: React.FC<TodoListProps> = ({ tasksSelector, status }) => {
                     </Grid>
                 </Grid>
 
-                {allTasks.map(task => (<TaskItem task={task} key={task.id} />))}
+                {allTasks.map(task => (<TaskItem task={task} key={task.id} tasksSelector={tasksSelector} />))}
             </Paper>
 
             <AddTask status={status} setShow={setShowAddTask} show={showAddTask} tasksSelector={tasksSelector} />

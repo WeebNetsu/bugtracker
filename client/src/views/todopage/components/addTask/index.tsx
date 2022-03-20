@@ -60,8 +60,6 @@ const AddTask: React.FC<AddTaskProps> = ({ show, setShow, status, tasksSelector 
                 dispatch(addTask(newTask));
                 setRefreshTasks(true)
 
-                // setTasks((tasks: TaskModel[]) => [...tasks, newTask]); // server automatically added an id
-
                 taskInputRef.current.value = ""
 
                 if (commentInputRef.current) {

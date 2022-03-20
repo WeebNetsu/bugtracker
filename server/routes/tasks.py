@@ -1,6 +1,7 @@
-from db.tasks import add_task, retrieve_tasks
+from urllib import response
+from db.tasks import add_task, retrieve_tasks, update_task
 from models.responses import ResponseModel
-from schemas.tasks import TaskSchema
+from schemas.tasks import TaskSchema, UpdateTaskSchema
 from fastapi.encoders import jsonable_encoder
 from fastapi import Body, APIRouter
 
@@ -28,3 +29,14 @@ async def get_task_route(task_id: str):
     if task:
         return ResponseModel(task, "Task data retrieved successfully")
     return ResponseModel(task, "No task found returned")
+
+
+@router.put("/{task_id}", response_description="Update a task")
+async def update_student(task_id: str, task: UpdateTaskSchema = Body(...)):
+    try:
+        task = jsonable_encoder(task)
+        updated_task = await update_task(task_id, task)
+        return ResponseModel(updated_task, "Task added successfully.")
+    except Exception as e:
+        print(e)
+        return ResponseModel({}, "Task could not be updated", 500)

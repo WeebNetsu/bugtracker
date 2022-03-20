@@ -39,7 +39,7 @@ const Todopage: React.FC = () => {
     if (tasks.loadingStatus !== LoadStatus.COMPLETE) {
         return (<h1>Loading</h1>);
     }
-    console.log(tasks.tasks)
+
     const visibleStatuses = [STATUS.TODO, STATUS.DOING, STATUS.COMPLETED]
 
     return (
