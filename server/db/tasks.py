@@ -35,11 +35,8 @@ async def add_task(task_data: dict) -> dict:
     return task_helper(new_task)
 
 
-async def delete_task(task_data: dict) -> dict:
-    task = await tasks_collection.insert_one(task_data)
-    new_task = await tasks_collection.find_one({"_id": task.inserted_id})
-
-    return task_helper(new_task)
+async def delete_task(task_id: str) -> dict:
+    await tasks_collection.delete_one({"_id": ObjectId(task_id)})
 
 
 async def update_task(task_id: str, task_data: dict) -> dict:

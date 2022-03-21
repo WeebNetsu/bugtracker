@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { STATUS } from '../../../../models/task';
 import { Grid, IconButton, Menu, MenuItem, Paper, Typography } from '@mui/material';
 import useWindowDimensions from '../../../../utils/window';
 import AddIcon from '@mui/icons-material/Add';
 import AddTask from '../addTask';
 import TaskItem from './components/taskItem';
-import { deleteTask } from '../../../../api/tasks';
 import MessageSnack, { MessageSnackDisplay } from '../../../components/messageSnack';
 import ConfirmAlert from '../../../components/confirmAlert';
-import { taskState } from '../../../../slices/tasks';
+import { fetchTasks, taskState, updateTask } from '../../../../slices/tasks';
+import { useDispatch } from 'react-redux';
+import LoadStatus from '../../../../models/loadingStatus';
 
 interface TodoListProps {
     tasksSelector: taskState
@@ -16,6 +17,9 @@ interface TodoListProps {
 }
 
 const TaskList: React.FC<TodoListProps> = ({ tasksSelector, status }) => {
+    const dispatch = useDispatch();
+
+    const [refreshTasks, setRefreshTasks] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [showAddTask, setShowAddTask] = useState(false);
     const [showDeleteAllAlert, setShowDeleteAllAlert] = useState(false);
@@ -34,11 +38,19 @@ const TaskList: React.FC<TodoListProps> = ({ tasksSelector, status }) => {
         return task.status === STATUS.TODO
     })
 
+
+    useEffect(() => {
+        if (refreshTasks && tasksSelector.loadingStatus === LoadStatus.COMPLETE) {
+            dispatch(fetchTasks());
+            setRefreshTasks(false);
+        }
+    }, [dispatch, tasksSelector, refreshTasks]);
+
     const handleDeleteAllTasks = async () => {
         try {
             // NOTE: These tasks here! They have been filtered down to the category they are in
             // once the below runs, it will only delete the tasks in THAT category (status)!
-            await deleteTask({ tasks: allTasks })
+            // await deleteTask({ tasks: allTasks })
             // setTasks((globalTasks: Task[]) => globalTasks.filter((task) => task.status !== status));
         } catch (err: any) {
             setError({
@@ -52,7 +64,7 @@ const TaskList: React.FC<TodoListProps> = ({ tasksSelector, status }) => {
     const handleCardDrop = async (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
 
-        const taskId = parseInt(e.dataTransfer.getData("taskId"))
+        const taskId = e.dataTransfer.getData("taskId")
         let moveStatus: STATUS | null = null;
 
         if (e.currentTarget.className === STATUS.TODO) {
@@ -67,6 +79,9 @@ const TaskList: React.FC<TodoListProps> = ({ tasksSelector, status }) => {
             try {
                 // const updatedTask = await updateTask(taskId, { status: moveStatus });
 
+
+                dispatch(updateTask(taskId, { status: moveStatus }))
+                setRefreshTasks(true);
                 // setTasks(tasks.map(task => task.id === updatedTask.id ? updatedTask : task))
             } catch (err: any) {
                 setError({

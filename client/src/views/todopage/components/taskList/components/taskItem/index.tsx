@@ -5,7 +5,7 @@ import Task from '../../../../../../models/task';
 import MessageSnack, { MessageSnackDisplay } from '../../../../../components/messageSnack';
 import { useDispatch } from 'react-redux';
 import LoadStatus from '../../../../../../models/loadingStatus';
-import { fetchTasks, taskState, updateTask } from '../../../../../../slices/tasks';
+import { deleteTask, fetchTasks, taskState, updateTask } from '../../../../../../slices/tasks';
 
 interface TaskItemProps {
     task: Task
@@ -45,6 +45,9 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, tasksSelector }) => {
         try {
             // deleteTask({ id: task.id ?? -1 })
             // setTasks((tasks: Task[]) => tasks.filter((tsk) => tsk.id !== task.id));
+
+            dispatch(deleteTask(task.id))
+            setRefreshTasks(true);
         } catch (err: any) {
             setError({
                 message: err.toString(),
@@ -73,7 +76,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, tasksSelector }) => {
                     comment: commentEditRef.current?.value
                 }))
 
-                setRefreshTasks(true); // todo not working
+                setRefreshTasks(true);
                 setEditMode(false);
             } catch (err: any) {
                 setError({

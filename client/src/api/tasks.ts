@@ -22,22 +22,18 @@ export const setTask = async (task: InsertTaskModel): Promise<TaskFetchResponse>
     return res.data;
 };
 
-export async function deleteTask(item: { id?: number, tasks?: TaskModel[] }): Promise<void> {
+export async function deleteSelectedTask(item: { id?: string, tasks?: TaskModel[] }): Promise<void> {
     try {
-        if (item.id) {
-            if (item.id < 0) throw new Error("Id is undefined (less than 0)");
+        if (item.id) { // delete 1 task
+            await axiosConf.delete(`${TASKS_URL}${item.id}`);
+        } else if (item.tasks) { // todo: delete multiple tasks
+            // const toBeDeleted = item.tasks.map(async (task) => {
+            //     return await fetch(`${TASKS_URL}/${task.id}`, {
+            //         "method": "DELETE" // sends a requiest to the server to delete the data
+            //     })
+            // })
 
-            await fetch(`${TASKS_URL}/${item.id}`, {
-                "method": "DELETE"// sends a requiest to the server to delete the data
-            })
-        } else if (item.tasks) {
-            const toBeDeleted = item.tasks.map(async (task) => {
-                return await fetch(`${TASKS_URL}/${task.id}`, {
-                    "method": "DELETE" // sends a requiest to the server to delete the data
-                })
-            })
-
-            await Promise.all(toBeDeleted)
+            // await Promise.all(toBeDeleted)
         } else {
             throw new Error("No ID or tasks were given.");
         }
@@ -47,7 +43,7 @@ export async function deleteTask(item: { id?: number, tasks?: TaskModel[] }): Pr
     }
 }
 
-export const updateSetTask = async (taskId: string, update: UpdateTaskModel): Promise<TaskFetchResponse> => {
+export const updateSelectedTask = async (taskId: string, update: UpdateTaskModel): Promise<TaskFetchResponse> => {
     // send get request to /tasks and retrieve course data from server
     const res = await axiosConf.put(TASKS_URL + taskId, update);
 

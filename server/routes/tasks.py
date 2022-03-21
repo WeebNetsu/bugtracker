@@ -1,5 +1,5 @@
 from urllib import response
-from db.tasks import add_task, retrieve_tasks, update_task
+from db.tasks import add_task, delete_task, retrieve_tasks, update_task
 from models.responses import ResponseModel
 from schemas.tasks import TaskSchema, UpdateTaskSchema
 from fastapi.encoders import jsonable_encoder
@@ -32,11 +32,21 @@ async def get_task_route(task_id: str):
 
 
 @router.put("/{task_id}", response_description="Update a task")
-async def update_student(task_id: str, task: UpdateTaskSchema = Body(...)):
+async def update_task_route(task_id: str, task: UpdateTaskSchema = Body(...)):
     try:
         task = jsonable_encoder(task)
         updated_task = await update_task(task_id, task)
-        return ResponseModel(updated_task, "Task added successfully.")
+        return ResponseModel(updated_task, "Task updated successfully.")
     except Exception as e:
         print(e)
         return ResponseModel({}, "Task could not be updated", 500)
+
+
+@router.delete("/{task_id}", response_description="Delete a task")
+async def delete_task_route(task_id: str):
+    try:
+        await delete_task(task_id)
+        return ResponseModel({}, "Task deleted successfully.")
+    except Exception as e:
+        print(e)
+        return ResponseModel({}, "Task could not be deleted", 500)

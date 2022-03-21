@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getTasks, setTask, updateSetTask } from "../api/tasks";
+import { deleteSelectedTask, getTasks, setTask, updateSelectedTask } from "../api/tasks";
 import LoadStatus from "../models/loadingStatus";
 import TaskModel, { InsertTaskModel, UpdateTaskModel } from "../models/task";
 
@@ -55,6 +55,18 @@ const tasksSlice = createSlice({
             state.loadingStatus = LoadStatus.COMPLETE;
             state.error = "Could not update task";
         },
+        deleteTasksStarted(state) {
+            state.loadingStatus = LoadStatus.PENDING;
+        },
+        deleteTasksSuccess(state) {
+            // const task: TaskModel = action.payload;
+            // state.tasks = state.tasks.map(tsk => tsk.id === task.id ? task : tsk)
+            state.loadingStatus = LoadStatus.COMPLETE;
+        },
+        deleteTasksFailed(state) {
+            state.loadingStatus = LoadStatus.COMPLETE;
+            state.error = "Could not update task";
+        },
     },
 });
 
@@ -68,6 +80,9 @@ export const {
     updateTasksStarted,
     updateTasksSuccess,
     updateTasksFailed,
+    deleteTasksStarted,
+    deleteTasksSuccess,
+    deleteTasksFailed,
 } = tasksSlice.actions;
 
 export default tasksSlice.reducer;
@@ -94,7 +109,6 @@ export const addTask = (task: InsertTaskModel) => async (dispatch: any) => {
     }
 };
 
-
 export const updateTask = (taskId: string, update: UpdateTaskModel) => async (dispatch: any) => {
     try {
         // dispatch(updateTasksStarted()); // todo: for some reason this causes update tasks to not work
@@ -111,9 +125,21 @@ export const updateTask = (taskId: string, update: UpdateTaskModel) => async (di
             throw new Error("Update text should be valid text");
         }
 
-        const tasks = await updateSetTask(taskId, update);
+        const tasks = await updateSelectedTask(taskId, update);
         console.log(tasks)
         dispatch(updateTasksSuccess(tasks.data));
+    } catch (err) {
+        console.error(err)
+        dispatch(updateTasksFailed());
+    }
+};
+
+export const deleteTask = (taskId: string) => async (dispatch: any) => {
+    try {
+        // dispatch(updateTasksStarted());
+
+        await deleteSelectedTask({ id: taskId });
+        dispatch(deleteTasksSuccess());
     } catch (err) {
         console.error(err)
         dispatch(updateTasksFailed());
