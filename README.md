@@ -29,3 +29,7 @@ npm run install:all
 ### Run
 
 npm start
+
+## View API Docs
+
+`http://localhost:8000/docs` or `http://localhost:8000/redoc`

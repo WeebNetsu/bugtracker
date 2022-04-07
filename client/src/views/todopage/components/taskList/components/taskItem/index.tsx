@@ -86,11 +86,10 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
             onDragStart={dragStart}
             onDragOver={dragOver}
             draggable={true}
-            onClick={() => !editMode && setEditMode(true)}
         >
             <Paper elevation={3} sx={{ mt: 2, mb: 2, p: 2, cursor: "pointer" }}>
                 <Grid container spacing={2}>
-                    <Grid item xs={8}>
+                    <Grid onClick={() => !editMode && setEditMode(true)} item xs={8}>
                         {editMode ? (
                             <Box component="form" onSubmit={handleSubmit}>
                                 <TextField
