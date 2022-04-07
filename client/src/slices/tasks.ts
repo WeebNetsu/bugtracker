@@ -32,39 +32,41 @@ const tasksSlice = createSlice({
             state.error = "Could not get tasks";
         },
         addTasksStarted(state) {
-            state.loadingStatus = LoadStatus.PENDING;
+            // NOTE: we do not need this anymore, by not including this
+            // we can make the site look faster/smoother than it actually is
+            // state.loadingStatus = LoadStatus.PENDING;
         },
         addTasksSuccess(state, action) {
             const task: TaskModel = action.payload;
             state.tasks = [...state.tasks, task];
-            state.loadingStatus = LoadStatus.COMPLETE;
+            // state.loadingStatus = LoadStatus.COMPLETE;
         },
         addTasksFailed(state) {
-            state.loadingStatus = LoadStatus.COMPLETE;
+            // state.loadingStatus = LoadStatus.COMPLETE;
             state.error = "Could not add tasks";
         },
         updateTasksStarted(state) {
-            state.loadingStatus = LoadStatus.PENDING;
+            // state.loadingStatus = LoadStatus.PENDING;
         },
         updateTasksSuccess(state, action) {
-            // const task: TaskModel = action.payload;
-            // state.tasks = state.tasks.map(tsk => tsk.id === task.id ? task : tsk)
-            state.loadingStatus = LoadStatus.COMPLETE;
+            const task: TaskModel = action.payload;
+            state.tasks = state.tasks.map(tsk => tsk.id === task.id ? task : tsk)
+            // state.loadingStatus = LoadStatus.COMPLETE;
         },
         updateTasksFailed(state) {
-            state.loadingStatus = LoadStatus.COMPLETE;
+            // state.loadingStatus = LoadStatus.COMPLETE;
             state.error = "Could not update task";
         },
         deleteTasksStarted(state) {
-            state.loadingStatus = LoadStatus.PENDING;
+            // state.loadingStatus = LoadStatus.PENDING;
         },
-        deleteTasksSuccess(state) {
-            // const task: TaskModel = action.payload;
-            // state.tasks = state.tasks.map(tsk => tsk.id === task.id ? task : tsk)
-            state.loadingStatus = LoadStatus.COMPLETE;
+        deleteTasksSuccess(state, action) {
+            const taskId: string = action.payload;
+            state.tasks = state.tasks.filter(tsk => tsk.id !== taskId)
+            // state.loadingStatus = LoadStatus.COMPLETE;
         },
         deleteTasksFailed(state) {
-            state.loadingStatus = LoadStatus.COMPLETE;
+            // state.loadingStatus = LoadStatus.COMPLETE;
             state.error = "Could not update task";
         },
     },
@@ -126,7 +128,6 @@ export const updateTask = (taskId: string, update: UpdateTaskModel) => async (di
         }
 
         const tasks = await updateSelectedTask(taskId, update);
-        console.log(tasks)
         dispatch(updateTasksSuccess(tasks.data));
     } catch (err) {
         console.error(err)
@@ -136,10 +137,8 @@ export const updateTask = (taskId: string, update: UpdateTaskModel) => async (di
 
 export const deleteTask = (taskId: string) => async (dispatch: any) => {
     try {
-        // dispatch(updateTasksStarted());
-
         await deleteSelectedTask({ id: taskId });
-        dispatch(deleteTasksSuccess());
+        dispatch(deleteTasksSuccess(taskId));
     } catch (err) {
         console.error(err)
         dispatch(updateTasksFailed());

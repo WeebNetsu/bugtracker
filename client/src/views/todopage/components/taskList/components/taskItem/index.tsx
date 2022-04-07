@@ -1,21 +1,19 @@
 import { Paper, Grid, Typography, IconButton, Box, Button, TextField } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Task from '../../../../../../models/task';
 import MessageSnack, { MessageSnackDisplay } from '../../../../../components/messageSnack';
 import { useDispatch } from 'react-redux';
-import LoadStatus from '../../../../../../models/loadingStatus';
-import { deleteTask, fetchTasks, taskState, updateTask } from '../../../../../../slices/tasks';
+import { deleteTask, updateTask } from '../../../../../../slices/tasks';
 
 interface TaskItemProps {
     task: Task
-    tasksSelector: taskState
+    // tasksSelector: taskState
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ task, tasksSelector }) => {
+const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
     const dispatch = useDispatch();
 
-    const [refreshTasks, setRefreshTasks] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [error, setError] = useState<MessageSnackDisplay>({
         message: "",
@@ -34,20 +32,10 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, tasksSelector }) => {
         e.stopPropagation();
     }
 
-    useEffect(() => {
-        if (refreshTasks && tasksSelector.loadingStatus === LoadStatus.COMPLETE) {
-            dispatch(fetchTasks());
-            setRefreshTasks(false);
-        }
-    }, [dispatch, tasksSelector, refreshTasks]);
-
     const handleDelete = () => {
         try {
-            // deleteTask({ id: task.id ?? -1 })
-            // setTasks((tasks: Task[]) => tasks.filter((tsk) => tsk.id !== task.id));
-
             dispatch(deleteTask(task.id))
-            setRefreshTasks(true);
+            // setRefreshTasks(true);
         } catch (err: any) {
             setError({
                 message: err.toString(),
@@ -76,7 +64,6 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, tasksSelector }) => {
                     comment: commentEditRef.current?.value
                 }))
 
-                setRefreshTasks(true);
                 setEditMode(false);
             } catch (err: any) {
                 setError({

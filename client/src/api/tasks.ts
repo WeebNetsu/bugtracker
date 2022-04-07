@@ -46,7 +46,6 @@ export async function deleteSelectedTask(item: { id?: string, tasks?: TaskModel[
 export const updateSelectedTask = async (taskId: string, update: UpdateTaskModel): Promise<TaskFetchResponse> => {
     // send get request to /tasks and retrieve course data from server
     const res = await axiosConf.put(TASKS_URL + taskId, update);
-
     return res.data;
 };
 

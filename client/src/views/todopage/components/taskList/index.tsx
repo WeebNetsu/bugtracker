@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { STATUS } from '../../../../models/task';
+import React, { useState } from 'react';
+import TaskModel, { STATUS } from '../../../../models/task';
 import { Grid, IconButton, Menu, MenuItem, Paper, Typography } from '@mui/material';
 import useWindowDimensions from '../../../../utils/window';
 import AddIcon from '@mui/icons-material/Add';
@@ -7,19 +7,17 @@ import AddTask from '../addTask';
 import TaskItem from './components/taskItem';
 import MessageSnack, { MessageSnackDisplay } from '../../../components/messageSnack';
 import ConfirmAlert from '../../../components/confirmAlert';
-import { fetchTasks, taskState, updateTask } from '../../../../slices/tasks';
+import { updateTask } from '../../../../slices/tasks';
 import { useDispatch } from 'react-redux';
-import LoadStatus from '../../../../models/loadingStatus';
 
 interface TodoListProps {
-    tasksSelector: taskState
     status: STATUS
+    tasks: TaskModel[]
 }
 
-const TaskList: React.FC<TodoListProps> = ({ tasksSelector, status }) => {
+const TaskList: React.FC<TodoListProps> = ({ tasks, status }) => {
     const dispatch = useDispatch();
 
-    const [refreshTasks, setRefreshTasks] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [showAddTask, setShowAddTask] = useState(false);
     const [showDeleteAllAlert, setShowDeleteAllAlert] = useState(false);
@@ -30,21 +28,12 @@ const TaskList: React.FC<TodoListProps> = ({ tasksSelector, status }) => {
         show: false,
         error: true
     });
-    const tasks = tasksSelector.tasks
 
     const allTasks = tasks.filter(task => {
         if (status === STATUS.COMPLETED) return task.status === STATUS.COMPLETED
         if (status === STATUS.DOING) return task.status === STATUS.DOING
         return task.status === STATUS.TODO
     })
-
-
-    useEffect(() => {
-        if (refreshTasks && tasksSelector.loadingStatus === LoadStatus.COMPLETE) {
-            dispatch(fetchTasks());
-            setRefreshTasks(false);
-        }
-    }, [dispatch, tasksSelector, refreshTasks]);
 
     const handleDeleteAllTasks = async () => {
         try {
@@ -77,12 +66,7 @@ const TaskList: React.FC<TodoListProps> = ({ tasksSelector, status }) => {
 
         if (taskId && moveStatus) {
             try {
-                // const updatedTask = await updateTask(taskId, { status: moveStatus });
-
-
                 dispatch(updateTask(taskId, { status: moveStatus }))
-                setRefreshTasks(true);
-                // setTasks(tasks.map(task => task.id === updatedTask.id ? updatedTask : task))
             } catch (err: any) {
                 setError({
                     message: err.toString(),
@@ -158,10 +142,10 @@ const TaskList: React.FC<TodoListProps> = ({ tasksSelector, status }) => {
                     </Grid>
                 </Grid>
 
-                {allTasks.map(task => (<TaskItem task={task} key={task.id} tasksSelector={tasksSelector} />))}
+                {allTasks.map(task => (<TaskItem task={task} key={task.id} />))}
             </Paper>
 
-            <AddTask status={status} setShow={setShowAddTask} show={showAddTask} tasksSelector={tasksSelector} />
+            <AddTask status={status} setShow={setShowAddTask} show={showAddTask} />
 
             <MessageSnack message={error} setMessage={setError} />
 

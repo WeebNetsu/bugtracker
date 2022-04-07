@@ -1,17 +1,15 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, TextField } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { STATUS } from '../../../../models/task';
 import { TransitionProps } from '@mui/material/transitions';
 import MessageSnack, { MessageSnackDisplay } from '../../../components/messageSnack';
 import { useDispatch } from 'react-redux';
-import LoadStatus from '../../../../models/loadingStatus';
-import { addTask, taskState, fetchTasks } from '../../../../slices/tasks';
+import { addTask } from '../../../../slices/tasks';
 
 interface AddTaskProps {
     show: boolean
     setShow: (x: boolean) => void
     status: STATUS
-    tasksSelector: taskState
 }
 
 const Transition = React.forwardRef(function Transition(
@@ -23,10 +21,9 @@ const Transition = React.forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const AddTask: React.FC<AddTaskProps> = ({ show, setShow, status, tasksSelector }) => {
+const AddTask: React.FC<AddTaskProps> = ({ show, setShow, status }) => {
     const dispatch = useDispatch();
 
-    const [refreshTasks, setRefreshTasks] = useState(false);
     const taskInputRef = useRef<HTMLInputElement>(null);
     const commentInputRef = useRef<HTMLInputElement>(null);
     const [error, setError] = useState<MessageSnackDisplay>({
@@ -38,13 +35,6 @@ const AddTask: React.FC<AddTaskProps> = ({ show, setShow, status, tasksSelector 
     const handleClose = () => {
         setShow(false);
     };
-
-    useEffect(() => {
-        if (refreshTasks && tasksSelector.loadingStatus === LoadStatus.COMPLETE) {
-            dispatch(fetchTasks());
-            setRefreshTasks(false)
-        }
-    }, [dispatch, tasksSelector, refreshTasks]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -58,7 +48,6 @@ const AddTask: React.FC<AddTaskProps> = ({ show, setShow, status, tasksSelector 
                 }
 
                 dispatch(addTask(newTask));
-                setRefreshTasks(true)
 
                 taskInputRef.current.value = ""
 

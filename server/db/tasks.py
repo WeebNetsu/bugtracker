@@ -48,9 +48,8 @@ async def update_task(task_id: str, task_data: dict) -> dict:
     )
 
     if update_result.modified_count == 1:
-        if (
-            updated_res := await tasks_collection.find_one({"_id": task_id})
-        ) is not None:
+        updated_res = await tasks_collection.find_one({"_id": ObjectId(task_id)})
+        if updated_res is not None:
             return task_helper(updated_res)
         else:
             return task

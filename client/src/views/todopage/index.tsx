@@ -2,17 +2,25 @@ import { Container, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import LoadStatus from '../../models/loadingStatus';
-import { STATUS } from '../../models/task';
+import TaskModel, { STATUS } from '../../models/task';
 import { fetchTasks, taskState } from '../../slices/tasks';
 import MessageSnack, { MessageSnackDisplay } from '../components/messageSnack';
 import TaskList from './components/taskList';
 
 const Todopage: React.FC = () => {
+    const [prevStateTasks, setPrevStateTasks] = useState<TaskModel[]>([]);
+    const [currentTasks, setCurrentTasks] = useState<TaskModel[]>([]);
     const [error, setError] = useState<MessageSnackDisplay>({
         message: "",
         show: false,
         error: true
     });
+
+    const handleSetCurrentTasks = (tasks: TaskModel[]) => {
+        // todo definately improve error handling, this is buggy
+        setPrevStateTasks(currentTasks)
+        setCurrentTasks(tasks)
+    }
 
     const dispatch = useDispatch();
 
@@ -24,7 +32,8 @@ const Todopage: React.FC = () => {
         if (tasks.loadingStatus === LoadStatus.NOT_STARTED) {
             dispatch(fetchTasks());
         }
-    }, [dispatch, tasks]);
+        // dispatch, tasks
+    });
 
     useEffect(() => {
         if (tasks.error) {
@@ -33,8 +42,14 @@ const Todopage: React.FC = () => {
                 message: tasks.error,
                 error: true
             })
+
+            // restore tasks state (revert any updates)
+            setCurrentTasks(prevStateTasks)
+        } else {
+            handleSetCurrentTasks(tasks.tasks)
         }
-    }, [tasks.error])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [tasks])
 
     if (tasks.loadingStatus !== LoadStatus.COMPLETE) {
         return (<h1>Loading</h1>);
@@ -44,13 +59,11 @@ const Todopage: React.FC = () => {
 
     return (
         <>
-            {/* <Header deleteAllTasks={deleteTask} setHideCompleted={setHideCompleted} hideCompleted={hideCompleted} /> */}
-
             <Container maxWidth="xl">
                 <Grid container spacing={2}>
                     {visibleStatuses.map((status) => (
                         <Grid key={status} item md={4}>
-                            <TaskList tasksSelector={tasks} status={status} />
+                            <TaskList tasks={currentTasks} status={status} />
                         </Grid>
                     ))}
                 </Grid>
