@@ -7,7 +7,7 @@ import AddTask from '../addTask';
 import TaskItem from './components/taskItem';
 import MessageSnack, { MessageSnackDisplay } from '../../../components/messageSnack';
 import ConfirmAlert from '../../../components/confirmAlert';
-import { updateTask } from '../../../../slices/tasks';
+import { deleteSelectedTasks, updateTask } from '../../../../slices/tasks';
 import { useDispatch } from 'react-redux';
 
 interface TodoListProps {
@@ -40,6 +40,7 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, status }) => {
             // NOTE: These tasks here! They have been filtered down to the category they are in
             // once the below runs, it will only delete the tasks in THAT category (status)!
             // await deleteTask({ tasks: allTasks })
+            dispatch(deleteSelectedTasks({ status }));
             // setTasks((globalTasks: Task[]) => globalTasks.filter((task) => task.status !== status));
         } catch (err: any) {
             setError({

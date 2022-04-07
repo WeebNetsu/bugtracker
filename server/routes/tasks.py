@@ -1,7 +1,6 @@
-from urllib import response
-from db.tasks import add_task, delete_task, retrieve_tasks, update_task
+from db.tasks import add_task, delete_task, delete_tasks, retrieve_tasks, update_task
 from models.responses import ResponseModel
-from schemas.tasks import TaskSchema, UpdateTaskSchema
+from schemas.tasks import TaskSchema, UpdateTaskSchema, STATUS
 from fastapi.encoders import jsonable_encoder
 from fastapi import Body, APIRouter
 
@@ -21,6 +20,16 @@ async def add_task_route(task: TaskSchema = Body(...)):
     task = jsonable_encoder(task)
     new_task = await add_task(task)
     return ResponseModel(new_task, "Task added successfully.")
+
+
+@router.delete("/", response_description="Delete specific tasks")
+async def delete_task_route(status: STATUS):
+    try:
+        await delete_tasks(status)
+        return ResponseModel({}, "Tasks deleted successfully.")
+    except Exception as e:
+        print(e)
+        return ResponseModel({}, "Tasks could not be deleted", 500)
 
 
 @router.get("/{task_id}")

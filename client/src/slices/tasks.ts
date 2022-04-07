@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { deleteSelectedTask, getTasks, setTask, updateSelectedTask } from "../api/tasks";
+import { deleteTask, deleteTasks, getTasks, setTask, updateSelectedTask } from "../api/tasks";
 import LoadStatus from "../models/loadingStatus";
-import TaskModel, { InsertTaskModel, UpdateTaskModel } from "../models/task";
+import TaskModel, { DeleteTasksModel, InsertTaskModel, STATUS, UpdateTaskModel } from "../models/task";
 
 export interface taskState {
     loadingStatus: LoadStatus;
@@ -31,42 +31,49 @@ const tasksSlice = createSlice({
             state.loadingStatus = LoadStatus.COMPLETE;
             state.error = "Could not get tasks";
         },
-        addTasksStarted(state) {
+        addTaskStarted(state) {
             // NOTE: we do not need this anymore, by not including this
             // we can make the site look faster/smoother than it actually is
             // state.loadingStatus = LoadStatus.PENDING;
         },
-        addTasksSuccess(state, action) {
+        addTaskSuccess(state, action) {
             const task: TaskModel = action.payload;
             state.tasks = [...state.tasks, task];
             // state.loadingStatus = LoadStatus.COMPLETE;
         },
-        addTasksFailed(state) {
+        addTaskFailed(state) {
             // state.loadingStatus = LoadStatus.COMPLETE;
             state.error = "Could not add tasks";
         },
-        updateTasksStarted(state) {
-            // state.loadingStatus = LoadStatus.PENDING;
-        },
-        updateTasksSuccess(state, action) {
+        updateTaskSuccess(state, action) {
             const task: TaskModel = action.payload;
             state.tasks = state.tasks.map(tsk => tsk.id === task.id ? task : tsk)
             // state.loadingStatus = LoadStatus.COMPLETE;
         },
-        updateTasksFailed(state) {
+        updateTaskFailed(state) {
             // state.loadingStatus = LoadStatus.COMPLETE;
             state.error = "Could not update task";
         },
-        deleteTasksStarted(state) {
-            // state.loadingStatus = LoadStatus.PENDING;
-        },
-        deleteTasksSuccess(state, action) {
+        deleteTaskSuccess(state, action) {
             const taskId: string = action.payload;
             state.tasks = state.tasks.filter(tsk => tsk.id !== taskId)
             // state.loadingStatus = LoadStatus.COMPLETE;
         },
-        deleteTasksFailed(state) {
+        deleteTaskFailed(state) {
             // state.loadingStatus = LoadStatus.COMPLETE;
+            state.error = "Could not update task";
+        },
+        deleteTasksStarted(state) {
+            state.loadingStatus = LoadStatus.PENDING;
+        },
+        deleteTasksSuccess(state, action) {
+            const deletedTasksStatus: DeleteTasksModel = action.payload;
+            // todo once we scale up, well have to change this
+            state.tasks = state.tasks.filter((tsk) => tsk.status !== deletedTasksStatus.status)
+            state.loadingStatus = LoadStatus.COMPLETE;
+        },
+        deleteTasksFailed(state) {
+            state.loadingStatus = LoadStatus.COMPLETE;
             state.error = "Could not update task";
         },
     },
@@ -76,12 +83,13 @@ export const {
     getTasksStarted,
     getTasksSuccess,
     getTasksFailed,
-    addTasksStarted,
-    addTasksSuccess,
-    addTasksFailed,
-    updateTasksStarted,
-    updateTasksSuccess,
-    updateTasksFailed,
+    addTaskStarted,
+    addTaskSuccess,
+    addTaskFailed,
+    updateTaskSuccess,
+    updateTaskFailed,
+    deleteTaskSuccess,
+    deleteTaskFailed,
     deleteTasksStarted,
     deleteTasksSuccess,
     deleteTasksFailed,
@@ -102,18 +110,18 @@ export const fetchTasks = () => async (dispatch: any) => {
 
 export const addTask = (task: InsertTaskModel) => async (dispatch: any) => {
     try {
-        dispatch(addTasksStarted());
+        dispatch(addTaskStarted());
         const tasks = await setTask(task);
-        dispatch(addTasksSuccess(tasks.data));
+        dispatch(addTaskSuccess(tasks.data));
     } catch (err) {
         console.error(err)
-        dispatch(addTasksFailed());
+        dispatch(addTaskFailed());
     }
 };
 
 export const updateTask = (taskId: string, update: UpdateTaskModel) => async (dispatch: any) => {
     try {
-        // dispatch(updateTasksStarted()); // todo: for some reason this causes update tasks to not work
+        // dispatch(updateTaskStarted()); // todo: for some reason this causes update tasks to not work
 
         if (taskId.trim().length < 5) {
             throw new Error("Could not find that task, please refreash the page");
@@ -128,19 +136,30 @@ export const updateTask = (taskId: string, update: UpdateTaskModel) => async (di
         }
 
         const tasks = await updateSelectedTask(taskId, update);
-        dispatch(updateTasksSuccess(tasks.data));
+        dispatch(updateTaskSuccess(tasks.data));
     } catch (err) {
         console.error(err)
-        dispatch(updateTasksFailed());
+        dispatch(updateTaskFailed());
     }
 };
 
-export const deleteTask = (taskId: string) => async (dispatch: any) => {
+export const deleteSelectedTask = (taskId: string) => async (dispatch: any) => {
     try {
-        await deleteSelectedTask({ id: taskId });
-        dispatch(deleteTasksSuccess(taskId));
+        await deleteTask(taskId);
+        dispatch(deleteTaskSuccess(taskId));
     } catch (err) {
         console.error(err)
-        dispatch(updateTasksFailed());
+        dispatch(updateTaskFailed());
+    }
+};
+
+export const deleteSelectedTasks = (selection: DeleteTasksModel) => async (dispatch: any) => {
+    try {
+        dispatch(deleteTasksStarted())
+        await deleteTasks(selection);
+        dispatch(deleteTasksSuccess(selection));
+    } catch (err) {
+        console.error(err)
+        dispatch(deleteTasksFailed());
     }
 };

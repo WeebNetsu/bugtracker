@@ -22,3 +22,7 @@ export interface UpdateTaskModel {
     status?: STATUS
     comment?: string
 }
+
+export interface DeleteTasksModel {
+    status: STATUS
+}

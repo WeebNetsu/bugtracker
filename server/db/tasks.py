@@ -1,4 +1,4 @@
-from schemas.tasks import TaskSchema
+from schemas.tasks import STATUS, TaskSchema
 from . import client
 from bson import ObjectId
 
@@ -35,10 +35,6 @@ async def add_task(task_data: dict) -> dict:
     return task_helper(new_task)
 
 
-async def delete_task(task_id: str) -> dict:
-    await tasks_collection.delete_one({"_id": ObjectId(task_id)})
-
-
 async def update_task(task_id: str, task_data: dict) -> dict:
     # remove all non-added items from task_data
     task = {k: v for k, v in task_data.items() if v is not None}
@@ -55,3 +51,12 @@ async def update_task(task_id: str, task_data: dict) -> dict:
             return task
 
     raise Exception("No task updated")
+
+
+async def delete_task(task_id: str) -> None:
+    await tasks_collection.delete_one({"_id": ObjectId(task_id)})
+
+
+async def delete_tasks(status: STATUS) -> None:
+    # this will work for now, but once we scale up will have to change
+    await tasks_collection.delete_many({"status": status})

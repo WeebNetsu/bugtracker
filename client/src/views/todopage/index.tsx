@@ -32,7 +32,6 @@ const Todopage: React.FC = () => {
         if (tasks.loadingStatus === LoadStatus.NOT_STARTED) {
             dispatch(fetchTasks());
         }
-        // dispatch, tasks
     });
 
     useEffect(() => {

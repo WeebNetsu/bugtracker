@@ -4,7 +4,7 @@ import React, { useRef, useState } from 'react';
 import Task from '../../../../../../models/task';
 import MessageSnack, { MessageSnackDisplay } from '../../../../../components/messageSnack';
 import { useDispatch } from 'react-redux';
-import { deleteTask, updateTask } from '../../../../../../slices/tasks';
+import { deleteSelectedTask, updateTask } from '../../../../../../slices/tasks';
 
 interface TaskItemProps {
     task: Task
@@ -34,7 +34,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
 
     const handleDelete = () => {
         try {
-            dispatch(deleteTask(task.id))
+            dispatch(deleteSelectedTask(task.id))
             // setRefreshTasks(true);
         } catch (err: any) {
             setError({

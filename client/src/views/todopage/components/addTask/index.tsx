@@ -89,6 +89,7 @@ const AddTask: React.FC<AddTaskProps> = ({ show, setShow, status }) => {
                         placeholder="Refactor the HTML"
                         fullWidth
                         sx={{ mt: 2 }}
+                        autoComplete="off"
                     />
 
                     <TextField

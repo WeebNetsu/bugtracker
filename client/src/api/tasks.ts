@@ -1,7 +1,7 @@
-import TaskModel, { InsertTaskModel, UpdateTaskModel } from "../models/task";
+import TaskModel, { DeleteTasksModel, InsertTaskModel, UpdateTaskModel } from "../models/task";
 import axiosConf from "./axios";
 
-const TASKS_URL = "/tasks/";
+const TASKS_URL = "/tasks";
 
 export interface TaskFetchResponse {
     data: TaskModel | TaskModel[]
@@ -9,7 +9,7 @@ export interface TaskFetchResponse {
 
 export const getTasks = async (id?: string): Promise<TaskFetchResponse> => {
     // send get request to /tasks and retrieve course data from server
-    const res = id ? await axiosConf.get(`${TASKS_URL}${id}`) : await axiosConf.get(TASKS_URL);
+    const res = id ? await axiosConf.get(`${TASKS_URL}/${id}`) : await axiosConf.get(TASKS_URL);
 
     return res.data;
 };
@@ -22,32 +22,29 @@ export const setTask = async (task: InsertTaskModel): Promise<TaskFetchResponse>
     return res.data;
 };
 
-export async function deleteSelectedTask(item: { id?: string, tasks?: TaskModel[] }): Promise<void> {
-    try {
-        if (item.id) { // delete 1 task
-            await axiosConf.delete(`${TASKS_URL}${item.id}`);
-        } else if (item.tasks) { // todo: delete multiple tasks
-            // const toBeDeleted = item.tasks.map(async (task) => {
-            //     return await fetch(`${TASKS_URL}/${task.id}`, {
-            //         "method": "DELETE" // sends a requiest to the server to delete the data
-            //     })
-            // })
+export const updateSelectedTask = async (taskId: string, update: UpdateTaskModel): Promise<TaskFetchResponse> => {
+    const res = await axiosConf.put(`${TASKS_URL}/${taskId}`, update);
+    return res.data;
+};
 
-            // await Promise.all(toBeDeleted)
-        } else {
-            throw new Error("No ID or tasks were given.");
-        }
+export async function deleteTask(id: string): Promise<void> {
+    try {
+        await axiosConf.delete(`${TASKS_URL}/${id}`);
     } catch (err) {
         console.error(err)
         throw new Error("Could not delete task(s)")
     }
 }
 
-export const updateSelectedTask = async (taskId: string, update: UpdateTaskModel): Promise<TaskFetchResponse> => {
-    // send get request to /tasks and retrieve course data from server
-    const res = await axiosConf.put(TASKS_URL + taskId, update);
-    return res.data;
-};
+export async function deleteTasks(selection: DeleteTasksModel): Promise<void> {
+    try {
+        // todo below is not scaleable, tweak to build url better
+        await axiosConf.delete(`${TASKS_URL}?status=${selection.status}`);
+    } catch (err) {
+        console.error(err)
+        throw new Error("Could not delete task(s)")
+    }
+}
 
 // export async function updateTask(taskId: number, update: { status?: STATUS, text?: string, comment?: string }): Promise<TaskModel> {
 //     if (taskId < 0) {
