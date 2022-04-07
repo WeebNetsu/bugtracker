@@ -1,4 +1,4 @@
-import { Container, Grid } from '@mui/material';
+import { Backdrop, CircularProgress, Container, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import LoadStatus from '../../models/loadingStatus';
@@ -50,10 +50,6 @@ const Todopage: React.FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tasks])
 
-    if (tasks.loadingStatus !== LoadStatus.COMPLETE) {
-        return (<h1>Loading</h1>);
-    }
-
     const visibleStatuses = [STATUS.TODO, STATUS.DOING, STATUS.COMPLETED]
 
     return (
@@ -69,6 +65,10 @@ const Todopage: React.FC = () => {
             </Container>
 
             <MessageSnack message={error} setMessage={setError} />
+
+            <Backdrop open={tasks.loadingStatus !== LoadStatus.COMPLETE}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
         </>
     )
 }

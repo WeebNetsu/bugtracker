@@ -1,6 +1,6 @@
 {
 	"name": "todo-app",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "This is a simple basic bug tracker app...",
 	"main": "index.js",
 	"scripts": {
