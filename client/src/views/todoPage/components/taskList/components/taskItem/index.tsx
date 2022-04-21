@@ -2,9 +2,9 @@ import { Paper, Grid, Typography, IconButton, Box, Button, TextField } from '@mu
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import React, { useRef, useState } from 'react';
 import Task from '../../../../../../models/task';
-import MessageSnack, { MessageSnackDisplay } from '../../../../../components/messageSnack';
 import { useDispatch } from 'react-redux';
 import { deleteSelectedTask, updateTask } from '../../../../../../slices/tasks';
+import MessageSnack, { MessageSnackDisplay } from '../../../../../../components/messageSnack';
 
 interface TaskItemProps {
     task: Task

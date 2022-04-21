@@ -5,10 +5,10 @@ import useWindowDimensions from '../../../../utils/window';
 import AddIcon from '@mui/icons-material/Add';
 import AddTask from '../addTask';
 import TaskItem from './components/taskItem';
-import MessageSnack, { MessageSnackDisplay } from '../../../components/messageSnack';
-import ConfirmAlert from '../../../components/confirmAlert';
 import { deleteSelectedTasks, updateTask } from '../../../../slices/tasks';
 import { useDispatch } from 'react-redux';
+import ConfirmAlert from '../../../../components/confirmAlert';
+import MessageSnack, { MessageSnackDisplay } from '../../../../components/messageSnack';
 
 interface TodoListProps {
     status: STATUS

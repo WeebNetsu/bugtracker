@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { deleteTask, deleteTasks, getTasks, setTask, updateSelectedTask } from "../api/tasks";
 import LoadStatus from "../models/loadingStatus";
-import TaskModel, { DeleteTasksModel, InsertTaskModel, STATUS, UpdateTaskModel } from "../models/task";
+import TaskModel, { DeleteTasksModel, InsertTaskModel, UpdateTaskModel } from "../models/task";
 
 export interface taskState {
     loadingStatus: LoadStatus;

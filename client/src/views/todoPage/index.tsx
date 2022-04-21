@@ -1,13 +1,13 @@
 import { Backdrop, CircularProgress, Container, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
+import MessageSnack, { MessageSnackDisplay } from '../../components/messageSnack';
 import LoadStatus from '../../models/loadingStatus';
 import TaskModel, { STATUS } from '../../models/task';
 import { fetchTasks, taskState } from '../../slices/tasks';
-import MessageSnack, { MessageSnackDisplay } from '../components/messageSnack';
 import TaskList from './components/taskList';
 
-const Todopage: React.FC = () => {
+const TodoPage: React.FC = () => {
     const [prevStateTasks, setPrevStateTasks] = useState<TaskModel[]>([]);
     const [currentTasks, setCurrentTasks] = useState<TaskModel[]>([]);
     const [error, setError] = useState<MessageSnackDisplay>({
@@ -73,4 +73,4 @@ const Todopage: React.FC = () => {
     )
 }
 
-export default Todopage;
+export default TodoPage;
