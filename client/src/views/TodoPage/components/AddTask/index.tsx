@@ -4,7 +4,7 @@ import { STATUS } from '../../../../models/task';
 import { TransitionProps } from '@mui/material/transitions';
 import { useDispatch } from 'react-redux';
 import { addTask } from '../../../../slices/tasks';
-import MessageSnack, { MessageSnackDisplay } from '../../../../components/messageSnack';
+import MessageSnack, { MessageSnackDisplay } from '../../../../components/MessageSnack';
 
 interface AddTaskProps {
     show: boolean

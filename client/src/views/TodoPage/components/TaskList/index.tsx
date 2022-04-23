@@ -7,8 +7,8 @@ import AddTask from '../AddTask';
 import TaskItem from './components/taskItem';
 import { deleteSelectedTasks, updateTask } from '../../../../slices/tasks';
 import { useDispatch } from 'react-redux';
-import ConfirmAlert from '../../../../components/confirmAlert';
-import MessageSnack, { MessageSnackDisplay } from '../../../../components/messageSnack';
+import ConfirmAlert from '../../../../components/ConfirmAlert';
+import MessageSnack, { MessageSnackDisplay } from '../../../../components/MessageSnack';
 
 interface TodoListProps {
     status: STATUS

@@ -4,7 +4,7 @@ import React, { useRef, useState } from 'react';
 import Task from '../../../../../../models/task';
 import { useDispatch } from 'react-redux';
 import { deleteSelectedTask, updateTask } from '../../../../../../slices/tasks';
-import MessageSnack, { MessageSnackDisplay } from '../../../../../../components/messageSnack';
+import MessageSnack, { MessageSnackDisplay } from '../../../../../../components/MessageSnack';
 
 interface TaskItemProps {
     task: Task

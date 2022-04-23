@@ -1,7 +1,7 @@
 import { AppBar, Container, Toolbar, Typography, Box, IconButton, Button, Menu, MenuItem } from '@mui/material';
 import React, { useState } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
-import ConfirmAlert from '../../../../components/confirmAlert';
+import ConfirmAlert from '../../../../components/ConfirmAlert';
 
 interface ButtonsModel {
     text: string

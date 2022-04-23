@@ -1,11 +1,13 @@
 import { Backdrop, CircularProgress, Container, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
-import MessageSnack, { MessageSnackDisplay } from '../../components/messageSnack';
+import MessageSnack, { MessageSnackDisplay } from '../../components/MessageSnack';
+import Navigation from '../../components/Navigation';
 import LoadStatus from '../../models/loadingStatus';
 import TaskModel, { STATUS } from '../../models/task';
 import { fetchTasks, taskState } from '../../slices/tasks';
 import TaskList from './components/TaskList';
+
 
 const TodoPage: React.FC = () => {
     const [prevStateTasks, setPrevStateTasks] = useState<TaskModel[]>([]);
@@ -63,6 +65,8 @@ const TodoPage: React.FC = () => {
                     ))}
                 </Grid>
             </Container>
+
+            <Navigation />
 
             <MessageSnack message={error} setMessage={setError} />
 
