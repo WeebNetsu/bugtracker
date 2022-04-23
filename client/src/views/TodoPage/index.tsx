@@ -5,7 +5,7 @@ import MessageSnack, { MessageSnackDisplay } from '../../components/messageSnack
 import LoadStatus from '../../models/loadingStatus';
 import TaskModel, { STATUS } from '../../models/task';
 import { fetchTasks, taskState } from '../../slices/tasks';
-import TaskList from './components/taskList';
+import TaskList from './components/TaskList';
 
 const TodoPage: React.FC = () => {
     const [prevStateTasks, setPrevStateTasks] = useState<TaskModel[]>([]);

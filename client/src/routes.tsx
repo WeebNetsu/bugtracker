@@ -1,5 +1,5 @@
-import LoginPage from "./views/loginPage";
-import TodoPage from "./views/todoPage";
+import LoginPage from "./views/LoginPage";
+import TodoPage from "./views/TodoPage";
 
 const routes = [
     {

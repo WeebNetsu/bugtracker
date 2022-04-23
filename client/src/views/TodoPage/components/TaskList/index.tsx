@@ -3,7 +3,7 @@ import TaskModel, { STATUS } from '../../../../models/task';
 import { Grid, IconButton, Menu, MenuItem, Paper, Typography } from '@mui/material';
 import useWindowDimensions from '../../../../utils/window';
 import AddIcon from '@mui/icons-material/Add';
-import AddTask from '../addTask';
+import AddTask from '../AddTask';
 import TaskItem from './components/taskItem';
 import { deleteSelectedTasks, updateTask } from '../../../../slices/tasks';
 import { useDispatch } from 'react-redux';
