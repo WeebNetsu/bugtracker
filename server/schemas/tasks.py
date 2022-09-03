@@ -12,7 +12,8 @@ class STATUS(str, Enum):  # use an enum to foce it to be one of the allowed
 class TaskSchema(BaseModel):
     text: str = Field(...)
     status: STATUS = Field(STATUS.TODO)
-    comment: str = Field("")
+    description: str = Field("")
+    userId: str = Field(...)
 
     # what needs to be entered on post request
     class Config:
@@ -20,7 +21,8 @@ class TaskSchema(BaseModel):
             "example": {
                 "text": "What to do next",
                 "status": STATUS.TODO,
-                "comment": "I am Groot",
+                "description": "I am Groot",
+                "userId": "12GSA3-SDE34-3S45DF",
             }
         }
 
@@ -28,7 +30,7 @@ class TaskSchema(BaseModel):
 class UpdateTaskSchema(BaseModel):
     text: Optional[str]
     status: Optional[STATUS]
-    comment: Optional[str]
+    description: Optional[str]
 
     # what needs to be entered on post request
     class Config:

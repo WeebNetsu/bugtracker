@@ -6,13 +6,17 @@ database = client.tasks
 
 tasks_collection = database.get_collection("tasks")
 
-
+# todo switch to sql
 def task_helper(task) -> dict:
     return {
         "id": str(task["_id"]),
+        # title of task
         "text": task["text"],
+        # in progress / todo / completed
         "status": task["status"],
-        "comment": task["comment"] or "",
+        # task description
+        "description": task["description"] or "",
+        "userId": task["userId"],
     }
 
 
