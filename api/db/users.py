@@ -8,7 +8,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     # supabase has email and password details
-    supabaseId = Column(String)
+    supabase_id = Column(String)
     username = Column(String(50))
 
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
@@ -13,6 +13,8 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { supabase } from "../../supabase/client";
+import { useDispatch, useSelector, RootStateOrAny } from "react-redux";
+import { authState, userSignup } from "../../slices/auth";
 
 const theme = createTheme();
 
@@ -21,9 +23,27 @@ interface LoginPageProps {
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({ signup }) => {
+	const dispatch = useDispatch();
 	const [loading, setLoading] = useState(false);
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [username, setUsername] = useState("");
+
+	const { auth } = useSelector<
+		RootStateOrAny,
+		{
+			auth: authState;
+		}
+	>((state) => state);
+
+	useEffect(() => {
+		if (auth.data.userSignupComplete) {
+			if (auth.error) {
+				console.error(auth.error);
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [auth]);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -32,11 +52,22 @@ const LoginPage: React.FC<LoginPageProps> = ({ signup }) => {
 			setLoading(true);
 
 			if (signup) {
+				if (!username.trim()) throw new Error("Username is required");
+				if (username.trim().length < 3)
+					throw new Error("Username is too short");
+				if (username.trim().length > 50)
+					throw new Error("Username is too long");
+
 				const data = await supabase.auth.signUp({
 					email,
 					password,
 				});
 				if (data.error) throw data.error;
+				const supabaseId = data.data.user?.id;
+
+				if (!supabaseId) throw new Error("Could not retrieve ID");
+
+				dispatch(userSignup(username, supabaseId));
 			} else {
 				const { error } = await supabase.auth.signInWithPassword({
 					email,
@@ -72,6 +103,19 @@ const LoginPage: React.FC<LoginPageProps> = ({ signup }) => {
 						{signup ? "Sign Up" : "Sign In"}
 					</Typography>
 					<Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+						{signup && (
+							<TextField
+								margin="normal"
+								required
+								fullWidth
+								id="username"
+								label="Username"
+								name="username"
+								autoFocus
+								value={username}
+								onChange={(e) => setUsername(e.target.value)}
+							/>
+						)}
 						<TextField
 							margin="normal"
 							required
@@ -80,7 +124,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ signup }) => {
 							label="Email Address"
 							name="email"
 							autoComplete="email"
-							autoFocus
+							type={"email"}
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
 						/>
