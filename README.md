@@ -26,7 +26,7 @@ REACT_APP_SUPABASE_URL=SUPABASE_URL
 REACT_APP_SUPABASE_ANON_KEY=SUPABASE_ANON_KEY
 ```
 
-SERVER:
+API:
 
 ```
 DATABASE_URL="postgresql://postgres:postgres@db:5432/bug-tracker"
@@ -41,6 +41,60 @@ DATABASE_URL="postgresql://postgres:postgres@db:5432/bug-tracker"
 ### Run
 
 `npm start`
+
+### Using Docker
+
+#### Windows
+
+docker-compose up -d
+
+NOTE: to find your IP, use ipconfig, example: your ip
+e.g. http://172.71.17.1:8000/docs
+the inserted IP is IP4 Address
+
+#### Linux
+
+sudo docker-compose up -d
+
+Open localhost:8000/docs in your browser
+
+### Checking Logs
+
+`docker-compose logs`
+
+## Database
+
+### Generating a New Database
+
+To generate a new database (delete old data, this could fix some database bugs), delete the `pgdata` folder and rebuild the container.
+
+### Viewing databases
+
+If the container is running, then you can navigate to `localhost:16543` in your browser.
+
+Credentials:
+
+- email: admin@gmail.com
+- password: admin
+
+For more help: https://onexlab-io.medium.com/docker-compose-postgres-initdb-ba0021deef76
+
+#### Connecting Database to SQL Admin
+
+**You can view the database and tables with the sql admin dashboard, first find your local ip address (hostname used to connect) (on Linux you can use `ip addr`, yours should be similar to `192.168.122.1`)**
+
+Steps:
+
+1. Right click on `Servers` > `Register` > `Server...`
+1. Add any name you want
+1. Select `Connection`
+1. Host (Similar to `192.168.122.1`)
+1. Port: `5432`
+1. Maintenance Database: `bug-tracker`
+1. Username: `postgres`
+1. Password: `postgres`
+
+Bob's your uncle! You are connected!
 
 ## Running Migrations
 

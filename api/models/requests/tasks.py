@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 
-from server.models import STATUS
+from models import STATUS
 
 
 class AddTaskBody(BaseModel):

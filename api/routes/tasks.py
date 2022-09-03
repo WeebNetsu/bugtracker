@@ -1,11 +1,11 @@
 from fastapi import APIRouter, status
-from server.db import session
-from server.db.tasks import Task
-from server.db.users import User
-from server.models.requests.tasks import AddTaskBody, DeleteTaskBody, UpdateTaskBody
-from server.models.responses import BaseResponseModel
-from server.models.responses.tasks import GetTaskResponseModel, GetTasksResponseModel
-from server.utils.responses import convert_json, generate_response
+from db import session
+from db.tasks import Task
+from db.users import User
+from models.requests.tasks import AddTaskBody, DeleteTaskBody, UpdateTaskBody
+from models.responses import BaseResponseModel
+from models.responses.tasks import GetTaskResponseModel, GetTasksResponseModel
+from utils.responses import convert_json, generate_response
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 

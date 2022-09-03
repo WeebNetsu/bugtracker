@@ -1,7 +1,7 @@
 from sqlalchemy import *
 
 from db import Base, try_db_connect
-from server.models import STATUS
+from models import STATUS
 
 
 class Task(Base):

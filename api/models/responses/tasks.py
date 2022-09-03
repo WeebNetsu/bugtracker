@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from models.responses import BaseResponseModel
-from server.models import STATUS
+from models import STATUS
 
 
 class GetTasksResponse(BaseModel):
