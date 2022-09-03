@@ -5,7 +5,7 @@ from server.db.users import User
 from server.models.requests.tasks import AddTaskBody, DeleteTaskBody, UpdateTaskBody
 from server.models.responses import BaseResponseModel
 from server.models.responses.tasks import GetTaskResponseModel, GetTasksResponseModel
-from server.utils import convert_json, generate_response
+from server.utils.responses import convert_json, generate_response
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 

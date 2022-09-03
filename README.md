@@ -18,6 +18,18 @@ CLIENT:
 
 ```
 REACT_APP_API_URL=http://localhost:8000
+<!--
+    These supabase values are save on the client as long as you
+    have row level security (RLS) enabled on Supabase
+ -->
+REACT_APP_SUPABASE_URL=SUPABASE_URL
+REACT_APP_SUPABASE_ANON_KEY=SUPABASE_ANON_KEY
+```
+
+SERVER:
+
+```
+DATABASE_URL="postgresql://postgres:postgres@db:5432/bug-tracker"
 ```
 
 ## Run App:
@@ -37,3 +49,7 @@ REACT_APP_API_URL=http://localhost:8000
 ## Helpful Links
 
 **Supabase:** https://supabase.com/docs
+
+```
+
+```
