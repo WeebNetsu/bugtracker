@@ -55,9 +55,16 @@ export const updateSelectedTask = async (
 	return res.data;
 };
 
-export async function deleteTask(id: number): Promise<void> {
+export async function deleteTask(id: number, userId: string): Promise<void> {
 	try {
-		await axiosConf.delete(`${URL}/${id}`);
+		const url = queryURLBuilder(`${URL}/${id}`, [
+			{
+				key: "user_id",
+				value: userId,
+			},
+		]);
+
+		await axiosConf.delete(url);
 	} catch (err) {
 		console.error(err);
 		throw new Error("Could not delete task(s)");

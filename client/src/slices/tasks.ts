@@ -157,15 +157,16 @@ export const updateTask =
 		}
 	};
 
-export const deleteSelectedTask = (taskId: number) => async (dispatch: any) => {
-	try {
-		await deleteTask(taskId);
-		dispatch(deleteTaskSuccess(taskId));
-	} catch (err) {
-		console.error(err);
-		dispatch(updateTaskFailed());
-	}
-};
+export const deleteSelectedTask =
+	(taskId: number, userId: string) => async (dispatch: any) => {
+		try {
+			await deleteTask(taskId, userId);
+			dispatch(deleteTaskSuccess(taskId));
+		} catch (err) {
+			console.error(err);
+			dispatch(updateTaskFailed());
+		}
+	};
 
 export const deleteSelectedTasks =
 	(selection: DeleteTasksModel) => async (dispatch: any) => {

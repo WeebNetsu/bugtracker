@@ -5,7 +5,6 @@ from db import session
 from db.tasks import Task
 from models.requests.tasks import (
     AddTaskBody,
-    DeleteTaskBody,
     UpdateTaskBody,
 )
 from models.responses import BaseResponseModel
@@ -150,8 +149,8 @@ async def update_task(body: UpdateTaskBody, task_id: int):
 @router.delete(
     "/{task_id}", response_model=BaseResponseModel, description="Delete task"
 )
-async def delete_task(body: DeleteTaskBody, task_id: int):
-    user: User | None = getUserOnSupabaseId(body.user_id)
+async def delete_task(user_id: str, task_id: int):
+    user: User | None = getUserOnSupabaseId(user_id)
 
     if not user:
         return generate_response(
@@ -169,11 +168,7 @@ async def delete_task(body: DeleteTaskBody, task_id: int):
             {"success": False}, "Task not found", status.HTTP_404_NOT_FOUND
         )
 
-    filtered_query.delete(
-        {
-            Task.id: task_id,
-        }
-    )
+    filtered_query.delete()
     session.commit()
 
     return generate_response({"success": True}, "Task was deleted.")

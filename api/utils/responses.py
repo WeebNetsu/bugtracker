@@ -37,7 +37,6 @@ def convert_json(data: dict | list[dict] | tuple[dict]) -> dict | list[dict]:
     elif isinstance(data, list) or isinstance(data, tuple):
         new_l = []
         for item in data:
-            print("ITEMITEMITEMITEMITEMITEMITEM", item)
             new_d = {}
             for k, v in item.items():
                 new_d[convert_to_camel_case(k)] = (

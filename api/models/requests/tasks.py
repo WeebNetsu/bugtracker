@@ -47,12 +47,3 @@ class UpdateTaskBody(BaseModel):
     status: STATUS | None = Field(
         None, example=STATUS.TODO, description="The current status of the task"
     )
-
-
-class DeleteTaskBody(BaseModel):
-    user_id: str = Field(
-        ...,
-        description="User Supabase ID",
-        example="9872a-sde82-8as8a",
-        alias="userId",
-    )

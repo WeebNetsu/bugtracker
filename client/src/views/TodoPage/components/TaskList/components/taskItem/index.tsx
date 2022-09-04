@@ -43,9 +43,10 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
 		e.stopPropagation();
 	};
 
-	const handleDelete = () => {
+	const handleDelete = async () => {
 		try {
-			dispatch(deleteSelectedTask(task.id));
+			const user = await getUser();
+			dispatch(deleteSelectedTask(task.id, user.id));
 			// setRefreshTasks(true);
 		} catch (err: any) {
 			setError({
