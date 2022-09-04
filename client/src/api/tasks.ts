@@ -21,7 +21,7 @@ export interface TaskFetchResponse {
  */
 export const getTasks = async (
 	userId: string,
-	id?: string
+	id?: number
 ): Promise<TaskFetchResponse> => {
 	const url = queryURLBuilder(id ? `${URL}/${id}` : URL, [
 		{
@@ -48,14 +48,14 @@ export const setTask = async (
 };
 
 export const updateSelectedTask = async (
-	taskId: string,
+	taskId: number,
 	update: UpdateTaskModel
 ): Promise<TaskFetchResponse> => {
 	const res = await axiosConf.put(`${URL}/${taskId}`, update);
 	return res.data;
 };
 
-export async function deleteTask(id: string): Promise<void> {
+export async function deleteTask(id: number): Promise<void> {
 	try {
 		await axiosConf.delete(`${URL}/${id}`);
 	} catch (err) {

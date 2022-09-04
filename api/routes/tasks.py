@@ -1,7 +1,8 @@
 from fastapi import APIRouter, status
+from db.users import User
+from utils import getUserOnSupabaseId
 from db import session
 from db.tasks import Task
-from db.users import User
 from models.requests.tasks import (
     AddTaskBody,
     DeleteTaskBody,
@@ -26,19 +27,14 @@ router = APIRouter(prefix="/tasks", tags=["tasks"])
     description="Return all user tasks",
 )
 async def get_tasks(user_id: str):
-    user = (
-        session.query(User)
-        .filter(User.supabase_id == user_id)
-        .with_entities(User.id)
-        .first()
-    )
+    user: User | None = getUserOnSupabaseId(user_id)
 
     if not user:
         return generate_response(
             {"success": False}, "User not found", status.HTTP_404_NOT_FOUND
         )
 
-    tasks: list[Task] = session.query(Task).filter(Task.user_id == user["id"]).all()
+    tasks: list[Task] = session.query(Task).filter(Task.user_id == user.id).all()
 
     return_tasks: list[GetTasksResponse] = []
     for task in tasks:
@@ -61,14 +57,7 @@ async def get_tasks(user_id: str):
     description="Add task",
 )
 async def get_tasks(body: AddTaskBody):
-    user: User | None = (
-        session.query(User)
-        .with_entities(
-            User.id,
-        )
-        .filter(User.supabase_id == body.user_id)
-        .first()
-    )
+    user: User | None = getUserOnSupabaseId(body.user_id)
 
     if not user:
         return generate_response(
@@ -76,7 +65,7 @@ async def get_tasks(body: AddTaskBody):
         )
 
     add_task = Task(
-        user_id=user["id"],
+        user_id=user.id,
         text=body.text,
         status=body.status,
         description=body.description,
@@ -94,12 +83,7 @@ async def get_tasks(body: AddTaskBody):
     description="Return specific task",
 )
 async def get_task(task_id: int, user_id: str):
-    user = (
-        session.query(User)
-        .filter(User.supabase_id == user_id)
-        .with_entities(User.id)
-        .first()
-    )
+    user: User | None = getUserOnSupabaseId(user_id)
 
     if not user:
         return generate_response(
@@ -132,10 +116,17 @@ async def get_task(task_id: int, user_id: str):
     description="Update task",
 )
 async def update_task(body: UpdateTaskBody, task_id: int):
+    user: User | None = getUserOnSupabaseId(body.user_id)
+
+    if not user:
+        return generate_response(
+            {"success": False}, "User not found", status.HTTP_404_NOT_FOUND
+        )
+
     task: Task | None = None
 
     query = session.query(Task)
-    filtered_query = query.filter(Task.user_id == body.user_id, Task.id == task_id)
+    filtered_query = query.filter(Task.user_id == user.id, Task.id == task_id)
     task = filtered_query.first()
 
     if not task:
@@ -160,10 +151,17 @@ async def update_task(body: UpdateTaskBody, task_id: int):
     "/{task_id}", response_model=BaseResponseModel, description="Delete task"
 )
 async def delete_task(body: DeleteTaskBody, task_id: int):
+    user: User | None = getUserOnSupabaseId(body.user_id)
+
+    if not user:
+        return generate_response(
+            {"success": False}, "User not found", status.HTTP_404_NOT_FOUND
+        )
+
     task: Task | None = None
 
     query = session.query(Task)
-    filtered_query = query.filter(Task.user_id == body.user_id, Task.id == task_id)
+    filtered_query = query.filter(Task.user_id == user.id, Task.id == task_id)
     task = filtered_query.first()
 
     if not task:

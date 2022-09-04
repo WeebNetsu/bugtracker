@@ -65,7 +65,7 @@ const tasksSlice = createSlice({
 			state.error = "Could not update task";
 		},
 		deleteTaskSuccess(state, action) {
-			const taskId: string = action.payload;
+			const taskId: number = action.payload;
 			state.tasks = state.tasks.filter((tsk) => tsk.id !== taskId);
 			// state.loadingStatus = LoadStatus.COMPLETE;
 		},
@@ -132,11 +132,11 @@ export const addTask = (task: InsertTaskModel) => async (dispatch: any) => {
 };
 
 export const updateTask =
-	(taskId: string, update: UpdateTaskModel) => async (dispatch: any) => {
+	(taskId: number, update: UpdateTaskModel) => async (dispatch: any) => {
 		try {
 			// dispatch(updateTaskStarted()); // todo: for some reason this causes update tasks to not work
 
-			if (taskId.trim().length < 5) {
+			if (taskId < 1) {
 				throw new Error("Could not find that task, please refreash the page");
 			}
 
@@ -148,6 +148,7 @@ export const updateTask =
 				throw new Error("Update text should be valid text");
 			}
 
+			console.log("UPDATED TASK", update);
 			const tasks = await updateSelectedTask(taskId, update);
 			dispatch(updateTaskSuccess(tasks.data));
 		} catch (err) {
@@ -156,7 +157,7 @@ export const updateTask =
 		}
 	};
 
-export const deleteSelectedTask = (taskId: string) => async (dispatch: any) => {
+export const deleteSelectedTask = (taskId: number) => async (dispatch: any) => {
 	try {
 		await deleteTask(taskId);
 		dispatch(deleteTaskSuccess(taskId));

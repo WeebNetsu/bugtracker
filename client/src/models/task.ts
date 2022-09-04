@@ -5,7 +5,7 @@ export enum STATUS {
 }
 
 export default interface TaskModel {
-	id: string;
+	id: number;
 	text: string;
 	status: STATUS;
 	description: string;

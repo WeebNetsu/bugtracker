@@ -39,7 +39,7 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, status }) => {
 		error: true,
 	});
 
-	const allTasks = tasks.filter((task) => {
+	const allTasks = tasks.filter((task: TaskModel) => {
 		if (status === STATUS.COMPLETED) return task.status === STATUS.COMPLETED;
 		if (status === STATUS.DOING) return task.status === STATUS.DOING;
 		return task.status === STATUS.TODO;
@@ -64,7 +64,7 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, status }) => {
 	const handleCardDrop = async (e: React.DragEvent<HTMLDivElement>) => {
 		e.preventDefault();
 
-		const taskId = e.dataTransfer.getData("taskId");
+		const taskId = Number(e.dataTransfer.getData("taskId"));
 		let moveStatus: STATUS | null = null;
 
 		if (e.currentTarget.className === STATUS.TODO) {
@@ -172,7 +172,7 @@ const TaskList: React.FC<TodoListProps> = ({ tasks, status }) => {
 					</Grid>
 				</Grid>
 
-				{allTasks.map((task) => (
+				{allTasks.map((task: TaskModel) => (
 					<TaskItem task={task} key={task.id} />
 				))}
 			</Paper>
