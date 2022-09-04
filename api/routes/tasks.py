@@ -52,7 +52,7 @@ async def get_tasks(user_id: str):
 
 @router.post(
     "",
-    response_model=BaseResponseModel,
+    response_model=GetTaskResponseModel,
     description="Add task",
 )
 async def get_tasks(body: AddTaskBody):
@@ -73,7 +73,15 @@ async def get_tasks(body: AddTaskBody):
     session.add(add_task)
     session.commit()
 
-    return generate_response({"success": True}, "Task was added.")
+    return_task: GetTasksResponse = {
+        "user_id": user.id,
+        "text": add_task.text,
+        "description": add_task.description,
+        "status": add_task.status,
+        "id": add_task.id,
+    }
+
+    return generate_response(convert_json(return_task), "Task was added.")
 
 
 @router.get(
@@ -111,7 +119,7 @@ async def get_task(task_id: int, user_id: str):
 
 @router.put(
     "/{task_id}",
-    response_model=BaseResponseModel,
+    response_model=GetTaskResponseModel,
     description="Update task",
 )
 async def update_task(body: UpdateTaskBody, task_id: int):
@@ -143,7 +151,17 @@ async def update_task(body: UpdateTaskBody, task_id: int):
 
     session.commit()
 
-    return generate_response({"success": True}, "Task was updated.")
+    updated_task = filtered_query.first()
+
+    return_task: GetTasksResponse = {
+        "user_id": user.id,
+        "text": updated_task.text,
+        "description": updated_task.description,
+        "status": updated_task.status,
+        "id": updated_task.id,
+    }
+
+    return generate_response(convert_json(return_task), "Task was updated.")
 
 
 @router.delete(

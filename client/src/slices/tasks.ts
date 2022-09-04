@@ -148,7 +148,6 @@ export const updateTask =
 				throw new Error("Update text should be valid text");
 			}
 
-			console.log("UPDATED TASK", update);
 			const tasks = await updateSelectedTask(taskId, update);
 			dispatch(updateTaskSuccess(tasks.data));
 		} catch (err) {
