@@ -9,13 +9,14 @@ import {
 	TextField,
 } from "@mui/material";
 import React, { useRef, useState } from "react";
-import { STATUS } from "../../../../models/task";
+import { InsertTaskModel, STATUS } from "../../../../models/task";
 import { TransitionProps } from "@mui/material/transitions";
 import { useDispatch } from "react-redux";
 import { addTask } from "../../../../slices/tasks";
 import MessageSnack, {
 	MessageSnackDisplay,
 } from "../../../../components/MessageSnack";
+import { getUser } from "../../../../supabase/utils";
 
 interface AddTaskProps {
 	show: boolean;
@@ -52,10 +53,13 @@ const AddTask: React.FC<AddTaskProps> = ({ show, setShow, status }) => {
 
 		if (taskInputRef.current) {
 			try {
-				const newTask = {
+				const user = await getUser();
+
+				const newTask: InsertTaskModel = {
 					text: taskInputRef.current.value,
 					status,
 					description: descriptionInputRef.current?.value,
+					userId: user.id,
 				};
 
 				dispatch(addTask(newTask));

@@ -4,12 +4,11 @@ from models import STATUS
 
 
 class AddTaskBody(BaseModel):
-    user_id: int = Field(
+    user_id: str = Field(
         ...,
-        description="User ID",
-        example="9872",
+        description="User Supabase ID",
+        example="9872a-sde82-8as8a",
         alias="userId",
-        gt=0,
     )
     text: str = Field(
         ...,
@@ -28,12 +27,11 @@ class AddTaskBody(BaseModel):
 
 
 class UpdateTaskBody(BaseModel):
-    user_id: int = Field(
+    user_id: str = Field(
         ...,
-        description="User ID",
-        example="9872",
+        description="User Supabase ID",
+        example="9872a-sde82-8as8a",
         alias="userId",
-        gt=0,
     )
     text: str | None = Field(
         None,
@@ -52,10 +50,9 @@ class UpdateTaskBody(BaseModel):
 
 
 class DeleteTaskBody(BaseModel):
-    user_id: int = Field(
+    user_id: str = Field(
         ...,
-        description="User ID",
-        example="9872",
+        description="User Supabase ID",
+        example="9872a-sde82-8as8a",
         alias="userId",
-        gt=0,
     )

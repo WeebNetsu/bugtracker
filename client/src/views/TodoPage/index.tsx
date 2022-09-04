@@ -9,7 +9,7 @@ import Navigation from "../../components/Navigation";
 import LoadStatus from "../../models/loadingStatus";
 import TaskModel, { STATUS } from "../../models/task";
 import { fetchTasks, taskState } from "../../slices/tasks";
-import { getLoggedIn } from "../../supabase/utils";
+import { getLoggedIn, getUser } from "../../supabase/utils";
 import TaskList from "./components/TaskList";
 
 const TodoPage: React.FC = () => {
@@ -44,13 +44,23 @@ const TodoPage: React.FC = () => {
 			if (!loggedIn) {
 				navigate("/login");
 			}
+
+			try {
+				const user = await getUser();
+
+				if (tasks.loadingStatus === LoadStatus.NOT_STARTED) {
+					dispatch(fetchTasks(user.id));
+				}
+			} catch (err: any) {
+				setError({
+					show: true,
+					message: err.toString(),
+					error: true,
+				});
+			}
 		};
 
 		run();
-
-		if (tasks.loadingStatus === LoadStatus.NOT_STARTED) {
-			dispatch(fetchTasks());
-		}
 	});
 
 	useEffect(() => {

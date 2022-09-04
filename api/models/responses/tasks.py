@@ -11,7 +11,7 @@ class GetTasksResponse(BaseModel):
     status: STATUS = Field(..., example=STATUS.TODO)
     # task description
     description: str | None = Field(None, example="We need to eat or we'll go hungry!")
-    user_id: int = Field(..., example=2, alias="userId")
+    user_id: str = Field(..., example="qwert-y232s-sa23a", alias="userId")
 
 
 class GetTasksResponseModel(BaseResponseModel):

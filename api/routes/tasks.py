@@ -2,12 +2,22 @@ from fastapi import APIRouter, status
 from db import session
 from db.tasks import Task
 from db.users import User
-from models.requests.tasks import AddTaskBody, DeleteTaskBody, UpdateTaskBody
+from models.requests.tasks import (
+    AddTaskBody,
+    DeleteTaskBody,
+    UpdateTaskBody,
+)
 from models.responses import BaseResponseModel
-from models.responses.tasks import GetTaskResponseModel, GetTasksResponseModel
+from models.responses.tasks import (
+    GetTaskResponseModel,
+    GetTasksResponse,
+    GetTasksResponseModel,
+)
 from utils.responses import convert_json, generate_response
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
+
+# NOTE: user_id will almost always refer to the user supabase id!
 
 
 @router.get(
@@ -15,13 +25,34 @@ router = APIRouter(prefix="/tasks", tags=["tasks"])
     response_model=GetTasksResponseModel,
     description="Return all user tasks",
 )
-async def get_tasks(user_id: int):
-    tasks: list[Task] = []
+async def get_tasks(user_id: str):
+    user = (
+        session.query(User)
+        .filter(User.supabase_id == user_id)
+        .with_entities(User.id)
+        .first()
+    )
 
-    query = session.query(Task)
-    tasks = query.filter(Task.user_id == user_id).all()
+    if not user:
+        return generate_response(
+            {"success": False}, "User not found", status.HTTP_404_NOT_FOUND
+        )
 
-    return generate_response(convert_json(tasks))
+    tasks: list[Task] = session.query(Task).filter(Task.user_id == user["id"]).all()
+
+    return_tasks: list[GetTasksResponse] = []
+    for task in tasks:
+        return_tasks.append(
+            {
+                "user_id": user_id,
+                "text": task.text,
+                "description": task.description,
+                "status": task.status,
+                "id": task.id,
+            }
+        )
+
+    return generate_response(convert_json(return_tasks))
 
 
 @router.post(
@@ -35,7 +66,7 @@ async def get_tasks(body: AddTaskBody):
         .with_entities(
             User.id,
         )
-        .filter(User.id == body.user_id)
+        .filter(User.supabase_id == body.user_id)
         .first()
     )
 
@@ -45,7 +76,7 @@ async def get_tasks(body: AddTaskBody):
         )
 
     add_task = Task(
-        user_id=body.user_id,
+        user_id=user["id"],
         text=body.text,
         status=body.status,
         description=body.description,
@@ -62,18 +93,37 @@ async def get_tasks(body: AddTaskBody):
     response_model=GetTaskResponseModel,
     description="Return specific task",
 )
-async def get_task(task_id: int, user_id: int):
-    task: Task | None = None
+async def get_task(task_id: int, user_id: str):
+    user = (
+        session.query(User)
+        .filter(User.supabase_id == user_id)
+        .with_entities(User.id)
+        .first()
+    )
 
-    query = session.query(Task)
-    task = query.filter(Task.user_id == user_id, Task.id == task_id).first()
+    if not user:
+        return generate_response(
+            {"success": False}, "User not found", status.HTTP_404_NOT_FOUND
+        )
+
+    task: Task | None = (
+        session.query(Task).filter(Task.user_id == user_id, Task.id == task_id).first()
+    )
 
     if not task:
         return generate_response(
             {"success": False}, "Task not found", status.HTTP_404_NOT_FOUND
         )
 
-    return generate_response(convert_json(task))
+    return_task: GetTasksResponse = {
+        "user_id": user_id,
+        "text": task.text,
+        "description": task.description,
+        "status": task.status,
+        "id": task.id,
+    }
+
+    return generate_response(convert_json(return_task))
 
 
 @router.put(

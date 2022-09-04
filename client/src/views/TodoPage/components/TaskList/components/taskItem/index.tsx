@@ -15,6 +15,7 @@ import { deleteSelectedTask, updateTask } from "../../../../../../slices/tasks";
 import MessageSnack, {
 	MessageSnackDisplay,
 } from "../../../../../../components/MessageSnack";
+import { getUser } from "../../../../../../supabase/utils";
 
 interface TaskItemProps {
 	task: Task;
@@ -60,6 +61,8 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
 		e.stopPropagation();
 		if (taskEditRef.current && task.id) {
 			try {
+				const user = await getUser();
+
 				if (!task.id) {
 					setError({
 						message: "This task has no ID",
@@ -73,6 +76,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
 					updateTask(task.id, {
 						text: taskEditRef.current.value,
 						description: descriptionEditRef.current?.value,
+						userId: user.id,
 					})
 				);
 
