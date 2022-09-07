@@ -20,9 +20,10 @@ if config.config_file_name is not None:
 from db import Base
 from db.tasks import Task
 from db.users import User
+from db.tags import Tag
+from db.projects import Project
 
 target_metadata = Base.metadata
-target_metadata = None
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

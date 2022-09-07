@@ -102,7 +102,7 @@ Running migrations allows us to fix any changes made to the database without hav
 
 ### Steps:
 
-1. Connect to the API docker instance `docker exec -it api-api-1 /bin/sh`, this will put you inside the container (like using it as the computer)
+1. Connect to the API docker instance `docker exec -it bug-tracker-api-1 /bin/sh`, this will put you inside the container (like using it as the computer)
 1. Run your, create migration, upgrade or downgrade!
    .5 **If this is your first time**, make sure to run the first migrations to get the latest version of the db! `alemic upgrade head`
 
@@ -122,7 +122,7 @@ Whenever you change the database (add/remove/modify a field), you should create 
 
 #### Steps:
 
-1. Be inside your container (`docker exec -it api-api-1 /bin/sh`)
+1. Be inside your container (`docker exec -it bug-tracker-api-1 /bin/sh`)
 1. create a new revision of the database for us to use `alembic revision --autogenerate -m "What you changed"`
 1. Upgrade to the new revision `alembic upgrade +1`
 
@@ -132,7 +132,7 @@ Sometimes you realise creating a revision was not a good idea, you changed somet
 
 #### Steps:
 
-1. Be inside your container (`docker exec -it api-api-1 /bin/sh`)
+1. Be inside your container (`docker exec -it bug-tracker-api-1 /bin/sh`)
 1. Downgrade to the previous revision `alembic downgrade -1` OR downgrade to a specific revision `alembic downgrade abcdef` (abcdef is refering to the first 6 letters/numbers of the revision you want to downgrade to, just look at the file name)
 
 ### NOTES:
