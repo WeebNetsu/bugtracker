@@ -13,11 +13,11 @@ class Project(Base):
 
     id = Column(Integer, primary_key=True)
     # project title
-    title = Column(String(50))
+    title = Column(String(50), nullable=False)
     # project description
     description = Column(String)
     # this is the owner ID, the creator of the project
-    owner_id = Column(Integer, ForeignKey("users.id"))
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     # this is an array of user IDs, if a user ID is in here, they have
     # access to read the project content (but not modify)
     read_team = Column(ARRAY(String))

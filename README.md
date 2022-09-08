@@ -104,7 +104,7 @@ Running migrations allows us to fix any changes made to the database without hav
 
 1. Connect to the API docker instance `docker exec -it bug-tracker-api-1 /bin/sh`, this will put you inside the container (like using it as the computer)
 1. Run your, create migration, upgrade or downgrade!
-   .5 **If this is your first time**, make sure to run the first migrations to get the latest version of the db! `alemic upgrade head`
+   .5 **If this is your first time**, make sure to run the first migrations to get the latest version of the db! `alembic upgrade head`. (**NOTE: If this is the first time you're starting up the application, running migrations will most likely cause errors, just remove all the "add_column" functions in the migration files, because [alembic does not cover the first run case](https://stackoverflow.com/a/46463471/15586166).**)
 
 ### Creating Migrations
 

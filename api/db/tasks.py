@@ -18,6 +18,8 @@ class Task(Base):
     tags = Column(ARRAY(Integer))
     # id of the user who created this task
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    # project task belongs to
+    project_id = Column(Integer, ForeignKey("projects.id"), nullable=False)
 
 
 try_db_connect(Base)
