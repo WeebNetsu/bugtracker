@@ -139,10 +139,46 @@ Sometimes you realise creating a revision was not a good idea, you changed somet
 
 If you update the database name or connection URL, be sure to update `sqlalchemy.url = postgresql://postgres:postgres@db:5432/bug-tracker` in **alembic.ini**.
 
+## Tests
+
+Tests use Pytest to run, the inital setup is in tests.py with the tests going inside the `api/tests` directory. Each file that should be tested should start with "test" (ie. _test_projects.py_), and all the functions (route tests) that should be ran should also start with "test" (ie. _test_create_project_), if a file or function does not start with test, it will be ignored when running tests.
+
+### Running Tests
+
+Inside the **api folder**, to run tests, just execute `python tests.py`, and it will spend 51 years running a single test.
+
+![This will take us 51 years meme](docs/src/images/maneuver.jpg)
+
 ## View API Docs
 
 `http://localhost:8000/docs` or `http://localhost:8000/redoc`
 
+## Project Structure
+
+### Client
+
+```
+├── api -> API communications (requests/axios)
+├── components -> Components that will be used globally
+├── models -> Structures for types in code
+├── slices -> Redux slices
+├── supabase -> Supabase configurations
+├── utils -> Extra functions that can be useful
+└── views -> Pages
+```
+
+### API
+
+```
+├── db -> Database structure and management
+├── migrations -> Database migrations happen here
+├── models -> All request/response structures
+├── routes -> All API routes
+├── tests -> Tests that can be ran
+└── utils -> Extra functions and classes that can be useful
+```
+
 ## Helpful Links
 
 **Supabase:** https://supabase.com/docs
+**FastAPI:** https://fastapi.tiangolo.com
