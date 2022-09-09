@@ -15,7 +15,7 @@ class Project(Base):
     # project title
     title = Column(String(50), nullable=False)
     # project description
-    description = Column(String)
+    description = Column(String(5000))
     # this is the owner ID, the creator of the project
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     # this is an array of user IDs, if a user ID is in here, they have

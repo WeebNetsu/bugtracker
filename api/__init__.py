@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routes.auth import router as authRouter
 from routes.tasks import router as tasksRouter
+from routes.projects import router as projectsRouter
 
 allowed_origins = [  # for CORS
     "http://localhost",
@@ -21,3 +22,4 @@ app.add_middleware(
 
 app.include_router(authRouter)
 app.include_router(tasksRouter)
+app.include_router(projectsRouter)
