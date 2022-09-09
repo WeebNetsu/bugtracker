@@ -2,6 +2,11 @@
 
 This is a simple basic bug tracker app inspired by Trello & ClickUp... We use Supabase for file storage and user signup!
 
+[<img alt="React.js" src="https://img.shields.io/badge/-React.js-48CFF7?style=flat-square&logo=react&logoColor=white" />](https://reactjs.org/)
+[<img alt="FastAPI" src="https://img.shields.io/badge/-FastAPI-009485?style=flat-square&logo=fastapi&logoColor=white" />](https://fastapi.tiangolo.com)
+[<img alt="Supabase" src="https://img.shields.io/badge/-Supabase-33A870?style=flat-square&logo=Supabase&logoColor=white" />](https://supabase.com)
+[<img alt="PostgreSQL" src="https://img.shields.io/badge/-PostgreSQL-306995?style=flat-square&logo=PostgreSQL&logoColor=white" />](https://www.postgresql.org)
+
 ---
 
 <!-- NOTE: I'm currently busy implementing a server, tracker will be wonky until switch from JSON-server to FastAPI has been completed. For a working example, go to commit: [9e438b607f7cef298c17deec07f8bbb68d4c3cd4](https://github.com/WeebNetsu/bugtracker/commit/9e438b607f7cef298c17deec07f8bbb68d4c3cd4) -->
@@ -10,7 +15,7 @@ This is a simple basic bug tracker app inspired by Trello & ClickUp... We use Su
 
 - Python 3.10+ (and PIP)
 - Node.js 16.0+
-- MongoDB 5.0+
+- PostgreSQL 14.5+
 
 ## ENV Variables
 
@@ -181,4 +186,5 @@ Inside the **api folder**, to run tests, just execute `python tests.py`, and it 
 ## Helpful Links
 
 **Supabase:** https://supabase.com/docs
+
 **FastAPI:** https://fastapi.tiangolo.com
