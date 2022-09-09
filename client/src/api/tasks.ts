@@ -13,7 +13,7 @@ export interface TaskFetchResponse {
 }
 
 /**
- * Get single or multiple tasks
+ * Get single or multiple tasks from the API
  *
  * @param userId ID of user asking for tasks
  * @param id Specific task ID
@@ -37,6 +37,12 @@ export const getTasks = async (
 	return res.data;
 };
 
+/**
+ * Create a new task on API
+ *
+ * @param task Task data to send to API
+ * @returns TaskFetchResponse
+ */
 export const setTask = async (
 	task: InsertTaskModel
 ): Promise<TaskFetchResponse> => {
@@ -47,6 +53,13 @@ export const setTask = async (
 	return res.data;
 };
 
+/**
+ * Update a task on the API
+ *
+ * @param taskId ID of task to update
+ * @param update Updated data to apply to task
+ * @returns TaskFetchResponse
+ */
 export const updateSelectedTask = async (
 	taskId: number,
 	update: UpdateTaskModel
@@ -55,6 +68,12 @@ export const updateSelectedTask = async (
 	return res.data;
 };
 
+/**
+ * Will delete a task on the API
+ *
+ * @param id ID of task to delete
+ * @param userId ID of user trying to delete task
+ */
 export async function deleteTask(id: number, userId: string): Promise<void> {
 	try {
 		const url = queryURLBuilder(`${URL}/${id}`, [
@@ -71,6 +90,11 @@ export async function deleteTask(id: number, userId: string): Promise<void> {
 	}
 }
 
+/**
+ * Delete multiple tasks at once
+ *
+ * @param selection Selection of tasks to delete
+ */
 export async function deleteTasks(selection: DeleteTasksModel): Promise<void> {
 	try {
 		// todo below is not scaleable, tweak to build url better
@@ -80,36 +104,3 @@ export async function deleteTasks(selection: DeleteTasksModel): Promise<void> {
 		throw new Error("Could not delete task(s)");
 	}
 }
-
-// export async function updateTask(taskId: number, update: { status?: STATUS, text?: string, comment?: string }): Promise<TaskModel> {
-//     if (taskId < 0) {
-//         throw new Error("Could not find that task, please refreash the page");
-//     }
-
-//     if (!update.status && !update.text) {
-//         throw new Error("No status or update was passed in.");
-//     }
-
-//     if (update.text && update.text.trim().length < 1) {
-//         throw new Error("Update text should be valid text");
-//     }
-
-//     try {
-//         const task = await getTasks(taskId);
-//         const updatedTask = { ...task, ...update };
-
-//         const res = await fetch(`${URL}/${taskId}`, {
-//             "method": "PUT",
-//             "headers": {
-//                 "content-type": "application/json"
-//             },
-//             "body": JSON.stringify(updatedTask)
-//         })
-
-//         const data: TaskModel = await res.json();
-//         return data;
-//     } catch (err) {
-//         console.error(err)
-//         throw new Error("Could not update task (server error)")
-//     }
-// }

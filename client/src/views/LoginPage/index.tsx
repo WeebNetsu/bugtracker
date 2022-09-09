@@ -52,12 +52,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ signup }) => {
 			setLoading(true);
 
 			if (signup) {
+				// make sure username is valid
 				if (!username.trim()) throw new Error("Username is required");
 				if (username.trim().length < 3)
 					throw new Error("Username is too short");
 				if (username.trim().length > 50)
 					throw new Error("Username is too long");
 
+				// sign user up to supabase
 				const data = await supabase.auth.signUp({
 					email,
 					password,
@@ -67,6 +69,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ signup }) => {
 
 				if (!supabaseId) throw new Error("Could not retrieve ID");
 
+				// sign user up to API
 				dispatch(userSignup(username, supabaseId));
 			} else {
 				const { error } = await supabase.auth.signInWithPassword({

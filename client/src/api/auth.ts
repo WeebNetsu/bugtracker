@@ -8,6 +8,12 @@ export interface BaseResponse {
 	data: BaseResponseModel;
 }
 
+/**
+ * This will sign the user up on the API
+ *
+ * @param user Required user data to sign user up
+ * @returns A basic response
+ */
 export const signupUser = async (
 	user: UserSignupModel
 ): Promise<BaseResponse> => {

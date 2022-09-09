@@ -1,7 +1,19 @@
+/**
+ * Status of item when loading
+ */
 enum LoadStatus {
-    NOT_STARTED,
-    PENDING,
-    COMPLETE,
+	/**
+	 * Loading has not started yet
+	 */
+	NOT_STARTED,
+	/**
+	 * Currently loading
+	 */
+	PENDING,
+	/**
+	 * Loading has completed
+	 */
+	COMPLETE,
 }
 
 export default LoadStatus;

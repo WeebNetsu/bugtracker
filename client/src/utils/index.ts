@@ -41,3 +41,16 @@ export const includeSearch = (
 
 	return res.indexOf(true) !== -1;
 };
+
+/**
+ * Get the browser window inner width and inner height.
+ *
+ * @returns Window width and height
+ */
+export function getWindowDimensions() {
+	const { innerWidth: width, innerHeight: height } = window;
+	return {
+		width,
+		height,
+	};
+}

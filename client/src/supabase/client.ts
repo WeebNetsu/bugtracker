@@ -7,4 +7,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 	throw new Error("Supababase URL and/or Anon key not provided!");
 }
 
+/**
+ * Supabase client object, to interact with Supabase.
+ */
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);

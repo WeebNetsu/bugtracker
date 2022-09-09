@@ -43,6 +43,12 @@ export const { userSignupStarted, userSignupSuccess, userSignupFailed } =
 
 export default authSlice.reducer;
 
+/**
+ * Sign up a user to the API
+ *
+ * @param username New user username
+ * @param userSupabaseId New user Supabase ID
+ */
 export const userSignup =
 	(username: string, userSupabaseId: string) => async (dispatch: any) => {
 		try {

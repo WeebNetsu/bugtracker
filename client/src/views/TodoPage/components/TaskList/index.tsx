@@ -8,7 +8,6 @@ import {
 	Paper,
 	Typography,
 } from "@mui/material";
-import useWindowDimensions from "../../../../utils/window";
 import AddIcon from "@mui/icons-material/Add";
 import AddTask from "../AddTask";
 import TaskItem from "./components/taskItem";
@@ -19,6 +18,7 @@ import MessageSnack, {
 	MessageSnackDisplay,
 } from "../../../../components/MessageSnack";
 import { getUser } from "../../../../supabase/utils";
+import useWindowDimensions from "../../../../utils/hooks";
 
 interface TodoListProps {
 	status: STATUS;

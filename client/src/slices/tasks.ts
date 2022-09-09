@@ -109,6 +109,11 @@ export const {
 
 export default tasksSlice.reducer;
 
+/**
+ * Get all user tasks from API
+ *
+ * @param userId ID of user to get tasks of
+ */
 export const fetchTasks = (userId: string) => async (dispatch: any) => {
 	try {
 		dispatch(getTasksStarted());
@@ -120,6 +125,11 @@ export const fetchTasks = (userId: string) => async (dispatch: any) => {
 	}
 };
 
+/**
+ * Add a new task to API
+ *
+ * @param task Task to add
+ */
 export const addTask = (task: InsertTaskModel) => async (dispatch: any) => {
 	try {
 		dispatch(addTaskStarted());
@@ -131,6 +141,12 @@ export const addTask = (task: InsertTaskModel) => async (dispatch: any) => {
 	}
 };
 
+/**
+ * Update a task on the API
+ *
+ * @param taskId Task to update
+ * @param update Update to apply
+ */
 export const updateTask =
 	(taskId: number, update: UpdateTaskModel) => async (dispatch: any) => {
 		try {
@@ -156,6 +172,12 @@ export const updateTask =
 		}
 	};
 
+/**
+ * Delete specific task from API
+ *
+ * @param taskId Task to delete
+ * @param userId User trying to delete task
+ */
 export const deleteSelectedTask =
 	(taskId: number, userId: string) => async (dispatch: any) => {
 		try {
@@ -167,6 +189,11 @@ export const deleteSelectedTask =
 		}
 	};
 
+/**
+ * Delete multiple selected tasks from API
+ *
+ * @param selection Selection of tasks to delete
+ */
 export const deleteSelectedTasks =
 	(selection: DeleteTasksModel) => async (dispatch: any) => {
 		try {

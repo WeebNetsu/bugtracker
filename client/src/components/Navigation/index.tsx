@@ -6,6 +6,9 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { supabase } from "../../supabase/client";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * General page navigation
+ */
 const Navigation: React.FC = () => {
 	const navigate = useNavigate();
 
