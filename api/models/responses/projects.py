@@ -10,9 +10,9 @@ class GetProjectResponse(BaseModel):
         example="This projects are so we can manage our pizza orders",
         description="The description text given to the project",
     )
-    owner_id: str = Field(
+    owner_id: int = Field(
         ...,
-        example="qwert-y232s-sa23a",
+        example=3,
         alias="ownerId",
         description="ID of the user who created this task",
     )

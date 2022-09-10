@@ -2,9 +2,9 @@ from pydantic import BaseModel, Field
 
 
 class AddProjectBody(BaseModel):
-    user_id: str = Field(
+    user_id: str | int = Field(
         ...,
-        description="User (project creator) Supabase ID",
+        description="User (project creator) ID or Supabase ID",
         example="9872a-sde82-8as8a",
         alias="userId",
     )

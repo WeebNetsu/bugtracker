@@ -17,18 +17,18 @@ class GetTasksResponse(BaseModel):
         example="We need to eat or we'll go hungry!",
         description="The description text given to task",
     )
-    user_id: str = Field(
+    user_id: int = Field(
         ...,
-        example="qwert-y232s-sa23a",
+        example=32,
         alias="userId",
         description="The user who created this task",
     )
     tags: list[int] = Field(
         [], example=[542, 234], description="The tags assigned to this task"
     )
-    project_id: str = Field(
+    project_id: int = Field(
         ...,
-        example="qwert-y232s-sa23a",
+        example=322,
         alias="projectId",
         description="The project this task belongs to",
     )

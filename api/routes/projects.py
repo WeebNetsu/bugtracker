@@ -2,7 +2,7 @@ from fastapi import APIRouter, status
 from db.users import User
 from models.requests.projects import AddProjectBody
 from models.responses.projects import GetProjectResponse, GetProjectResponseModel
-from utils import getUserOnSupabaseId
+from utils import get_user_with_id
 from db import session
 from db.projects import Project
 from utils.responses import convert_json, generate_response
@@ -16,7 +16,7 @@ router = APIRouter(prefix="/projects", tags=["projects"])
     description="Create new project",
 )
 async def create_project(body: AddProjectBody):
-    user: User | None = getUserOnSupabaseId(body.user_id)
+    user: User | None = get_user_with_id(body.user_id)
 
     if not user:
         return generate_response(

@@ -2,10 +2,15 @@ from db import session
 from db.users import User
 
 
-def getUserOnSupabaseId(user_supabase_id: str) -> User | None:
+def get_user_with_id(user_id: str | int) -> User | None:
     """
-    Get user from database via their supabase id
+    Get user from database via their supabase OR normal ID
     """
-    user = session.query(User).filter(User.supabase_id == user_supabase_id).first()
+    filter_item = User.id
 
-    return None if not user else user
+    if type(user_id) == str:
+        filter_item = User.supabase_id
+
+    user: User | None = session.query(User).filter(filter_item == user_id).first()
+
+    return user
