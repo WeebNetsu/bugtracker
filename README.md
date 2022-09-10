@@ -1,6 +1,6 @@
 # Bug Tracker App
 
-This is a simple basic bug tracker app inspired by Trello & ClickUp... We use Supabase for file storage and user signup!
+This is a bug tracker app inspired by Trello & ClickUp... We use Supabase for file storage and user auth, PostgreSQL for storing data, FastAPI for our API and React.js (TypeScript) as our frontend!
 
 [<img alt="React.js" src="https://img.shields.io/badge/-React.js-48CFF7?style=flat-square&logo=react&logoColor=white" />](https://reactjs.org/)
 [<img alt="FastAPI" src="https://img.shields.io/badge/-FastAPI-009485?style=flat-square&logo=fastapi&logoColor=white" />](https://fastapi.tiangolo.com)
@@ -10,6 +10,34 @@ This is a simple basic bug tracker app inspired by Trello & ClickUp... We use Su
 ---
 
 <!-- NOTE: I'm currently busy implementing a server, tracker will be wonky until switch from JSON-server to FastAPI has been completed. For a working example, go to commit: [9e438b607f7cef298c17deec07f8bbb68d4c3cd4](https://github.com/WeebNetsu/bugtracker/commit/9e438b607f7cef298c17deec07f8bbb68d4c3cd4) -->
+
+## Contents
+
+- [Requirements](#requirements)
+- [Env Variables](#env-variables)
+- [Run App](#run-app)
+  - [Installing Dependencies](#install-all-deps)
+  - [Running App](#run)
+  - [Using Docker](#using-docker)
+  - [Checking Logs](#checking-logs)
+- [Database](#database)
+  - [Generating a new database](#generating-a-new-database)
+  - [Viewing the Database](#viewing-databases)
+- [Migrations](#running-migrations)
+  - [First Steps](#first-migration-steps)
+  - [Creating Migrations](#creating-migrations)
+  - [Downgrading Migrations](#downgrading-migration)
+  - [Migration Notes](#migration-notes)
+- [Tests](#tests)
+  - [Running Tests](#running-tests)
+- [API Docs](#view-api-docs)
+- [Project Structure](#project-structure)
+  - [Client](#client-structure)
+  - [API](#api-structure)
+- [Helpful Links](#helpful-links)
+- [Support Me](#support)
+
+---
 
 ## Requirements
 
@@ -67,13 +95,15 @@ Open localhost:8000/docs in your browser
 
 `docker-compose logs`
 
+These logs will contain all the logs from the client, api and database viewer, you can use `grep` to filter commands, such as `sudo docker-compose logs | grep -i "bug-tracker-db-1"`.
+
 ## Database
 
 ### Generating a New Database
 
 To generate a new database (delete old data, this could fix some database bugs), delete the `pgdata` folder and rebuild the container.
 
-### Viewing databases
+### Viewing Databases
 
 If the container is running, then you can navigate to `localhost:16543` in your browser.
 
@@ -105,7 +135,7 @@ Bob's your uncle! You are connected!
 
 Running migrations allows us to fix any changes made to the database without having to drop all the tables and rebuild it!
 
-### Steps:
+### First Migration Steps:
 
 1. Connect to the API docker instance `docker exec -it bug-tracker-api-1 /bin/sh`, this will put you inside the container (like using it as the computer)
 1. Run your, create migration, upgrade or downgrade!
@@ -140,7 +170,7 @@ Sometimes you realise creating a revision was not a good idea, you changed somet
 1. Be inside your container (`docker exec -it bug-tracker-api-1 /bin/sh`)
 1. Downgrade to the previous revision `alembic downgrade -1` OR downgrade to a specific revision `alembic downgrade abcdef` (abcdef is refering to the first 6 letters/numbers of the revision you want to downgrade to, just look at the file name)
 
-### NOTES:
+### Migration NOTES:
 
 If you update the database name or connection URL, be sure to update `sqlalchemy.url = postgresql://postgres:postgres@db:5432/bug-tracker` in **alembic.ini**.
 
@@ -160,7 +190,7 @@ Inside the **api folder**, to run tests, just execute `python tests.py`, and it 
 
 ## Project Structure
 
-### Client
+### Client Structure
 
 ```
 ├── api -> API communications (requests/axios)
@@ -172,7 +202,7 @@ Inside the **api folder**, to run tests, just execute `python tests.py`, and it 
 └── views -> Pages
 ```
 
-### API
+### API Structure
 
 ```
 ├── db -> Database structure and management
@@ -188,3 +218,7 @@ Inside the **api folder**, to run tests, just execute `python tests.py`, and it 
 **Supabase:** https://supabase.com/docs
 
 **FastAPI:** https://fastapi.tiangolo.com
+
+## Support
+
+If you want to support me and what I do, please consider subscribing to my YouTube channel, [Steve's teacher](https://www.youtube.com/stevesteacher)!
