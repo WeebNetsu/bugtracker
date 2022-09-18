@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routes.auth import router as authRouter
-from routes.tasks import router as tasksRouter
-from routes.projects import router as projectsRouter
+from routes.auth import router as auth_router
+from routes.tasks import router as tasks_router
+from routes.projects import router as projects_router
 
 allowed_origins = [  # for CORS
     "http://localhost",
@@ -20,6 +20,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(authRouter)
-app.include_router(tasksRouter)
-app.include_router(projectsRouter)
+app.include_router(auth_router)
+app.include_router(tasks_router)
+app.include_router(projects_router)

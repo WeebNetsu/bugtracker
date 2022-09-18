@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Depends
 from db.users import User
 from utils import get_user_with_id
 from db import session
@@ -14,6 +14,7 @@ from models.responses.tasks import (
     GetTasksResponseModel,
 )
 from utils.responses import convert_json, generate_response
+from utils.security import auth, secure
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
@@ -25,7 +26,8 @@ router = APIRouter(prefix="/tasks", tags=["tasks"])
     response_model=GetTasksResponseModel,
     description="Return all user tasks",
 )
-async def get_tasks(user_id: str):
+@auth()
+async def get_tasks(user_id: str, bearer: str = Depends(secure)):
     user: User | None = get_user_with_id(user_id)
 
     if not user:

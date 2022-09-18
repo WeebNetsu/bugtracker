@@ -10,6 +10,35 @@ from utils.responses import convert_json, generate_response
 router = APIRouter(prefix="/projects", tags=["projects"])
 
 
+""" @router.get(
+    "",
+    response_model=GetProjectResponseModel,
+    description="Get projects",
+)
+async def get_project(user_id: int | str, id: int = None, owner_id: int = None):
+    user: User | None = get_user_with_id(user_id)
+
+    if not user:
+        return generate_response(
+            {"success": False}, "User not found", status.HTTP_404_NOT_FOUND
+        )
+
+    tasks: list[Task] = session.query(Task).filter(Task.user_id == user.id).all()
+
+    return_tasks: list[GetTasksResponse] = []
+    for task in tasks:
+        return_tasks.append(
+            {
+                "user_id": user_id,
+                "text": task.text,
+                "description": task.description,
+                "status": task.status,
+                "id": task.id,
+            }
+        )
+    return generate_response(convert_json(return_project), "Project was created.") """
+
+
 @router.post(
     "",
     response_model=GetProjectResponseModel,
@@ -47,17 +76,15 @@ async def create_project(body: AddProjectBody):
     session.add(add_project)
     session.commit()
 
-    # todo maybe we should make the supabase ID the users id, this mix and matching
-    # is becoming really combersome
-    return_project: GetProjectResponse = {
-        "id": add_project.id,
-        "title": add_project.title,
-        "description": add_project.description,
-        "owner_id": add_project.owner_id,
-        "read_team": add_project.read_team,
-        "write_team": add_project.write_team,
-        "admin_team": add_project.admin_team,
-        "tags": [],
-    }
+    return_project = GetProjectResponse(
+        id=add_project.id,
+        title=add_project.title,
+        description=add_project.description,
+        ownerId=add_project.owner_id,
+        readTeam=add_project.read_team,
+        writeTeam=add_project.write_team,
+        adminTeam=add_project.admin_team,
+        tags=[],
+    )
 
     return generate_response(convert_json(return_project), "Project was created.")

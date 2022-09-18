@@ -22,6 +22,7 @@ from db.tasks import Task
 from db.users import User
 from db.tags import Tag
 from db.projects import Project
+from db.login_tokens import LoginToken
 
 target_metadata = Base.metadata
 

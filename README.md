@@ -63,6 +63,7 @@ API:
 
 ```
 DATABASE_URL="postgresql://postgres:postgres@db:5432/bug-tracker"
+SECRET_KEY="your secret key, DO NOT lose this"
 ```
 
 ## Run App:
@@ -95,7 +96,7 @@ Open localhost:8000/docs in your browser
 
 `docker-compose logs`
 
-These logs will contain all the logs from the client, api and database viewer, you can use `grep` to filter commands, such as `sudo docker-compose logs | grep -i "bug-tracker-db-1"`.
+These logs will contain all the logs from the client, api and database viewer, you can use `grep` to filter commands, such as `sudo docker-compose logs | grep -i "bug-tracker-db-1"`. To remove a specific result from the logs, you can use `sudo docker-compose logs | grep -wv "bug-tracker-pgadmin-compose-1"`, this will hide the logs that contains the text in the quotes.
 
 ## Database
 

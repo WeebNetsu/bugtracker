@@ -2,7 +2,7 @@ from fastapi import APIRouter, status
 from models.requests.auth import UserSignupBody
 from db import session
 from db.users import User
-from models.responses import BaseResponseModel
+from models.responses.auth import SignupResponse, SignupResponseModel
 from utils.responses import generate_response
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -10,7 +10,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post(
     "/signup",
-    response_model=BaseResponseModel,
+    response_model=SignupResponseModel,
     description="Signup user",
 )
 async def signup(body: UserSignupBody):
@@ -44,6 +44,8 @@ async def signup(body: UserSignupBody):
     session.add(add_user)
     session.commit()
 
+    result = SignupResponse(user_id=add_user.id)
+
     return generate_response(
-        {"success": True},
+        result,
     )
