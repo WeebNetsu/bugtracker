@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Depends
 from db.users import User
 from models.requests.projects import AddProjectBody
 from models.responses.projects import GetProjectResponse, GetProjectResponseModel
@@ -6,6 +6,7 @@ from utils import get_user_with_id
 from db import session
 from db.projects import Project
 from utils.responses import convert_json, generate_response
+from utils.security import auth, secure
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -44,24 +45,14 @@ async def get_project(user_id: int | str, id: int = None, owner_id: int = None):
     response_model=GetProjectResponseModel,
     description="Create new project",
 )
-async def create_project(body: AddProjectBody):
+@auth()
+async def create_project(body: AddProjectBody, bearer: str = Depends(secure)):
     user: User | None = get_user_with_id(body.user_id)
 
     if not user:
         return generate_response(
             {"success": False}, "User not found", status.HTTP_404_NOT_FOUND
         )
-
-    # projects: list[Project] = (
-    #     session.query(Project)
-    #     .filter(Project.owner_id == user.id, Project.title == body.title)
-    #     .all()
-    # )
-
-    # if len(projects) > 0:
-    #     return generate_response(
-    #         {"success": False}, "Project with this name already exists", status.HTTP_400_BAD_REQUEST
-    #     )
 
     add_project = Project(
         title=body.title,
@@ -80,7 +71,9 @@ async def create_project(body: AddProjectBody):
         id=add_project.id,
         title=add_project.title,
         description=add_project.description,
-        ownerId=add_project.owner_id,
+        # we store the user ID in ownerID in project, but the front end only
+        # works with the supabase ID, so we need to pass that in here:
+        ownerId=user.supabase_id,
         readTeam=add_project.read_team,
         writeTeam=add_project.write_team,
         adminTeam=add_project.admin_team,

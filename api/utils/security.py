@@ -7,6 +7,7 @@ from fastapi import status, HTTPException
 from fastapi.security import HTTPBearer
 from db import session
 from db.login_tokens import LoginToken
+from pydantic import BaseModel, Field
 
 config = dotenv_values()
 
@@ -23,7 +24,16 @@ ALGORITHM = "HS256"
 secure = HTTPBearer(scheme_name="Authorization")
 
 
-def create_jwt_token(data: dict):
+class JWTTokenDataModel(BaseModel):
+    user_id: int = Field(
+        ...,
+        description="User ID",
+        example=420,
+        alias="userId",
+    )
+
+
+def create_jwt_token(data: dict | JWTTokenDataModel):
     """
     Generate a JWT token that will expire in 30 days, with the data
     you want to store in it
@@ -56,14 +66,6 @@ def auth():
     def dec(func):
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
-            # kwargs = {
-            #     # pass default bearer value, so we don't have to on every route
-            #     "bearer": secure,
-            #     **kwargs,
-            # }
-            print("----- AUTH -----")
-            print(kwargs)
-            print("----- AUTH -----")
             # generally a token will look something like this:
             # eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ5ZXMiOjQ1LCJleHBpcmUiOiIiLCJleHAiOjE2NzEyODY5OTl9.lneO6DaNlqegjGmwrbO1fmSaqmpMGpKF2edJQmGn9-M
             token: str | None = kwargs["bearer"].credentials

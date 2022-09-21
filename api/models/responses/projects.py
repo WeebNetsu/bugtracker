@@ -10,29 +10,29 @@ class GetProjectResponse(BaseModel):
         example="This projects are so we can manage our pizza orders",
         description="The description text given to the project",
     )
-    owner_id: int = Field(
+    owner_id: str = Field(
         ...,
-        example=3,
+        example="9872-xas3-as42",
         alias="ownerId",
-        description="ID of the user who created this task",
+        description="ID of the user who created this task (Supabase ID)",
     )
-    read_team: list[int] = Field(
+    read_team: list[str] = Field(
         [],
-        example=[23, 342, 123],
+        example=["9872-xas3-as42", "9872-aaaa-as42", "9872-xas3-xxxx"],
         alias="readTeam",
-        description="Users ID that are guests (only have read access) on the project",
+        description="Users ID that are guests (only have read access) on the project. Will be user Supabase ID",
     )
-    write_team: list[int] = Field(
+    write_team: list[str] = Field(
         [],
-        example=[23, 342, 123],
+        example=["9872-xas3-as42", "9872-aaaa-as42", "9872-xas3-xxxx"],
         alias="writeTeam",
-        description="Users ID that can modify project tasks, but not project settings",
+        description="Users ID that can modify project tasks, but not project settings. Will be user Supabase ID",
     )
-    admin_team: list[int] = Field(
+    admin_team: list[str] = Field(
         [],
-        example=[23, 342, 123],
+        example=["9872-xas3-as42", "9872-aaaa-as42", "9872-xas3-xxxx"],
         alias="adminTeam",
-        description="Users ID that have full admin access to project",
+        description="Users ID that have full admin access to project. Will be user Supabase ID",
     )
     tags: list[int] = Field(
         [], example=[231, 492], description="All the tag IDs on this project"
