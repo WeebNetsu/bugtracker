@@ -6,6 +6,7 @@ This is a bug tracker app inspired by Trello & ClickUp... We use Supabase for fi
 [<img alt="FastAPI" src="https://img.shields.io/badge/-FastAPI-009485?style=flat-square&logo=fastapi&logoColor=white" />](https://fastapi.tiangolo.com)
 [<img alt="Supabase" src="https://img.shields.io/badge/-Supabase-33A870?style=flat-square&logo=Supabase&logoColor=white" />](https://supabase.com)
 [<img alt="PostgreSQL" src="https://img.shields.io/badge/-PostgreSQL-306995?style=flat-square&logo=PostgreSQL&logoColor=white" />](https://www.postgresql.org)
+[<img alt="TypeScript" src="https://img.shields.io/badge/-TypeScript-0077C7?style=flat-square&logo=TypeScript&logoColor=white" />](https://www.typescriptlang.org/)
 
 ---
 
@@ -18,7 +19,7 @@ This is a bug tracker app inspired by Trello & ClickUp... We use Supabase for fi
 - [Run App](#run-app)
   - [Installing Dependencies](#install-all-deps)
   - [Running App](#run)
-  - [Using Docker](#using-docker)
+  - [Using Docker (Recommended)](#using-docker)
   - [Checking Logs](#checking-logs)
 - [Database](#database)
   - [Generating a new database](#generating-a-new-database)
@@ -74,7 +75,7 @@ SECRET_KEY="your secret key, DO NOT lose this"
 
 ### Run
 
-`npm start`
+`npm start` - Note that using docker is the preferred method to run this app.
 
 ### Using Docker
 
@@ -90,7 +91,8 @@ the inserted IP is IP4 Address
 
 sudo docker-compose up -d
 
-Open localhost:8000/docs in your browser
+Client: Open http://localhost:3000 in your browser.
+API: Open http://localhost:8000/docs in your browser.
 
 ### Checking Logs
 
@@ -164,12 +166,12 @@ Whenever you change the database (add/remove/modify a field), you should create 
 
 ### Downgrading Migration
 
-Sometimes you realise creating a revision was not a good idea, you changed something you didn't want to have changed in the first place. Luckily alembic got you covered!
+Sometimes you realize creating a revision was not a good idea, you changed something you didn't want to have changed in the first place. Luckily alembic got you covered!
 
 #### Steps:
 
 1. Be inside your container (`docker exec -it bug-tracker-api-1 /bin/sh`)
-1. Downgrade to the previous revision `alembic downgrade -1` OR downgrade to a specific revision `alembic downgrade abcdef` (abcdef is refering to the first 6 letters/numbers of the revision you want to downgrade to, just look at the file name)
+1. Downgrade to the previous revision `alembic downgrade -1` OR downgrade to a specific revision `alembic downgrade abcdef` (abcdef is referring to the first 6 letters/numbers of the revision you want to downgrade to, just look at the file name)
 
 ### Migration NOTES:
 
@@ -177,11 +179,11 @@ If you update the database name or connection URL, be sure to update `sqlalchemy
 
 ## Tests
 
-Tests use Pytest to run, the inital setup is in tests.py with the tests going inside the `api/tests` directory. Each file that should be tested should start with "test" (ie. _test_projects.py_), and all the functions (route tests) that should be ran should also start with "test" (ie. _test_create_project_), if a file or function does not start with test, it will be ignored when running tests.
+Tests use Pytest to run, the initial setup is in tests.py with the tests going inside the `api/tests` directory. Each file that should be tested should start with "test" (ie. _test_projects.py_), and all the functions (route tests) that should be ran should also start with "test" (ie. _test_create_project_), if a file or function does not start with test, it will be ignored when running tests.
 
 ### Running Tests
 
-Inside the **api folder**, to run tests, just execute `python tests.py`, and it will spend 51 years running a single test.
+Inside the **api folder**, to run tests, just execute `python tests.py`, and it will spend the next 51 years running a single test.
 
 ![This will take us 51 years meme](docs/src/images/maneuver.jpg)
 
