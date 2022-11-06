@@ -7,11 +7,7 @@ const App: React.FC = () => {
         <BrowserRouter>
             <Routes>
                 {routes.map(route => (
-                    <Route
-                        key={route.path}
-                        path={route.path}
-                        element={route.component}
-                    />
+                    <Route key={route.path} path={route.path} element={route.component} />
                 ))}
             </Routes>
         </BrowserRouter>

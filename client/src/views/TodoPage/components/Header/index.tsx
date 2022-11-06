@@ -1,17 +1,17 @@
-import { AppBar, Container, Toolbar, Typography, Box, IconButton, Button, Menu, MenuItem } from '@mui/material';
-import React, { useState } from 'react';
-import MenuIcon from '@mui/icons-material/Menu';
-import ConfirmAlert from '../../../../components/ConfirmAlert';
+import MenuIcon from "@mui/icons-material/Menu";
+import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
+import React, { useState } from "react";
+import ConfirmAlert from "../../../../components/ConfirmAlert";
 
 interface ButtonsModel {
-    text: string
-    func: () => void
+    text: string;
+    func: () => void;
 }
 
 interface HeaderProps {
-    setHideCompleted: (hide: boolean) => void
-    hideCompleted: boolean
-    deleteAllTasks: () => void
+    setHideCompleted: (hide: boolean) => void;
+    hideCompleted: boolean;
+    deleteAllTasks: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ hideCompleted, setHideCompleted, deleteAllTasks }) => {
@@ -28,13 +28,13 @@ const Header: React.FC<HeaderProps> = ({ hideCompleted, setHideCompleted, delete
 
     const buttons: ButtonsModel[] = [
         {
-            text: hideCompleted ? "Show All" : 'Hide Completed',
-            func: () => setHideCompleted(!hideCompleted)
+            text: hideCompleted ? "Show All" : "Hide Completed",
+            func: () => setHideCompleted(!hideCompleted),
         },
         {
-            text: 'Clear All',
-            func: () => setShowAlert(true) // otherwise some crap gets passed in (when doing func: deleteAllTasks)
-        }
+            text: "Clear All",
+            func: () => setShowAlert(true), // otherwise some crap gets passed in (when doing func: deleteAllTasks)
+        },
     ];
 
     return (
@@ -46,12 +46,12 @@ const Header: React.FC<HeaderProps> = ({ hideCompleted, setHideCompleted, delete
                             variant="h5"
                             noWrap
                             component="div"
-                            sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+                            sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
                         >
                             BUG TRACKER
                         </Typography>
 
-                        <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                        <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
                             <IconButton
                                 size="large"
                                 aria-label="account of current user"
@@ -66,22 +66,22 @@ const Header: React.FC<HeaderProps> = ({ hideCompleted, setHideCompleted, delete
                                 id="menu-appbar"
                                 anchorEl={anchorElNav}
                                 anchorOrigin={{
-                                    vertical: 'bottom',
-                                    horizontal: 'left',
+                                    vertical: "bottom",
+                                    horizontal: "left",
                                 }}
                                 keepMounted
                                 transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'left',
+                                    vertical: "top",
+                                    horizontal: "left",
                                 }}
                                 open={Boolean(anchorElNav)}
                                 onClose={handleCloseNavMenu}
                                 onClick={handleCloseNavMenu}
                                 sx={{
-                                    display: { xs: 'block', md: 'none' },
+                                    display: { xs: "block", md: "none" },
                                 }}
                             >
-                                {buttons.map((btn) => (
+                                {buttons.map(btn => (
                                     <MenuItem key={btn.text} onClick={btn.func}>
                                         <Typography textAlign="center">{btn.text}</Typography>
                                     </MenuItem>
@@ -93,16 +93,16 @@ const Header: React.FC<HeaderProps> = ({ hideCompleted, setHideCompleted, delete
                             variant="h6"
                             noWrap
                             component="div"
-                            sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+                            sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
                         >
                             BUG TRACKER
                         </Typography>
-                        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} onClick={handleCloseNavMenu}>
-                            {buttons.map((btn) => (
+                        <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} onClick={handleCloseNavMenu}>
+                            {buttons.map(btn => (
                                 <Button
                                     key={btn.text}
                                     onClick={btn.func}
-                                    sx={{ my: 2, color: 'white', display: 'block' }}
+                                    sx={{ my: 2, color: "white", display: "block" }}
                                 >
                                     {btn.text}
                                 </Button>
@@ -112,9 +112,14 @@ const Header: React.FC<HeaderProps> = ({ hideCompleted, setHideCompleted, delete
                 </Container>
             </AppBar>
 
-            <ConfirmAlert show={showAlert} setShow={setShowAlert} desc='Are you sure you want to delete ALL your tasks?' onConfirm={deleteAllTasks} />
+            <ConfirmAlert
+                show={showAlert}
+                setShow={setShowAlert}
+                desc="Are you sure you want to delete ALL your tasks?"
+                onConfirm={deleteAllTasks}
+            />
         </>
-    )
-}
+    );
+};
 
 export default Header;

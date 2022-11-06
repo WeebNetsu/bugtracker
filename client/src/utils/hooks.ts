@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { getWindowDimensions } from ".";
@@ -19,18 +18,20 @@ export const useQuery = () => new URLSearchParams(useLocation().search);
  * @returns Window width and height
  */
 export default function useWindowDimensions() {
-	const [windowDimensions, setWindowDimensions] = useState(
-		getWindowDimensions()
-	);
+    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
 
-	useEffect(() => {
-		function handleResize() {
-			setWindowDimensions(getWindowDimensions());
-		}
+    useEffect(() => {
+        function handleResize() {
+            setWindowDimensions(getWindowDimensions());
+        }
 
-		window.addEventListener("resize", handleResize);
-		return () => window.removeEventListener("resize", handleResize);
-	}, []);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
-	return windowDimensions;
+    return windowDimensions;
 }
+
+// below is only so the auto formatter does not remove React from imports
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _donNotUseMe = (x: React.ReactNode) => {};

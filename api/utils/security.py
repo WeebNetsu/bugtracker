@@ -1,12 +1,13 @@
 import functools
-from jose import jwt
-from dotenv import dotenv_values
 from datetime import datetime, timedelta
 from logging import warn
-from fastapi import status, HTTPException
-from fastapi.security import HTTPBearer
+
 from db import session
 from db.login_tokens import LoginToken
+from dotenv import dotenv_values
+from fastapi import HTTPException, status
+from fastapi.security import HTTPBearer
+from jose import jwt
 from pydantic import BaseModel, Field
 
 config = dotenv_values()
@@ -60,7 +61,7 @@ def decode_jwt_token(token: str):
 
 def auth():
     """
-    This is a decorator to make sure the user is authorised to visit/use a route
+    This is a decorator to make sure the user is authorized to visit/use a route
     """
 
     def dec(func):

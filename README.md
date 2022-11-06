@@ -14,37 +14,37 @@ This is a bug tracker app inspired by Trello & ClickUp... We use Supabase for fi
 
 ## Contents
 
-- [Requirements](#requirements)
-- [Env Variables](#env-variables)
-- [Run App](#run-app)
-  - [Installing Dependencies](#install-all-deps)
-  - [Running App](#run)
-  - [Using Docker (Recommended)](#using-docker)
-  - [Checking Logs](#checking-logs)
-- [Database](#database)
-  - [Generating a new database](#generating-a-new-database)
-  - [Viewing the Database](#viewing-databases)
-- [Migrations](#running-migrations)
-  - [First Steps](#first-migration-steps)
-  - [Creating Migrations](#creating-migrations)
-  - [Downgrading Migrations](#downgrading-migration)
-  - [Migration Notes](#migration-notes)
-- [Tests](#tests)
-  - [Running Tests](#running-tests)
-- [API Docs](#view-api-docs)
-- [Project Structure](#project-structure)
-  - [Client](#client-structure)
-  - [API](#api-structure)
-- [Helpful Links](#helpful-links)
-- [Support Me](#support)
+-   [Requirements](#requirements)
+-   [Env Variables](#env-variables)
+-   [Run App](#run-app)
+    -   [Installing Dependencies](#install-all-deps)
+    -   [Running App](#run)
+    -   [Using Docker (Recommended)](#using-docker)
+    -   [Checking Logs](#checking-logs)
+-   [Database](#database)
+    -   [Generating a new database](#generating-a-new-database)
+    -   [Viewing the Database](#viewing-databases)
+-   [Migrations](#running-migrations)
+    -   [First Steps](#first-migration-steps)
+    -   [Creating Migrations](#creating-migrations)
+    -   [Downgrading Migrations](#downgrading-migration)
+    -   [Migration Notes](#migration-notes)
+-   [Tests](#tests)
+    -   [Running Tests](#running-tests)
+-   [API Docs](#view-api-docs)
+-   [Project Structure](#project-structure)
+    -   [Client](#client-structure)
+    -   [API](#api-structure)
+-   [Helpful Links](#helpful-links)
+-   [Support Me](#support)
 
 ---
 
 ## Requirements
 
-- Python 3.10+ (and PIP)
-- Node.js 16.0+
-- PostgreSQL 14.5+
+-   Python 3.10+ (and PIP)
+-   Node.js 16.0+
+-   PostgreSQL 14.5+
 
 ## ENV Variables
 
@@ -108,12 +108,12 @@ To generate a new database (delete old data, this could fix some database bugs),
 
 ### Viewing Databases
 
-If the container is running, then you can navigate to `localhost:16543` in your browser.
+If the container is running, then you can navigate to http://localhost:16543 in your browser.
 
 Credentials:
 
-- email: admin@gmail.com
-- password: admin
+-   email: admin@gmail.com
+-   password: admin
 
 For more help: https://onexlab-io.medium.com/docker-compose-postgres-initdb-ba0021deef76
 
@@ -148,9 +148,9 @@ Running migrations allows us to fix any changes made to the database without hav
 
 For more information on alembic and migrations:
 
-- [Database Migrations](https://www.youtube.com/watch?v=x96OwF3jQrg)
-- [Alembic](https://alembic.sqlalchemy.org)
-- [Alembic Setup and Usage](https://youtu.be/SdcH6IEi6nE)
+-   [Database Migrations](https://www.youtube.com/watch?v=x96OwF3jQrg)
+-   [Alembic](https://alembic.sqlalchemy.org)
+-   [Alembic Setup and Usage](https://youtu.be/SdcH6IEi6nE)
 
 **NOTE: If you create a new table, or remove an old one, remember to add/remove the import in `migrations/env.py`!**
 
