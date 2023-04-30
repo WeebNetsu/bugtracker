@@ -1,3 +1,9 @@
+/**
+ * Base response returned from request to API
+ */
 export interface BaseResponseModel {
-	success: boolean;
+    /**
+     * If request was a success
+     */
+    success: boolean;
 }

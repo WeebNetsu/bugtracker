@@ -9,19 +9,16 @@
  * @param data key value pairs to append to the url
  * @returns url with appended data
  */
-export const queryURLBuilder = (
-	url: string,
-	data: { key: string; value: string | number }[]
-) => {
-	let queryURL = url;
-	data.forEach(({ key, value }, index) => {
-		if (index === 0) {
-			queryURL += `?${key}=${value}`;
-		} else {
-			queryURL += `&${key}=${value}`;
-		}
-	});
-	return queryURL;
+export const queryURLBuilder = (url: string, data: { key: string; value: string | number }[]) => {
+    let queryURL = url;
+    data.forEach(({ key, value }, index) => {
+        if (index === 0) {
+            queryURL += `?${key}=${value}`;
+        } else {
+            queryURL += `&${key}=${value}`;
+        }
+    });
+    return queryURL;
 };
 
 /**
@@ -31,13 +28,21 @@ export const queryURLBuilder = (
  * @param args Values to search through
  * @returns boolean - true if query was found
  */
-export const includeSearch = (
-	search: string,
-	...args: (string | undefined)[]
-): boolean => {
-	const res = args.map((arg) =>
-		arg?.toLowerCase().includes(search.toLowerCase())
-	);
+export const includeSearch = (search: string, ...args: (string | undefined)[]): boolean => {
+    const res = args.map(arg => arg?.toLowerCase().includes(search.toLowerCase()));
 
-	return res.indexOf(true) !== -1;
+    return res.indexOf(true) !== -1;
 };
+
+/**
+ * Get the browser window inner width and inner height.
+ *
+ * @returns Window width and height
+ */
+export function getWindowDimensions() {
+    const { innerWidth: width, innerHeight: height } = window;
+    return {
+        width,
+        height,
+    };
+}

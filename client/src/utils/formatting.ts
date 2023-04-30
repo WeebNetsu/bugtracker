@@ -7,7 +7,7 @@ import moment from "moment";
  * @returns Date formatted in YYYY-MM-DD
  */
 export const formatToCalendarDate = (date: Date = new Date()): string => {
-	return moment(date).format("YYYY-MM-DD");
+    return moment(date).format("YYYY-MM-DD");
 };
 
 /**
@@ -17,8 +17,8 @@ export const formatToCalendarDate = (date: Date = new Date()): string => {
  * @returns Formatted time (80 -> 01:20)
  */
 export const formatMin = (min: number): string => {
-	const a = [Math.floor(min / 60), Math.floor(min % 60)];
-	return a.map((t) => `0${t}`.slice(-2)).join(":");
+    const a = [Math.floor(min / 60), Math.floor(min % 60)];
+    return a.map(t => `0${t}`.slice(-2)).join(":");
 };
 
 /**
@@ -28,12 +28,8 @@ export const formatMin = (min: number): string => {
  * @returns Formatted time (80 -> 00:01:20)
  */
 export const formatSec = (sec: number): string => {
-	const a = [
-		Math.floor(sec / 60 / 60),
-		Math.floor((sec / 60) % 60),
-		Math.floor(sec % 60),
-	];
-	return a.map((t) => `0${t}`.slice(-2)).join(":");
+    const a = [Math.floor(sec / 60 / 60), Math.floor((sec / 60) % 60), Math.floor(sec % 60)];
+    return a.map(t => `0${t}`.slice(-2)).join(":");
 };
 
 /**
@@ -45,11 +41,9 @@ export const formatSec = (sec: number): string => {
  * @returns time stamp converted to minutes
  */
 export const formatTimestamp = (stamp: string): number => {
-	// convert 9:15 string to minutes
-	const numbers = stamp
-		.split(":")
-		.map((stm, index) => (index === 0 ? Number(stm) * 60 : Number(stm)));
-	return numbers.reduce((prev, curr) => prev + curr);
+    // convert 9:15 string to minutes
+    const numbers = stamp.split(":").map((stm, index) => (index === 0 ? Number(stm) * 60 : Number(stm)));
+    return numbers.reduce((prev, curr) => prev + curr);
 };
 
 /**
@@ -62,11 +56,11 @@ export const formatTimestamp = (stamp: string): number => {
  * @returns Formatted amount
  */
 export const formatMoneyStr = (
-	amt: number,
-	currencyCode: string = "ZAR",
-	includeCurrencyCode: boolean = true
+    amt: number,
+    currencyCode: string = "ZAR",
+    includeCurrencyCode: boolean = true,
 ): string => {
-	return amt.toFixed(2) + " " + (includeCurrencyCode ? currencyCode : "");
+    return amt.toFixed(2) + " " + (includeCurrencyCode ? currencyCode : "");
 };
 
 /**
@@ -78,7 +72,7 @@ export const formatMoneyStr = (
  * @returns Text with first letter uppercase
  */
 export const capitalizeFirstLetter = (text: string): string => {
-	return text.charAt(0).toUpperCase() + text.slice(1);
+    return text.charAt(0).toUpperCase() + text.slice(1);
 };
 
 /**
@@ -90,14 +84,11 @@ export const capitalizeFirstLetter = (text: string): string => {
  * @param currency The currency code to convert to
  * @returns Formatted amount
  */
-export const currencyFormatter = (
-	value: number,
-	currency: string = "ZAR"
-): string => {
-	// this will format the currency to R00 000
-	return new Intl.NumberFormat("en-ZA", {
-		style: "currency",
-		currency,
-		minimumFractionDigits: 0,
-	}).format(value ?? 0);
+export const currencyFormatter = (value: number, currency: string = "ZAR"): string => {
+    // this will format the currency to R00 000
+    return new Intl.NumberFormat("en-ZA", {
+        style: "currency",
+        currency,
+        minimumFractionDigits: 0,
+    }).format(value ?? 0);
 };

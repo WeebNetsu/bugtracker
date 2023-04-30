@@ -1,6 +1,6 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Depends
 from db.users import User
-from utils import getUserOnSupabaseId
+from utils import get_user_with_id
 from db import session
 from db.tasks import Task
 from models.requests.tasks import (
@@ -14,6 +14,7 @@ from models.responses.tasks import (
     GetTasksResponseModel,
 )
 from utils.responses import convert_json, generate_response
+from utils.security import auth, secure
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
@@ -25,8 +26,9 @@ router = APIRouter(prefix="/tasks", tags=["tasks"])
     response_model=GetTasksResponseModel,
     description="Return all user tasks",
 )
-async def get_tasks(user_id: str):
-    user: User | None = getUserOnSupabaseId(user_id)
+@auth()
+async def get_tasks(user_id: str, bearer: str = Depends(secure)):
+    user: User | None = get_user_with_id(user_id)
 
     if not user:
         return generate_response(
@@ -56,7 +58,7 @@ async def get_tasks(user_id: str):
     description="Add task",
 )
 async def get_tasks(body: AddTaskBody):
-    user: User | None = getUserOnSupabaseId(body.user_id)
+    user: User | None = get_user_with_id(body.user_id)
 
     if not user:
         return generate_response(
@@ -90,7 +92,7 @@ async def get_tasks(body: AddTaskBody):
     description="Return specific task",
 )
 async def get_task(task_id: int, user_id: str):
-    user: User | None = getUserOnSupabaseId(user_id)
+    user: User | None = get_user_with_id(user_id)
 
     if not user:
         return generate_response(
@@ -123,7 +125,7 @@ async def get_task(task_id: int, user_id: str):
     description="Update task",
 )
 async def update_task(body: UpdateTaskBody, task_id: int):
-    user: User | None = getUserOnSupabaseId(body.user_id)
+    user: User | None = get_user_with_id(body.user_id)
 
     if not user:
         return generate_response(
@@ -168,7 +170,7 @@ async def update_task(body: UpdateTaskBody, task_id: int):
     "/{task_id}", response_model=BaseResponseModel, description="Delete task"
 )
 async def delete_task(user_id: str, task_id: int):
-    user: User | None = getUserOnSupabaseId(user_id)
+    user: User | None = get_user_with_id(user_id)
 
     if not user:
         return generate_response(

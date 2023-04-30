@@ -4,9 +4,9 @@ from models import STATUS
 
 
 class AddTaskBody(BaseModel):
-    user_id: str = Field(
+    user_id: str | int = Field(
         ...,
-        description="User Supabase ID",
+        description="User ID or Supabase ID",
         example="9872a-sde82-8as8a",
         alias="userId",
     )
@@ -27,9 +27,9 @@ class AddTaskBody(BaseModel):
 
 
 class UpdateTaskBody(BaseModel):
-    user_id: str = Field(
+    user_id: str | int = Field(
         ...,
-        description="User Supabase ID",
+        description="User ID or Supabase ID",
         example="9872a-sde82-8as8a",
         alias="userId",
     )
