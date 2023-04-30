@@ -1,7 +1,7 @@
 import { Button, Form, Input, Space, Typography } from "antd";
 import React, { useState } from "react";
 
-const LoginPage: React.FC = () => {
+const SignupPage: React.FC = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -14,7 +14,7 @@ const LoginPage: React.FC = () => {
     return (
         <Form onFinish={handleSubmit}>
             <Space direction="vertical">
-                <Typography.Title>Login</Typography.Title>
+                <Typography.Title>Signup</Typography.Title>
 
                 <Input
                     required
@@ -41,4 +41,4 @@ const LoginPage: React.FC = () => {
     );
 };
 
-export default LoginPage;
+export default SignupPage;
