@@ -2,6 +2,10 @@
 
 What changed?
 
-- FastAPI switched with Next.js API
-- React switched with Next.js
-- MUI switched with Ant Design
+- FastAPI -> Next.js
+- React -> Next.js
+- MUI -> Ant Design
+- Postgres -> MongoDB
+
+TODO:
+Update docker compose to connect to mongodb instead of postgres
