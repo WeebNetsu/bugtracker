@@ -22,22 +22,10 @@ This is a bug tracker app inspired by Trello & ClickUp... We use Supabase for fi
     -   [Running App](#run)
     -   [Using Docker (Recommended)](#using-docker)
     -   [Checking Logs](#checking-logs)
--   [Database](#database)
-    -   [Generating a new database](#generating-a-new-database)
-    -   [Viewing the Database](#viewing-databases)
--   [Migrations](#running-migrations)
-    -   [First Steps](#first-migration-steps)
-    -   [Creating Migrations](#creating-migrations)
-    -   [Downgrading Migrations](#downgrading-migration)
-    -   [Migration Notes](#migration-notes)
--   [Tests](#tests)
-    -   [Running Tests](#running-tests)
--   [API Docs](#view-api-docs)
 -   [Project Structure](#project-structure)
-    -   [Client](#client-structure)
-    -   [API](#api-structure)
 -   [Helpful Links](#helpful-links)
 -   [Support Me](#support)
+-   [Changelog](#changelog)
 
 ---
 
