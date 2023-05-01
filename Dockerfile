@@ -1,8 +1,8 @@
 FROM node:16-buster
 
-COPY . /app
+COPY . /site
 
-WORKDIR /app
+WORKDIR /site
 
 # RUN apk update && apk add postgresql
 

@@ -2,6 +2,7 @@
 
 # docker
 mongo/
+site/
 
 # dependencies
 /node_modules
