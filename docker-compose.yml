@@ -1,51 +1,21 @@
 version: '3.7'
 services:
   db:
-    image: postgres
-    environment:
-      DB_PASSWORD: postgres
-      DB_USER: postgres
-      DB: bug-tracker
-      POSTGRES_DB: bug-tracker
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data 
+    image: 'mongo:5.0.17'
     ports:
-      - "5432:5432"
-
-  api:
-    image: bug-tracker-api
-    depends_on:
-      - db
-    ports:
-      - "8000:8000"
+      - '27017:27017'
     volumes:
-      - ./api:/api
-    working_dir: /api
-    build: ./api
-    command: uvicorn __init__:app --host 0.0.0.0 --port 8000 --reload
+      - './mongo:/data/db'
 
   client:
-    image: bug-tracker-client
+    image: bug-tracker
     depends_on:
-      - api
+      - db
     ports:
       - "3000:3000"
     volumes:
-      - ./client:/client
-    working_dir: /client
-    build: ./client
+      - ./app:/app
+    working_dir: /app
+    build: ./app
     command: npm start
-
-  # ip addr to find host, dashboard runs on localhost:16543
-  # https://onexlab-io.medium.com/docker-compose-postgres-initdb-ba0021deef76
-  pgadmin-compose:
-    image: dpage/pgadmin4
-    environment: 
-      PGADMIN_DEFAULT_EMAIL: "admin@gmail.com"
-      PGADMIN_DEFAULT_PASSWORD: "admin"
-    ports: 
-      - "16543:80"
-    depends_on: 
-      - db
+ 
