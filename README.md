@@ -56,9 +56,9 @@ MONGO_URL=MONGO_URL=mongodb://localhost:27017
 
 `docker-compose up -d`
 
-Client: http://localhost:3000
-MongoDB: mongodb://localhost:27017
-Portainer: https://localhost:9443
+-   Client: http://localhost:3000
+-   MongoDB: mongodb://localhost:27017
+-   Portainer: https://localhost:9443
 
 ### Checking Logs
 
