@@ -82,7 +82,10 @@ These logs will contain all the logs from the client, api and database viewer, y
 
 ## Helpful Links
 
-**Supabase:** https://supabase.com/docs
+-   [Next.js](https://nextjs.org/docs/getting-started)
+-   [Supabase](https://supabase.com/docs/reference/javascript/installing)
+<!-- note that I use the supabase-bin AUR package instead -->
+-   [Supabase CLI](https://supabase.com/docs/guides/cli)
 
 ## Support
 

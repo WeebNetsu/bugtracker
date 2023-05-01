@@ -14,7 +14,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./site:/site
+      - ./:/site
     working_dir: /site
     build: ./site
     command: npm start

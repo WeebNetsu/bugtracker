@@ -1,4 +1,5 @@
 import { Button, Form, Input, Space, Typography } from "antd";
+import Link from "next/link";
 import React, { useState } from "react";
 
 const SignupPage: React.FC = () => {
@@ -36,6 +37,10 @@ const SignupPage: React.FC = () => {
                 <Input required autoFocus placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
 
                 <Button htmlType="submit">Login</Button>
+
+                <Typography>
+                    Already have an account? <Link href={"/login"}>Log in</Link>.
+                </Typography>
             </Space>
         </Form>
     );
