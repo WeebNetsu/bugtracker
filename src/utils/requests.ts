@@ -1,8 +1,20 @@
-import { ErrorResponseModel, SimpleResponseModel } from "@/models/requests";
+import { ErrorResponseModel } from "@/models/requests";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { message } from "antd";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Database } from "../../lib/database.types";
+
+/**
+ * Send a get request to an endpoint
+ *
+ * @param route Route to make request to
+ * @returns Returns request data
+ */
+export const sendGetRequest = async (route: string) => {
+    const data = await fetch(`${route}`);
+
+    return data;
+};
 
 /**
  * Send a post request to an endpoint
@@ -31,7 +43,7 @@ export const sendPostRequest = async (route: string, body?: any) => {
  * @param code Status code to attach. Defaults to 400
  * @returns Response with status code
  */
-export const simpleResponse = (res: NextApiResponse<any>, response: SimpleResponseModel, code = 400) => {
+export const simpleResponse = (res: NextApiResponse<any>, response: any, code = 400) => {
     return res.status(code).json(JSON.stringify(response));
 };
 
