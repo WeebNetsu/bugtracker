@@ -3,9 +3,9 @@ import { ObjectId } from "mongodb";
 interface TaskModel {
     _id: ObjectId;
     /**
-     * ID of user who created this task
+     * Supabase ID of user who created this task
      */
-    creatorId: ObjectId;
+    ownerId: string;
     /**
      * ID of the project this task belongs to
      */
@@ -16,17 +16,8 @@ interface TaskModel {
      * can be found on the project
      */
     statusId?: ObjectId;
-    /**
-     * Task title
-     */
     title: string;
-    /**
-     * Task description
-     */
     description?: string;
-    /**
-     * Date task was created on
-     */
     createdAt: Date;
 }
 

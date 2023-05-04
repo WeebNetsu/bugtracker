@@ -1,6 +1,8 @@
-import { ErrorResponseModel } from "@/models/requests";
+import { ErrorResponseModel, SimpleResponseModel } from "@/models/requests";
+import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { message } from "antd";
-import { NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
+import { Database } from "../../lib/database.types";
 
 /**
  * Send a post request to an endpoint
@@ -29,8 +31,32 @@ export const sendPostRequest = async (route: string, body?: any) => {
  * @param code Status code to attach. Defaults to 400
  * @returns Response with status code
  */
-export const simpleResponse = (res: NextApiResponse<any>, response: ErrorResponseModel, code = 400) => {
+export const simpleResponse = (res: NextApiResponse<any>, response: SimpleResponseModel, code = 400) => {
     return res.status(code).json(JSON.stringify(response));
+};
+
+/**
+ * Responds with a not authenticated message.
+ *
+ * @param res Response to send response with
+ * @returns Response with 401 (not authenticated) status code
+ */
+export const notAuthResponse = (res: NextApiResponse<any>) => {
+    return res.status(401).json(
+        JSON.stringify({
+            reason: "User not authenticated",
+        }),
+    );
+};
+
+/**
+ * Parses the response from the API
+ *
+ * @param resp Response received from request
+ * @returns A parsed response from the API
+ */
+export const parseApiResponse = async (resp: Response) => {
+    return JSON.parse(await resp.json());
 };
 
 /**
@@ -41,7 +67,33 @@ export const simpleResponse = (res: NextApiResponse<any>, response: ErrorRespons
  */
 export const uiHandleRequestFailed = async (resp: Response) => {
     console.error({ resp });
-    const parsedData: ErrorResponseModel = JSON.parse(await resp.json());
+    const parsedData: ErrorResponseModel = await parseApiResponse(resp);
 
     message.error(parsedData.reason);
+};
+
+/**
+ * Checks if a user is authenticated - useful for API endpoints
+ *
+ * @param req Request sent to api
+ * @param res Response for api
+ * @returns The user if authenticated, null if not
+ */
+export const checkApiSupabaseAuth = async (req: NextApiRequest, res: NextApiResponse<any>) => {
+    const supabaseServerClient = createServerSupabaseClient<Database>(
+        {
+            req,
+            res,
+        },
+        {
+            supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_KEY,
+            supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+        },
+    );
+
+    const {
+        data: { user },
+    } = await supabaseServerClient.auth.getUser();
+
+    return user;
 };
