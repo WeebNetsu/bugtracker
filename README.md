@@ -40,6 +40,10 @@ Add your variables to a `.env.local` file:
 
 ```
 MONGO_URL=MONGO_URL=mongodb://localhost:27017
+
+NEXT_PUBLIC_SUPABASE_URL=https://whatever.supabase.co
+
+NEXT_PUBLIC_SUPABASE_KEY=averylonganonkeythatissafetoshowontheui
 ```
 
 ## Run App:
@@ -54,11 +58,14 @@ MONGO_URL=MONGO_URL=mongodb://localhost:27017
 
 ### Using Docker
 
+Note that docker will only run the database.
+
 `docker-compose up -d`
 
--   Client: http://localhost:3000
+<!-- -   Client: http://localhost:3000 -->
+
 -   MongoDB: mongodb://localhost:27017
--   Portainer: https://localhost:9443
+<!-- -   Portainer: https://localhost:9443 -->
 
 ### Checking Logs
 

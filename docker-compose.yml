@@ -7,15 +7,15 @@ services:
     volumes:
       - './mongo:/data/db'
 
-  client:
-    image: bug-tracker
-    depends_on:
-      - db
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./:/site
-    working_dir: /site
-    build: ./site
-    command: npm start
+  # client:
+  #   image: bug-tracker
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./:/site
+  #   working_dir: /site
+  #   build: ./
+  #   command: npm start
  
