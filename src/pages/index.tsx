@@ -3,7 +3,6 @@ import ProjectModel from "@/models/project";
 import { parseApiResponse, sendGetRequest, uiHandleRequestFailed } from "@/utils/requests";
 import { PlusOutlined } from "@ant-design/icons";
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
-import { Auth } from "@supabase/auth-ui-react";
 import { Button, Space, Typography, message } from "antd";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -47,18 +46,6 @@ export default function Home() {
 
         getData();
     }, [user]);
-
-    if (!user) {
-        return (
-            <Auth
-                redirectTo="http://localhost:3000/"
-                // appearance={{ theme: ThemeSupa }}
-                supabaseClient={supabaseClient}
-                providers={[]}
-                // socialLayout="horizontal"
-            />
-        );
-    }
 
     if (loading) return <Loader />;
 

@@ -1,4 +1,5 @@
 import { ErrorResponseModel } from "@/models/requests";
+import { SearchableObject } from "@/types/interfaces";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { message } from "antd";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -43,7 +44,7 @@ export const sendPostRequest = async (route: string, body?: any) => {
  * @param code Status code to attach. Defaults to 400
  * @returns Response with status code
  */
-export const simpleResponse = (res: NextApiResponse<any>, response: any, code = 400) => {
+export const simpleResponse = (res: NextApiResponse<any>, response: SearchableObject, code = 400) => {
     return res.status(code).json(JSON.stringify(response));
 };
 
