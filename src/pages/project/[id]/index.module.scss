@@ -1,0 +1,21 @@
+.statusContainer {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    min-height: 400px;
+    min-width: 25rem;
+    // height: ${statusHeight}px;
+    overflow-y: scroll;
+    margin-left: 1rem;
+
+    // hide the scrollbar
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    align-items: flex-start;
+    justify-content: center;
+    padding: 1rem;
+    text-align: center;
+}
+
+.statusContainer::-webkit-scrollbar {
+    display: none;
+}

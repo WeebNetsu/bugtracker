@@ -53,8 +53,6 @@ export default function Home() {
         <Space direction="vertical">
             <Typography>Navigation</Typography>
             <Space>
-                <Link href={"/login"}>Login</Link>
-                <Link href={"/signup"}>Signup</Link>
                 <Button type="link" onClick={() => supabaseClient.auth.signOut()}>
                     Logout
                 </Button>
