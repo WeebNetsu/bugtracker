@@ -1,4 +1,4 @@
-import { ErrorResponseModel } from "@/models/requests";
+import { AvailableRequestMethods, ErrorResponseModel } from "@/models/requests";
 import { SearchableObject } from "@/types/interfaces";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { message } from "antd";
@@ -18,15 +18,19 @@ export const sendGetRequest = async (route: string) => {
 };
 
 /**
- * Send a post request to an endpoint
+ * Send a post (or any other similar request types) request to an endpoint
  *
  * @param route Route to make request to
  * @param body Data to send to route
  * @returns Returns request data
  */
-export const sendPostRequest = async (route: string, body?: any) => {
+export const sendPostRequest = async (
+    route: string,
+    body?: any,
+    requestType: AvailableRequestMethods = AvailableRequestMethods.POST,
+) => {
     const data = await fetch(`${route}`, {
-        method: "POST",
+        method: requestType,
         headers: {
             "Content-Type": "application/json",
         },

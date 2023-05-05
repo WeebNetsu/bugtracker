@@ -1,6 +1,6 @@
 import { Typography } from "antd";
 import React from "react";
-import styles from "./card.module.scss";
+import styles from "./_card.module.scss";
 
 interface CardProps {
     title: string;

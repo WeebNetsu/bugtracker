@@ -13,12 +13,13 @@ interface TaskModel {
     /**
      * ID of the status this task belongs to, such
      * as TODO/IN PROGRESS/COMPLETED - these statuses
-     * can be found on the project
+     * can be found on the project model
      */
-    statusId?: ObjectId;
+    statusId?: string;
     title: string;
     description?: string;
     createdAt: Date;
+    archived?: boolean;
 }
 
 export default TaskModel;
