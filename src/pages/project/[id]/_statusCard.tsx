@@ -1,14 +1,14 @@
 import { Typography } from "antd";
 import React from "react";
-import styles from "./_card.module.scss";
+import styles from "./_statusCard.module.scss";
 
 interface CardProps {
     title: string;
 }
 
-const Card: React.FC<CardProps> = ({ title }) => {
+const StatusCard: React.FC<CardProps> = ({ title }) => {
     return (
-        <div className={styles.card}>
+        <div className={styles.statusCard}>
             <Typography.Title
                 level={5}
                 style={{
@@ -22,4 +22,4 @@ const Card: React.FC<CardProps> = ({ title }) => {
     );
 };
 
-export default Card;
+export default StatusCard;

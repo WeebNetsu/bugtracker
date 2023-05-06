@@ -1,7 +1,10 @@
 import Loader from "@/components/loader";
 import ProjectModel from "@/models/project";
 import { AvailableRequestMethods } from "@/models/requests";
-import { SingleProjectGetResponseModel, SingleProjectPutRequestBodyModel } from "@/pages/api/projects/[id]/_models";
+import {
+    SingleProjectGetResponseModel,
+    SingleProjectPutRequestBodyModel,
+} from "@/pages/api/projects/[projectId]/_models";
 import { parseApiResponse, sendGetRequest, sendPostRequest, uiHandleRequestFailed } from "@/utils/requests";
 import { checkStrEmpty, formatToHumanDate } from "@netsu/js-utils";
 import { useUser } from "@supabase/auth-helpers-react";
@@ -9,7 +12,7 @@ import { Button, Input, Space, Typography, message } from "antd";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import StatusItem from "./_statusItem";
+import StatusContainer from "./_statusContainer";
 
 const SpecificProjectPage: React.FC = () => {
     const user = useUser();
@@ -120,7 +123,7 @@ const SpecificProjectPage: React.FC = () => {
                 {userProject.statuses
                     .sort((prev, curr) => prev.orderIndex - curr.orderIndex)
                     .map(projectStatus => (
-                        <StatusItem
+                        <StatusContainer
                             projectStatus={projectStatus}
                             setUserProject={setUserProject}
                             key={projectStatus._id}

@@ -12,9 +12,9 @@ import {
 } from "./_models";
 
 const getHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleResponseModel>) => {
-    const { id } = req.query;
+    const { projectId } = req.query;
 
-    if (!id || typeof id !== "string") {
+    if (!projectId || typeof projectId !== "string") {
         const resp: SimpleResponseModel = {
             reason: "ID is invalid",
         };
@@ -27,7 +27,7 @@ const getHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespon
     if (!user) return notAuthResponse(res);
 
     const project = await ProjectsCollection.findOne({
-        _id: new ObjectId(id),
+        _id: new ObjectId(projectId),
     });
 
     if (!project) {
@@ -46,10 +46,10 @@ const getHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespon
 };
 
 const putHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleResponseModel>) => {
-    const { id } = req.query;
+    const { projectId } = req.query;
     const { data } = req.body as SingleProjectPutRequestBodyModel;
 
-    if (!id || typeof id !== "string") {
+    if (!projectId || typeof projectId !== "string") {
         const resp: SimpleResponseModel = {
             reason: "ID is invalid",
         };
@@ -65,7 +65,7 @@ const putHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespon
 
     const project = await ProjectsCollection.findOneAndUpdate(
         {
-            _id: new ObjectId(id),
+            _id: new ObjectId(projectId),
         },
         {
             $set: updateData,

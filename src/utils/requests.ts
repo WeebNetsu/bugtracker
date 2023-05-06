@@ -40,6 +40,18 @@ export const sendPostRequest = async (
     return data;
 };
 
+export const checkPathParametersValid = (...params: (string | string[] | undefined)[]) => {
+    for (let i = 0; i < params.length; i++) {
+        const param = params[i];
+
+        if (!param || typeof param !== "string") {
+            return false;
+        }
+    }
+
+    return true;
+};
+
 /**
  * Function returns a response with a code and data
  *
