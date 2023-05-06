@@ -19,7 +19,11 @@ interface TaskModel {
     title: string;
     description?: string;
     createdAt: Date;
-    archived?: boolean;
+    archived: boolean;
+    /**
+     * Where in the status should this task be (lower the higher on the list)
+     */
+    order: number;
 }
 
 export default TaskModel;

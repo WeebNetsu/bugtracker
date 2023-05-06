@@ -36,6 +36,7 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespo
     const project = await ProjectsCollection.findOneAndUpdate(
         {
             _id: new ObjectId(projectId),
+            ownerId: user.id,
         },
         {
             $push: {

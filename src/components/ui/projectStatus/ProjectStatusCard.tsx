@@ -3,12 +3,16 @@ import { Typography } from "antd";
 import React from "react";
 import styles from "./styles/ProjectStatusCard.module.scss";
 
-interface CardProps {
+interface ProjectStatusCardProps {
     title: string;
     description?: string;
+    /**
+     * If this card is used to create a brand new card
+     */
+    createMode?: boolean;
 }
 
-const StatusCard: React.FC<CardProps> = ({ title, description }) => {
+const ProjectStatusCard: React.FC<ProjectStatusCardProps> = ({ title, description, createMode }) => {
     return (
         <div className={styles.statusCard}>
             <Typography.Title
@@ -35,4 +39,4 @@ const StatusCard: React.FC<CardProps> = ({ title, description }) => {
     );
 };
 
-export default StatusCard;
+export default ProjectStatusCard;

@@ -1,4 +1,5 @@
 import Loader from "@/components/ui/Loader";
+import StatusContainer from "@/components/ui/projectStatus/ProjectStatusContainer";
 import ProjectModel from "@/models/project";
 import { SingleProjectGetResponseModel } from "@/pages/api/projects/[projectId]/_models";
 import { SingleProjectStatusPostRequestBodyModel } from "@/pages/api/projects/[projectId]/status/_models";
@@ -9,19 +10,18 @@ import { Button, Input, Space, Typography, message } from "antd";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import StatusContainer from "../../../components/ui/ProjectStatusContainer";
 
 const SpecificProjectPage: React.FC = () => {
     const user = useUser();
+    const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [userProject, setUserProject] = useState<ProjectModel | undefined>();
     const [newStatusTitle, setNewStatusTitle] = useState("");
-    const router = useRouter();
+
+    const { projectId } = router.query;
 
     useEffect(() => {
-        const { id } = router.query;
-
-        if (!id || typeof id !== "string") {
+        if (!projectId || typeof projectId !== "string") {
             return;
         }
 
@@ -35,7 +35,7 @@ const SpecificProjectPage: React.FC = () => {
         const getData = async () => {
             setLoading(true);
             try {
-                const getProjectReq = await sendGetRequest(`/api/projects/${id}`);
+                const getProjectReq = await sendGetRequest(`/api/projects/${projectId}`);
 
                 if (!getProjectReq.ok) {
                     await uiHandleRequestFailed(getProjectReq);
@@ -61,9 +61,7 @@ const SpecificProjectPage: React.FC = () => {
             return message.error("Title cannot be empty");
         }
 
-        const { id } = router.query;
-
-        if (!id || typeof id !== "string" || !userProject) {
+        if (!projectId || typeof projectId !== "string" || !userProject) {
             return message.error("Could not get project ID");
         }
 
@@ -79,7 +77,7 @@ const SpecificProjectPage: React.FC = () => {
             data: newStatus,
         };
 
-        const updated = await sendPostRequest(`/api/projects/${id}/status`, updateStatusData);
+        const updated = await sendPostRequest(`/api/projects/${projectId}/status`, updateStatusData);
 
         if (!updated.ok) {
             return message.error("Could not update project statuses");
@@ -96,6 +94,9 @@ const SpecificProjectPage: React.FC = () => {
     if (loading) return <Loader />;
 
     if (!userProject) return <Typography>Project not found</Typography>;
+
+    if (!projectId) return <Typography>No project ID provided </Typography>;
+    if (typeof projectId !== "string") return <Typography>Invalid project ID </Typography>;
 
     return (
         <Space
@@ -127,6 +128,7 @@ const SpecificProjectPage: React.FC = () => {
                     .sort((prev, curr) => prev.orderIndex - curr.orderIndex)
                     .map(projectStatus => (
                         <StatusContainer
+                            projectId={projectId}
                             projectStatus={projectStatus}
                             setUserProject={setUserProject}
                             key={projectStatus._id}

@@ -1,4 +1,5 @@
 import Authorize from "@/components/auth/authorize";
+import Header from "@/components/layout/Header";
 import "@/styles/globals.scss";
 import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
@@ -27,6 +28,8 @@ export default function App({ Component, pageProps }: AppProps) {
     return (
         <SessionContextProvider supabaseClient={supabaseClient} initialSession={pageProps.initialSession}>
             <Authorize>
+                <Header />
+
                 <Component {...pageProps} />
             </Authorize>
         </SessionContextProvider>

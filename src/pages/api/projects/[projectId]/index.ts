@@ -28,6 +28,7 @@ const getHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespon
 
     const project = await ProjectsCollection.findOne({
         _id: new ObjectId(projectId),
+        ownerId: user.id,
     });
 
     if (!project) {
@@ -66,6 +67,7 @@ const putHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespon
     const project = await ProjectsCollection.findOneAndUpdate(
         {
             _id: new ObjectId(projectId),
+            ownerId: user.id,
         },
         {
             $set: updateData,

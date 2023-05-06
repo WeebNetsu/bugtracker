@@ -101,7 +101,7 @@ const deleteHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRes
 
     if (!user) return notAuthResponse(res);
 
-    const project = await ProjectsCollection.findOne(new ObjectId(projectId));
+    const project = await ProjectsCollection.findOne({ _id: new ObjectId(projectId), ownerId: user.id });
 
     if (!project) {
         const resp: SimpleResponseModel = {

@@ -1,34 +1,67 @@
 import ProjectModel, { ProjectStatusModel } from "@/models/project";
 import { AvailableRequestMethods } from "@/models/requests";
+import TaskModel from "@/models/task";
 import { SingleProjectStatusPutRequestBodyModel } from "@/pages/api/projects/[projectId]/status/[statusId]/_models";
+import { ProjectStatusTasksGetResponseModel } from "@/pages/api/projects/[projectId]/status/[statusId]/tasks/_models";
 import useWindowDimensions from "@/utils/hooks";
-import { sendPostRequest } from "@/utils/requests";
-import { EllipsisOutlined, PlusOutlined } from "@ant-design/icons";
+import { parseApiResponse, sendGetRequest, sendPostRequest, uiHandleRequestFailed } from "@/utils/requests";
+import { EllipsisOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Typography, message } from "antd";
-import { useRouter } from "next/router";
-import React, { useState } from "react";
-import DangerousActionPopup from "./DangerousActionPopup";
-import StatusCard from "./ProjectStatusCard";
+import React, { useEffect, useState } from "react";
+import DangerousActionPopup from "../DangerousActionPopup";
+import Loader from "../Loader";
+import ProjectStatusCard from "./ProjectStatusCard";
+import ProjectStatusCardCreator from "./ProjectStatusCardCreator";
 import styles from "./styles/ProjectStatusContainer.module.scss";
 
 interface StatusContainerProps {
     projectStatus: ProjectStatusModel;
     setUserProject: React.Dispatch<React.SetStateAction<ProjectModel | undefined>>;
     userProject: ProjectModel;
+    projectId: string;
 }
 
-const StatusContainer: React.FC<StatusContainerProps> = ({ projectStatus, setUserProject, userProject }) => {
-    const router = useRouter();
+const StatusContainer: React.FC<StatusContainerProps> = ({ projectStatus, setUserProject, userProject, projectId }) => {
+    const BASE_API_URL = `/api/projects/${projectId}/status/${projectStatus._id}`;
 
     const { height: windowHeight } = useWindowDimensions();
     const [showDeletingStatusPopup, setShowDeletingStatusPopup] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [projectStatusTasks, setProjectStatusTasks] = useState<TaskModel[]>([]);
+    const [showCreateNewProject, setShowCreateNewProject] = useState(false);
 
     const statusHeight = windowHeight * (75 / 100);
 
-    const handleStatusTitleChange = async (e: string) => {
-        const { id } = router.query;
+    useEffect(() => {
+        if (!loading) return;
 
-        if (!id || typeof id !== "string" || !userProject) {
+        const getData = async () => {
+            setLoading(true);
+
+            try {
+                const getTasksReq = await sendGetRequest(`${BASE_API_URL}/tasks`);
+
+                if (!getTasksReq.ok) {
+                    await uiHandleRequestFailed(getTasksReq);
+                    return setLoading(false);
+                }
+
+                const resp: ProjectStatusTasksGetResponseModel = await parseApiResponse(getTasksReq);
+
+                setProjectStatusTasks(resp.data);
+                setLoading(false);
+            } catch (error) {
+                setLoading(false);
+                console.error(error);
+                message.error("Unknown Error");
+            }
+        };
+
+        getData();
+    }, []);
+
+    const handleStatusTitleChange = async (e: string) => {
+        if (!projectId || typeof projectId !== "string" || !userProject) {
             return message.error("Could not get project ID");
         }
 
@@ -38,11 +71,7 @@ const StatusContainer: React.FC<StatusContainerProps> = ({ projectStatus, setUse
             },
         };
 
-        const updated = await sendPostRequest(
-            `/api/projects/${id}/status/${projectStatus._id}`,
-            updateStatusData,
-            AvailableRequestMethods.PUT,
-        );
+        const updated = await sendPostRequest(BASE_API_URL, updateStatusData, AvailableRequestMethods.PUT);
 
         if (!updated.ok) {
             return message.error("Could not update status");
@@ -60,17 +89,11 @@ const StatusContainer: React.FC<StatusContainerProps> = ({ projectStatus, setUse
     };
 
     const handleStatusDelete = async () => {
-        const { id } = router.query;
-
-        if (!id || typeof id !== "string" || !userProject) {
+        if (!projectId || typeof projectId !== "string" || !userProject) {
             return message.error("Could not get project ID");
         }
 
-        const deletedProject = await sendPostRequest(
-            `/api/projects/${id}/status/${projectStatus._id}`,
-            undefined,
-            AvailableRequestMethods.DELETE,
-        );
+        const deletedProject = await sendPostRequest(BASE_API_URL, undefined, AvailableRequestMethods.DELETE);
 
         if (!deletedProject.ok) {
             return message.error("Could not delete status");
@@ -84,6 +107,8 @@ const StatusContainer: React.FC<StatusContainerProps> = ({ projectStatus, setUse
 
         setUserProject(updatedProject);
     };
+
+    if (loading) return <Loader />;
 
     return (
         <div className={styles.statusContainer} style={{ height: statusHeight }}>
@@ -146,15 +171,26 @@ const StatusContainer: React.FC<StatusContainerProps> = ({ projectStatus, setUse
                     width: "100%",
                     marginTop: "1rem",
                 }}
+                onClick={() => setShowCreateNewProject(show => !show)}
             >
-                <PlusOutlined />
+                {showCreateNewProject ? <MinusOutlined /> : <PlusOutlined />}
             </Button>
 
-            <StatusCard
-                title="Hello World"
-                description="Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempora velit, ipsum, eaque neque itaque expedita pariatur suscipit voluptas rem debitis corrupti consequuntur harum fugit? Ducimus modi nesciunt nostrum dignissimos provident!"
+            <ProjectStatusCardCreator
+                setShow={setShowCreateNewProject}
+                show={showCreateNewProject}
+                projectId={projectId}
+                statusId={projectStatus._id}
+                setProjectStatusTasks={setProjectStatusTasks}
             />
-            <StatusCard title="This is me" />
+
+            {projectStatusTasks.map(projTask => (
+                <ProjectStatusCard
+                    key={String(projTask._id)}
+                    title={projTask.title}
+                    description={projTask.description}
+                />
+            ))}
 
             <DangerousActionPopup
                 show={showDeletingStatusPopup}
