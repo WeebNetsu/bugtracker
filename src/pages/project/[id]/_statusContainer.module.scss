@@ -7,6 +7,8 @@
     overflow-y: scroll;
     margin-left: 1rem;
 
+    position: relative;
+
     // hide the scrollbar
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */

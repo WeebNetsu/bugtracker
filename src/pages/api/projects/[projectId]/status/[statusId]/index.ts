@@ -5,7 +5,11 @@ import { AvailableRequestMethods, ErrorResponseModel, SimpleResponseModel } from
 import { checkApiSupabaseAuth, notAuthResponse, simpleResponse } from "@/utils/requests";
 import { ObjectId } from "mongodb";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { SingleProjectStatusPutRequestBodyModel, SingleProjectStatusPutResponseModel } from "./_models";
+import {
+    SingleProjectStatusDeleteResponseModel,
+    SingleProjectStatusPutRequestBodyModel,
+    SingleProjectStatusPutResponseModel,
+} from "./_models";
 
 const putHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleResponseModel>) => {
     const { projectId, statusId } = req.query;
@@ -82,10 +86,63 @@ const putHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespon
     return simpleResponse(res, response, 200);
 };
 
+const deleteHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleResponseModel>) => {
+    const { projectId, statusId } = req.query;
+
+    if (!projectId || typeof projectId !== "string" || !statusId || typeof statusId !== "string") {
+        const resp: SimpleResponseModel = {
+            reason: "ID is invalid",
+        };
+
+        return simpleResponse(res, resp, 400);
+    }
+
+    const user = await checkApiSupabaseAuth(req, res);
+
+    if (!user) return notAuthResponse(res);
+
+    const project = await ProjectsCollection.findOne(new ObjectId(projectId));
+
+    if (!project) {
+        const resp: SimpleResponseModel = {
+            reason: "Could not find project",
+        };
+
+        return simpleResponse(res, resp, 404);
+    }
+
+    const updatedProject = await ProjectsCollection.findOneAndUpdate(
+        {
+            _id: new ObjectId(projectId),
+        },
+        {
+            $set: {
+                statuses: project.statuses.filter(stat => stat._id !== statusId),
+            },
+        },
+    );
+
+    if (!updatedProject.ok || !updatedProject.value) {
+        const resp: SimpleResponseModel = {
+            reason: "Could not delete status",
+        };
+
+        return simpleResponse(res, resp, 500);
+    }
+
+    const response: SingleProjectStatusDeleteResponseModel = {
+        data: updatedProject.value,
+    };
+
+    return simpleResponse(res, response, 200);
+};
+
 const handler = async (req: NextApiRequest, res: NextApiResponse<SimpleResponseModel>) => {
     switch (req.method) {
         case AvailableRequestMethods.PUT:
             return await putHandler(req, res);
+        case AvailableRequestMethods.DELETE:
+            return await deleteHandler(req, res);
     }
 
     const response: ErrorResponseModel = {

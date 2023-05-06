@@ -1,10 +1,7 @@
 import Loader from "@/components/loader";
 import ProjectModel from "@/models/project";
-import { AvailableRequestMethods } from "@/models/requests";
-import {
-    SingleProjectGetResponseModel,
-    SingleProjectPutRequestBodyModel,
-} from "@/pages/api/projects/[projectId]/_models";
+import { SingleProjectGetResponseModel } from "@/pages/api/projects/[projectId]/_models";
+import { SingleProjectStatusPostRequestBodyModel } from "@/pages/api/projects/[projectId]/status/_models";
 import { parseApiResponse, sendGetRequest, sendPostRequest, uiHandleRequestFailed } from "@/utils/requests";
 import { checkStrEmpty, formatToHumanDate } from "@netsu/js-utils";
 import { useUser } from "@supabase/auth-helpers-react";
@@ -72,28 +69,27 @@ const SpecificProjectPage: React.FC = () => {
 
         const { statuses = [] } = userProject;
 
-        statuses.push({
+        const newStatus = {
             _id: uuidv4(),
             orderIndex: statuses.length,
             title: newStatusTitle,
-        });
-
-        const updatedProject = { ...userProject, statuses };
-
-        setUserProject(updatedProject);
-
-        const updateStatusData: SingleProjectPutRequestBodyModel = {
-            data: {
-                statuses: updatedProject.statuses,
-            },
         };
 
-        const updated = await sendPostRequest(`/api/projects/${id}`, updateStatusData, AvailableRequestMethods.PUT);
+        const updateStatusData: SingleProjectStatusPostRequestBodyModel = {
+            data: newStatus,
+        };
+
+        const updated = await sendPostRequest(`/api/projects/${id}/status`, updateStatusData);
 
         if (!updated.ok) {
             return message.error("Could not update project statuses");
         }
 
+        statuses.push(newStatus);
+
+        const updatedProject = { ...userProject, statuses };
+
+        setUserProject(updatedProject);
         setNewStatusTitle("");
     };
 
