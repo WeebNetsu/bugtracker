@@ -1,4 +1,3 @@
-import DangerousActionPopup from "@/components/dangerousActionPopup";
 import ProjectModel, { ProjectStatusModel } from "@/models/project";
 import { AvailableRequestMethods } from "@/models/requests";
 import { SingleProjectStatusPutRequestBodyModel } from "@/pages/api/projects/[projectId]/status/[statusId]/_models";
@@ -8,8 +7,9 @@ import { EllipsisOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Typography, message } from "antd";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import StatusCard from "./_statusCard";
-import styles from "./_statusContainer.module.scss";
+import DangerousActionPopup from "./DangerousActionPopup";
+import StatusCard from "./ProjectStatusCard";
+import styles from "./styles/ProjectStatusContainer.module.scss";
 
 interface StatusContainerProps {
     projectStatus: ProjectStatusModel;
@@ -104,15 +104,6 @@ const StatusContainer: React.FC<StatusContainerProps> = ({ projectStatus, setUse
                 {projectStatus.title}
             </Typography.Title>
 
-            {/* <Dropdown menu={menuProps}>
-                <Button>
-                    <Space>
-                        Button
-                        <DownOutlined />
-                    </Space>
-                </Button>
-            </Dropdown> */}
-
             <Dropdown
                 menu={{
                     items: [
@@ -134,7 +125,6 @@ const StatusContainer: React.FC<StatusContainerProps> = ({ projectStatus, setUse
                             onClick: () => setShowDeletingStatusPopup(true),
                         },
                     ],
-                    // onClick: () => {},
                 }}
             >
                 <Button
@@ -160,7 +150,10 @@ const StatusContainer: React.FC<StatusContainerProps> = ({ projectStatus, setUse
                 <PlusOutlined />
             </Button>
 
-            <StatusCard title="Hello World" />
+            <StatusCard
+                title="Hello World"
+                description="Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempora velit, ipsum, eaque neque itaque expedita pariatur suscipit voluptas rem debitis corrupti consequuntur harum fugit? Ducimus modi nesciunt nostrum dignissimos provident!"
+            />
             <StatusCard title="This is me" />
 
             <DangerousActionPopup

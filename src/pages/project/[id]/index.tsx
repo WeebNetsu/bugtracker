@@ -1,4 +1,4 @@
-import Loader from "@/components/loader";
+import Loader from "@/components/ui/Loader";
 import ProjectModel from "@/models/project";
 import { SingleProjectGetResponseModel } from "@/pages/api/projects/[projectId]/_models";
 import { SingleProjectStatusPostRequestBodyModel } from "@/pages/api/projects/[projectId]/status/_models";
@@ -9,7 +9,7 @@ import { Button, Input, Space, Typography, message } from "antd";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import StatusContainer from "./_statusContainer";
+import StatusContainer from "../../../components/ui/ProjectStatusContainer";
 
 const SpecificProjectPage: React.FC = () => {
     const user = useUser();
@@ -104,7 +104,14 @@ const SpecificProjectPage: React.FC = () => {
                 width: "100%",
             }}
         >
-            <Typography.Title>{userProject.title}</Typography.Title>
+            <Typography.Title
+                style={{
+                    margin: 0,
+                    padding: 0,
+                }}
+            >
+                {userProject.title}
+            </Typography.Title>
             <Typography>{userProject.description}</Typography>
             <Typography>Created on {formatToHumanDate(userProject.createdAt)}</Typography>
 

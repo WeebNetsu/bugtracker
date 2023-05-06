@@ -1,8 +1,8 @@
-import Loader from "@/components/loader";
+import Loader from "@/components/ui/Loader";
 import ProjectModel from "@/models/project";
 import { parseApiResponse, sendGetRequest, uiHandleRequestFailed } from "@/utils/requests";
 import { PlusOutlined } from "@ant-design/icons";
-import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
+import { useUser } from "@supabase/auth-helpers-react";
 import { Button, Space, Typography, message } from "antd";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -10,7 +10,6 @@ import { ProjectsGetResponseModel } from "./api/projects/_models";
 
 export default function Home() {
     const user = useUser();
-    const supabaseClient = useSupabaseClient();
     const [loading, setLoading] = useState(true);
     const [userProjects, setUserProjects] = useState<ProjectModel[]>([]);
 
@@ -51,13 +50,6 @@ export default function Home() {
 
     return (
         <Space direction="vertical">
-            <Typography>Navigation</Typography>
-            <Space>
-                <Button type="link" onClick={() => supabaseClient.auth.signOut()}>
-                    Logout
-                </Button>
-            </Space>
-
             <Typography>
                 Your Projects:{" "}
                 <Link href={"/project/create"}>

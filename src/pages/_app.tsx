@@ -1,4 +1,4 @@
-import Authorize from "@/components/authorize";
+import Authorize from "@/components/auth/authorize";
 import "@/styles/globals.scss";
 import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";

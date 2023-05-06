@@ -1,4 +1,4 @@
-import Loader from "@/components/loader";
+import Loader from "@/components/ui/Loader";
 import { SuccessResponseModel } from "@/models/requests";
 import { parseApiResponse, sendPostRequest, uiHandleRequestFailed } from "@/utils/requests";
 import { CloseOutlined, MenuOutlined, PlusOutlined } from "@ant-design/icons";
