@@ -11,8 +11,6 @@ This is a bug tracker app inspired by Trello & ClickUp... We use Supabase for fi
 
 ---
 
-<!-- NOTE: I'm currently busy implementing a server, tracker will be wonky until switch from JSON-server to FastAPI has been completed. For a working example, go to commit: [9e438b607f7cef298c17deec07f8bbb68d4c3cd4](https://github.com/WeebNetsu/bugtracker/commit/9e438b607f7cef298c17deec07f8bbb68d4c3cd4) -->
-
 ## Contents
 
 -   [Requirements](#requirements)
@@ -100,14 +98,24 @@ If you want to support me and what I do, please consider subscribing to my YouTu
 
 ## Changelog
 
-## v1
+## v2 (Next Level - Current)
 
--   json-server -> FastAPI
--   json-server -> PostgreSQL
-
-## v2
+Changes:
 
 -   FastAPI -> Next.js
 -   React -> Next.js
 -   MUI -> Ant Design
 -   Postgres -> MongoDB
+
+## v1 (Fast Man)
+
+[View Here](https://github.com/WeebNetsu/bugtracker/tree/old/fastapi)
+
+Changes:
+
+-   json-server -> FastAPI
+-   json-server -> PostgreSQL
+
+## v0 (Juicy Service)
+
+[View Here](https://github.com/WeebNetsu/bugtracker/tree/old/json-server)
