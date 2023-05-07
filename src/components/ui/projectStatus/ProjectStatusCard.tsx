@@ -6,13 +6,9 @@ import styles from "./styles/ProjectStatusCard.module.scss";
 interface ProjectStatusCardProps {
     title: string;
     description?: string;
-    /**
-     * If this card is used to create a brand new card
-     */
-    createMode?: boolean;
 }
 
-const ProjectStatusCard: React.FC<ProjectStatusCardProps> = ({ title, description, createMode }) => {
+const ProjectStatusCard: React.FC<ProjectStatusCardProps> = ({ title, description }) => {
     return (
         <div className={styles.statusCard}>
             <Typography.Title

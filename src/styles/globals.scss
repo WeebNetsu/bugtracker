@@ -7,3 +7,15 @@
 .hideScrollbar::-webkit-scrollbar {
     display: none;
 }
+
+.boxWithCenterText {
+    border: 1px solid #aaa;
+    width: 15rem;
+    height: 7.5rem;
+    border-radius: 10px;
+
+    // align text to center of div
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
