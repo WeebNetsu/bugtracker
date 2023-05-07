@@ -22,12 +22,15 @@ export const sendGetRequest = async (route: string) => {
  *
  * @param route Route to make request to
  * @param body Data to send to route
+ * @param requestType POST, PUT, DELETE
+ * @param revalidateCollection Name of the collection to get data from if it requires revalidation
  * @returns Returns request data
  */
 export const sendPostRequest = async (
     route: string,
     body?: any,
     requestType: AvailableRequestMethods = AvailableRequestMethods.POST,
+    revalidateCollection?: string,
 ) => {
     const data = await fetch(`${route}`, {
         method: requestType,
@@ -35,6 +38,7 @@ export const sendPostRequest = async (
             "Content-Type": "application/json",
         },
         body: body ? JSON.stringify(body) : undefined,
+        next: revalidateCollection ? { tags: [revalidateCollection] } : undefined,
     });
 
     return data;

@@ -8,6 +8,7 @@ import { parseApiResponse, sendGetRequest, sendPostRequest, uiHandleRequestFaile
 import { EllipsisOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Typography, message } from "antd";
 import React, { useEffect, useState } from "react";
+import { Draggable } from "react-beautiful-dnd";
 import DangerousActionPopup from "../DangerousActionPopup";
 import Loader from "../Loader";
 import ProjectStatusCard from "./ProjectStatusCard";
@@ -17,11 +18,20 @@ import styles from "./styles/ProjectStatusContainer.module.scss";
 interface StatusContainerProps {
     projectStatus: ProjectStatusModel;
     setUserProject: React.Dispatch<React.SetStateAction<ProjectModel | undefined>>;
+    revalidateTaskData: boolean;
+    setRevalidateTaskData: React.Dispatch<React.SetStateAction<boolean>>;
     userProject: ProjectModel;
     projectId: string;
 }
 
-const StatusContainer: React.FC<StatusContainerProps> = ({ projectStatus, setUserProject, userProject, projectId }) => {
+const StatusContainer: React.FC<StatusContainerProps> = ({
+    projectStatus,
+    setUserProject,
+    userProject,
+    projectId,
+    revalidateTaskData,
+    setRevalidateTaskData,
+}) => {
     const BASE_API_URL = `/api/projects/${projectId}/status/${projectStatus._id}`;
 
     const { height: windowHeight } = useWindowDimensions();
@@ -33,7 +43,7 @@ const StatusContainer: React.FC<StatusContainerProps> = ({ projectStatus, setUse
     const statusHeight = windowHeight * (75 / 100);
 
     useEffect(() => {
-        if (!loading) return;
+        if (!loading && !revalidateTaskData) return;
 
         const getData = async () => {
             setLoading(true);
@@ -50,15 +60,17 @@ const StatusContainer: React.FC<StatusContainerProps> = ({ projectStatus, setUse
 
                 setProjectStatusTasks(resp.data);
                 setLoading(false);
+                setRevalidateTaskData(false);
             } catch (error) {
                 setLoading(false);
                 console.error(error);
                 message.error("Unknown Error");
+                setRevalidateTaskData(false);
             }
         };
 
         getData();
-    }, []);
+    }, [revalidateTaskData]);
 
     const handleStatusTitleChange = async (e: string) => {
         if (!projectId || typeof projectId !== "string" || !userProject) {
@@ -184,13 +196,17 @@ const StatusContainer: React.FC<StatusContainerProps> = ({ projectStatus, setUse
                 setProjectStatusTasks={setProjectStatusTasks}
             />
 
-            {projectStatusTasks.map(projTask => (
-                <ProjectStatusCard
-                    key={String(projTask._id)}
-                    title={projTask.title}
-                    description={projTask.description}
-                />
-            ))}
+            {projectStatusTasks
+                .sort((curr, prev) => curr.order - prev.order)
+                .map(projTask => (
+                    <Draggable draggableId={String(projTask._id)} index={projTask.order} key={String(projTask._id)}>
+                        {provided => (
+                            <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                <ProjectStatusCard title={projTask.title} description={projTask.description} />
+                            </div>
+                        )}
+                    </Draggable>
+                ))}
 
             <DangerousActionPopup
                 show={showDeletingStatusPopup}
