@@ -1,6 +1,6 @@
 # Bug Tracker App
 
-This is a bug tracker app inspired by Trello & ClickUp... We use Supabase for file storage and user auth, PostgreSQL for storing data, FastAPI for our API and React.js (TypeScript) as our frontend!
+This is a bug tracker app inspired by Trello & ClickUp... We use Supabase for file storage and user auth, MongoDB for storing data, Next.js for our API and Ant Design as our frontend!
 
 [<img alt="Next.js" src="https://img.shields.io/badge/-Next.js-000000?style=flat-square&logo=Next.js&logoColor=white" />](https://nextjs.org)
 [<img alt="Supabase" src="https://img.shields.io/badge/-Supabase-33A870?style=flat-square&logo=Supabase&logoColor=white" />](https://supabase.com)
