@@ -10,7 +10,6 @@ import { Button, Dropdown, Typography, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import DangerousActionPopup from "../DangerousActionPopup";
-import Loader from "../Loader";
 import ProjectStatusCard from "./ProjectStatusCard";
 import ProjectStatusCardCreator from "./ProjectStatusCardCreator";
 import styles from "./styles/ProjectStatusContainer.module.scss";
@@ -120,7 +119,7 @@ const StatusContainer: React.FC<StatusContainerProps> = ({
         setUserProject(updatedProject);
     };
 
-    if (loading) return <Loader />;
+    // if (loading) return <Loader />;
 
     return (
         <div className={styles.statusContainer} style={{ height: statusHeight }}>

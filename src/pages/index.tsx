@@ -1,9 +1,10 @@
 import Loader from "@/components/ui/Loader";
+import ProjectBox from "@/components/ui/ProjectBox";
 import ProjectModel from "@/models/project";
 import { parseApiResponse, sendGetRequest, uiHandleRequestFailed } from "@/utils/requests";
 import { PlusOutlined } from "@ant-design/icons";
 import { useUser } from "@supabase/auth-helpers-react";
-import { Button, Space, Typography, message } from "antd";
+import { Space, Typography, message } from "antd";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ProjectsGetResponseModel } from "./api/projects/_models";
@@ -50,22 +51,23 @@ export default function Home() {
 
     return (
         <Space direction="vertical">
-            <Typography>
-                Your Projects:{" "}
-                <Link href={"/project/create"}>
-                    <Button>
-                        <PlusOutlined />
-                    </Button>
-                </Link>
-            </Typography>
+            <Typography.Title level={3} style={{ marginTop: 0 }}>
+                Your Projects:
+            </Typography.Title>
 
-            <Typography>
+            <Space>
                 {userProjects.map(up => (
-                    <Link href={`/project/${up._id}/`} key={String(up._id)}>
-                        {up.title}
-                    </Link>
+                    <ProjectBox key={String(up._id)} project={up} />
                 ))}
-            </Typography>
+
+                <Link href={"/project/create"}>
+                    <div className="boxWithCenterText">
+                        <Typography.Title level={4} style={{ margin: 0 }}>
+                            <PlusOutlined />
+                        </Typography.Title>
+                    </div>
+                </Link>
+            </Space>
         </Space>
     );
 }
