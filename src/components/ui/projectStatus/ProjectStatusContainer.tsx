@@ -3,6 +3,7 @@ import { AvailableRequestMethods } from "@/models/requests";
 import TaskModel from "@/models/task";
 import { SingleProjectStatusPutRequestBodyModel } from "@/pages/api/projects/[projectId]/status/[statusId]/_models";
 import { ProjectStatusTasksGetResponseModel } from "@/pages/api/projects/[projectId]/status/[statusId]/tasks/_models";
+import { FakeTaskDataModel } from "@/pages/project/[projectId]";
 import useWindowDimensions from "@/utils/hooks";
 import { parseApiResponse, sendGetRequest, sendPostRequest, uiHandleRequestFailed } from "@/utils/requests";
 import { EllipsisOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
@@ -19,6 +20,8 @@ interface StatusContainerProps {
     setUserProject: React.Dispatch<React.SetStateAction<ProjectModel | undefined>>;
     revalidateTaskData: boolean;
     setRevalidateTaskData: React.Dispatch<React.SetStateAction<boolean>>;
+    fakeTaskData: FakeTaskDataModel;
+    setFakeTaskData: React.Dispatch<React.SetStateAction<FakeTaskDataModel>>;
     userProject: ProjectModel;
     projectId: string;
 }
@@ -30,6 +33,8 @@ const StatusContainer: React.FC<StatusContainerProps> = ({
     projectId,
     revalidateTaskData,
     setRevalidateTaskData,
+    fakeTaskData,
+    setFakeTaskData,
 }) => {
     const BASE_API_URL = `/api/projects/${projectId}/status/${projectStatus._id}`;
 
@@ -70,6 +75,51 @@ const StatusContainer: React.FC<StatusContainerProps> = ({
 
         getData();
     }, [revalidateTaskData]);
+
+    useEffect(() => {
+        if (!fakeTaskData.fake) return;
+        if (!fakeTaskData.data) return;
+
+        const fakeData = fakeTaskData.data;
+
+        const toNewStatus = !!fakeData.newStatusId;
+
+        if (fakeData.newStatusId !== projectStatus._id || fakeData.oldStatusId === projectStatus._id) {
+            return;
+        }
+
+        const getData = async () => {
+            setLoading(true);
+
+            try {
+                if (fakeTaskData.revert) {
+                    // todo
+                } else {
+                    if (toNewStatus && fakeData.oldStatusId !== projectStatus._id) {
+                        setProjectStatusTasks(psts => psts.filter(pst => pst.order !== fakeData.newOrder));
+                    } else if (toNewStatus && fakeData.oldStatusId === projectStatus._id) {
+                        if (!fakeData) return;
+
+                        setProjectStatusTasks(psts => [
+                            ...psts.map(pst =>
+                                pst.order >= fakeData.newOrder ? { ...pst, order: pst.order + 1 } : pst,
+                            ),
+                        ]);
+                    }
+                }
+
+                setFakeTaskData(false);
+                setLoading(false);
+            } catch (error) {
+                setLoading(false);
+                setFakeTaskData(false);
+                console.error(error);
+                message.error("Unknown Error");
+            }
+        };
+
+        getData();
+    }, [fakeTaskData]);
 
     const handleStatusTitleChange = async (e: string) => {
         if (!projectId || typeof projectId !== "string" || !userProject) {
