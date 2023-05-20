@@ -2,16 +2,16 @@ import Loader from "@/components/ui/Loader";
 import StatusContainer from "@/components/ui/projectStatus/ProjectStatusContainer";
 import ProjectModel from "@/models/project";
 import { AvailableRequestMethods } from "@/models/requests";
-import { SingleProjectGetResponseModel } from "@/pages/api/projects/[projectId]/_models";
 import { SpecificProjectStatusTaskPutRequestModel } from "@/pages/api/projects/[projectId]/status/[statusId]/tasks/[taskId]/_models";
 import { SingleProjectStatusPostRequestBodyModel } from "@/pages/api/projects/[projectId]/status/_models";
+import { SingleProjectGetResponseModel } from "@/pages/api/projects/[projectId]/_models";
 import { parseApiResponse, sendGetRequest, sendPostRequest, uiHandleRequestFailed } from "@/utils/requests";
 import { checkStrEmpty, formatToHumanDate } from "@netsu/js-utils";
 import { useUser } from "@supabase/auth-helpers-react";
-import { Button, Input, Space, Typography, message } from "antd";
+import { Button, Input, message, Space, Typography } from "antd";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
 
 const SpecificProjectPage: React.FC = () => {
@@ -122,7 +122,7 @@ const SpecificProjectPage: React.FC = () => {
             `/api/projects/${projectId}/status/${oldStatusId}/tasks/${taskId}`,
             updateData,
             AvailableRequestMethods.PUT,
-            "tasks",
+            // "tasks",
         );
 
         if (!updateTaskReq.ok) {
