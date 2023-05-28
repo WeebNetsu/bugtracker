@@ -1,4 +1,5 @@
-import ProjectModel, { ProjectStatusModel } from "@/models/project";
+import ProjectModel from "@/models/project";
+import ProjectStatusModel from "@/models/projectStatus";
 
 // requests
 export interface SingleProjectStatusPostRequestBodyModel {

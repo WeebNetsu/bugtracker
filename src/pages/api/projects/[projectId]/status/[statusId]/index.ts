@@ -1,24 +1,20 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { ProjectsCollection } from "@/db/collections";
-import { ProjectStatusModel } from "@/models/project";
+import { ProjectStatusCollection } from "@/db/collections";
+import ProjectStatusModel from "@/models/projectStatus";
 import { AvailableRequestMethods, ErrorResponseModel, SimpleResponseModel } from "@/models/requests";
 import { checkApiSupabaseAuth, notAuthResponse, simpleResponse } from "@/utils/requests";
 import { ObjectId } from "mongodb";
 import type { NextApiRequest, NextApiResponse } from "next";
-import {
-    SingleProjectStatusDeleteResponseModel,
-    SingleProjectStatusPutRequestBodyModel,
-    SingleProjectStatusPutResponseModel,
-} from "./_models";
+import { SingleProjectStatusPutRequestBodyModel, SingleProjectStatusPutResponseModel } from "./_models";
 
 const putHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleResponseModel>) => {
-    const { projectId, statusId } = req.query;
+    const { statusId } = req.query;
     const { data } = req.body as SingleProjectStatusPutRequestBodyModel;
 
     // if only intellisense worked with this
     // if(!checkPathParametersValid(projectId, statusId)){}
 
-    if (!projectId || typeof projectId !== "string" || !statusId || typeof statusId !== "string") {
+    if (!statusId || typeof statusId !== "string") {
         const resp: SimpleResponseModel = {
             reason: "ID is invalid",
         };
@@ -38,19 +34,9 @@ const putHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespon
 
     if (!user) return notAuthResponse(res);
 
-    const project = await ProjectsCollection.findOne(new ObjectId(projectId));
+    const status = await ProjectStatusCollection.findOne(new ObjectId(statusId));
 
-    if (!project) {
-        const resp: SimpleResponseModel = {
-            reason: "Could not find project",
-        };
-
-        return simpleResponse(res, resp, 404);
-    }
-
-    const oldStatus = project.statuses.find(stat => stat._id === statusId);
-
-    if (!oldStatus) {
+    if (!status) {
         const resp: SimpleResponseModel = {
             reason: "Could not find status",
         };
@@ -58,38 +44,35 @@ const putHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespon
         return simpleResponse(res, resp, 404);
     }
 
+    const oldStatus = status;
+
     const updateData: ProjectStatusModel = { ...oldStatus, ...data };
 
-    const updatedProject = await ProjectsCollection.findOneAndUpdate(
-        {
-            _id: new ObjectId(projectId),
+    const updateStatus = await ProjectStatusCollection.findOneAndUpdate(new ObjectId(statusId), {
+        $set: {
+            ...updateData,
         },
-        {
-            $set: {
-                statuses: project.statuses.map(projStats => (projStats._id === statusId ? updateData : projStats)),
-            },
-        },
-    );
+    });
 
-    if (!updatedProject.ok || !updatedProject.value) {
+    if (!updateStatus.ok || !updateStatus.value) {
         const resp: SimpleResponseModel = {
-            reason: "Could not update project",
+            reason: "Could not update status",
         };
 
         return simpleResponse(res, resp, 500);
     }
 
     const response: SingleProjectStatusPutResponseModel = {
-        data: updatedProject.value,
+        data: updateStatus.value,
     };
 
     return simpleResponse(res, response, 200);
 };
 
 const deleteHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleResponseModel>) => {
-    const { projectId, statusId } = req.query;
+    const { statusId } = req.query;
 
-    if (!projectId || typeof projectId !== "string" || !statusId || typeof statusId !== "string") {
+    if (!statusId || typeof statusId !== "string") {
         const resp: SimpleResponseModel = {
             reason: "ID is invalid",
         };
@@ -101,28 +84,9 @@ const deleteHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRes
 
     if (!user) return notAuthResponse(res);
 
-    const project = await ProjectsCollection.findOne({ _id: new ObjectId(projectId), ownerId: user.id });
+    const deletedStatus = await ProjectStatusCollection.deleteOne(new ObjectId(statusId));
 
-    if (!project) {
-        const resp: SimpleResponseModel = {
-            reason: "Could not find project",
-        };
-
-        return simpleResponse(res, resp, 404);
-    }
-
-    const updatedProject = await ProjectsCollection.findOneAndUpdate(
-        {
-            _id: new ObjectId(projectId),
-        },
-        {
-            $set: {
-                statuses: project.statuses.filter(stat => stat._id !== statusId),
-            },
-        },
-    );
-
-    if (!updatedProject.ok || !updatedProject.value) {
+    if (!deletedStatus.acknowledged) {
         const resp: SimpleResponseModel = {
             reason: "Could not delete status",
         };
@@ -130,11 +94,7 @@ const deleteHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRes
         return simpleResponse(res, resp, 500);
     }
 
-    const response: SingleProjectStatusDeleteResponseModel = {
-        data: updatedProject.value,
-    };
-
-    return simpleResponse(res, response, 200);
+    return simpleResponse(res, {}, 200);
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<SimpleResponseModel>) => {

@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+
 /**
  * A status is a container in a project, such as "TODO". It contains
  * multiple tasks
@@ -7,7 +9,7 @@ interface ProjectStatusModel {
     /**
      * ID of the project this status is linked to
      */
-    projectId: string;
+    projectId: ObjectId;
     /**
      * Title of the status that will be shown to
      * the user

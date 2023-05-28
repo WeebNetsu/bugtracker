@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { ProjectsCollection } from "@/db/collections";
-import { ProjectStatusModel } from "@/models/project";
+import ProjectStatusModel from "@/models/projectStatus";
 import { AvailableRequestMethods, ErrorResponseModel, SimpleResponseModel } from "@/models/requests";
 import { checkApiSupabaseAuth, notAuthResponse, simpleResponse } from "@/utils/requests";
 import { ObjectId } from "mongodb";
