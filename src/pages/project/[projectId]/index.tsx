@@ -14,23 +14,6 @@ import React, { useEffect, useState } from "react";
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
 
-export interface FakeTaskDataModel {
-    fake: boolean;
-    revert: boolean;
-    data: {
-        /**
-         * The old (current) index of the card
-         */
-        oldOrder: number;
-        newOrder: number;
-        /**
-         * If moving statuses, this is the old (current) status ID
-         */
-        oldStatusId: string;
-        newStatusId?: string;
-    } | null;
-}
-
 const SpecificProjectPage: React.FC = () => {
     const user = useUser();
     const router = useRouter();
@@ -38,11 +21,6 @@ const SpecificProjectPage: React.FC = () => {
     const [userProject, setUserProject] = useState<ProjectModel | undefined>();
     const [newStatusTitle, setNewStatusTitle] = useState("");
     const [revalidateTaskData, setRevalidateTaskData] = useState(false);
-    const [fakeTaskData, setFakeTaskData] = useState<FakeTaskDataModel>({
-        fake: false,
-        revert: false,
-        data: null,
-    });
 
     const { projectId } = router.query;
 
@@ -202,8 +180,6 @@ const SpecificProjectPage: React.FC = () => {
                                                 userProject={userProject}
                                                 revalidateTaskData={revalidateTaskData}
                                                 setRevalidateTaskData={setRevalidateTaskData}
-                                                fakeTaskData={fakeTaskData}
-                                                setFakeTaskData={setFakeTaskData}
                                             />
 
                                             <div
