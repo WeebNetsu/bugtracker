@@ -30,7 +30,7 @@ export const sendPostRequest = async (
     route: string,
     body?: any,
     requestType: AvailableRequestMethods = AvailableRequestMethods.POST,
-    // revalidateCollection?: string,
+    revalidateCollection?: string,
 ) => {
     const data = await fetch(`${route}`, {
         method: requestType,
@@ -38,8 +38,7 @@ export const sendPostRequest = async (
             "Content-Type": "application/json",
         },
         body: body ? JSON.stringify(body) : undefined,
-        // cache: "no-store",
-        // next: revalidateCollection ? { tags: [revalidateCollection] } : undefined,
+        next: revalidateCollection ? { tags: [revalidateCollection] } : undefined,
     });
 
     return data;

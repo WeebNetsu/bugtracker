@@ -1,19 +1,58 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { ProjectsCollection } from "@/db/collections";
-import { ProjectStatusModel } from "@/models/project";
+import { ProjectStatusCollection } from "@/db/collections";
 import { AvailableRequestMethods, ErrorResponseModel, SimpleResponseModel } from "@/models/requests";
 import { checkApiSupabaseAuth, notAuthResponse, simpleResponse } from "@/utils/requests";
+import { checkStrEmpty } from "@netsu/js-utils";
 import { ObjectId } from "mongodb";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { SingleProjectStatusPostRequestBodyModel, SingleProjectStatusPostResponseModel } from "./_models";
+import {
+    ProjectStatusesPostRequestBodyModel,
+    ProjectsStatusesGetResponseModel,
+    SingleProjectStatusPostResponseModel,
+} from "./_models";
+
+const getHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleResponseModel>) => {
+    const { projectId } = req.query;
+
+    if (!projectId || typeof projectId !== "string") {
+        const resp: SimpleResponseModel = {
+            reason: "ID is invalid",
+        };
+
+        return simpleResponse(res, resp, 400);
+    }
+
+    const user = await checkApiSupabaseAuth(req, res);
+
+    if (!user) return notAuthResponse(res);
+
+    const projectStatuses = await ProjectStatusCollection.find({
+        // ownerId: user.id,
+        projectId: new ObjectId(projectId),
+    }).toArray();
+
+    if (!projectStatuses) {
+        const resp: SimpleResponseModel = {
+            reason: "Could not find project statuses",
+        };
+
+        return simpleResponse(res, resp, 404);
+    }
+
+    const response: ProjectsStatusesGetResponseModel = {
+        data: projectStatuses,
+    };
+
+    return simpleResponse(res, response, 200);
+};
 
 const postHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleResponseModel>) => {
     const { projectId } = req.query;
-    const { data } = req.body as SingleProjectStatusPostRequestBodyModel;
+    const { title } = req.body as ProjectStatusesPostRequestBodyModel;
 
-    if (!data) {
+    if (checkStrEmpty(title)) {
         const resp: SimpleResponseModel = {
-            reason: "Data not provided",
+            reason: "Tile not provided",
         };
 
         return simpleResponse(res, resp, 400);
@@ -31,21 +70,18 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespo
 
     if (!user) return notAuthResponse(res);
 
-    const updateData: ProjectStatusModel = data;
+    const projCount = await ProjectStatusCollection.countDocuments({
+        projectId: new ObjectId(projectId),
+    });
 
-    const project = await ProjectsCollection.findOneAndUpdate(
-        {
-            _id: new ObjectId(projectId),
-            ownerId: user.id,
-        },
-        {
-            $push: {
-                statuses: updateData,
-            },
-        },
-    );
+    const status = await ProjectStatusCollection.insertOne({
+        createdAt: new Date(),
+        orderIndex: projCount,
+        projectId: new ObjectId(projectId),
+        title,
+    });
 
-    if (!project.ok || !project.value) {
+    if (!status.acknowledged) {
         const resp: SimpleResponseModel = {
             reason: "Could not update project",
         };
@@ -53,8 +89,18 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespo
         return simpleResponse(res, resp, 500);
     }
 
+    const newStatus = await ProjectStatusCollection.findOne(new ObjectId(status.insertedId));
+
+    if (!newStatus) {
+        const resp: SimpleResponseModel = {
+            reason: "Could not create new status",
+        };
+
+        return simpleResponse(res, resp, 500);
+    }
+
     const response: SingleProjectStatusPostResponseModel = {
-        data: project.value,
+        data: newStatus,
     };
 
     return simpleResponse(res, response, 200);
@@ -64,6 +110,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SimpleResponseM
     switch (req.method) {
         case AvailableRequestMethods.POST:
             return await postHandler(req, res);
+        case AvailableRequestMethods.GET:
+            return await getHandler(req, res);
     }
 
     const response: ErrorResponseModel = {
