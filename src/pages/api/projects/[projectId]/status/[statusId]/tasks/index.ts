@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { ProjectsCollection, TasksCollection } from "@/db/collections";
+import { ProjectStatusCollection, ProjectsCollection, TasksCollection } from "@/db/collections";
 import { AvailableRequestMethods, ErrorResponseModel, SimpleResponseModel } from "@/models/requests";
 import { checkApiSupabaseAuth, notAuthResponse, simpleResponse } from "@/utils/requests";
 import { ObjectId } from "mongodb";
@@ -31,9 +31,22 @@ const getHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespon
         return simpleResponse(res, resp, 404);
     }
 
+    const status = await ProjectStatusCollection.findOne({
+        _id: new ObjectId(statusId),
+        projectId: new ObjectId(projectId),
+    });
+
+    if (!status) {
+        const resp: SimpleResponseModel = {
+            reason: "Could not find status",
+        };
+
+        return simpleResponse(res, resp, 404);
+    }
+
     const tasks = await TasksCollection.find({
         projectId: project._id,
-        statusId,
+        statusId: status._id,
     }).toArray();
 
     const response: ProjectStatusTasksGetResponseModel = {
@@ -76,7 +89,7 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespo
         title: data.title,
         archived: false,
         description: data.description,
-        statusId: statusId,
+        statusId: new ObjectId(statusId),
     });
 
     if (!task.acknowledged) {
@@ -88,7 +101,7 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespo
     }
 
     await TasksCollection.updateMany(
-        { projectId: new ObjectId(projectId), statusId },
+        { projectId: new ObjectId(projectId), statusId: new ObjectId(statusId) },
         // make all of them +1 in order
         { $inc: { order: 1 } },
     );

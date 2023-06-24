@@ -176,16 +176,16 @@ const SpecificProjectPage: React.FC = () => {
                         {projectStatuses
                             .sort((prev, curr) => prev.orderIndex - curr.orderIndex)
                             .map(projectStatus => (
-                                <Droppable droppableId={projectStatus._id} key={projectStatus._id}>
+                                <Droppable droppableId={String(projectStatus._id)} key={String(projectStatus._id)}>
                                     {provided => (
                                         <div ref={provided.innerRef} {...provided.droppableProps}>
                                             <StatusContainer
                                                 projectId={projectId}
                                                 projectStatus={projectStatus}
-                                                setUserProject={setUserProject}
-                                                userProject={userProject}
                                                 revalidateTaskData={revalidateTaskData}
                                                 setRevalidateTaskData={setRevalidateTaskData}
+                                                projectStatuses={projectStatuses}
+                                                setProjectStatuses={setProjectStatuses}
                                             />
 
                                             <div

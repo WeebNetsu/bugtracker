@@ -1,4 +1,3 @@
-import ProjectModel from "@/models/project";
 import ProjectStatusModel from "@/models/projectStatus";
 import { AvailableRequestMethods } from "@/models/requests";
 import TaskModel from "@/models/task";
@@ -17,20 +16,20 @@ import styles from "./styles/ProjectStatusContainer.module.scss";
 
 interface StatusContainerProps {
     projectStatus: ProjectStatusModel;
-    setUserProject: React.Dispatch<React.SetStateAction<ProjectModel | undefined>>;
     revalidateTaskData: boolean;
     setRevalidateTaskData: React.Dispatch<React.SetStateAction<boolean>>;
-    userProject: ProjectModel;
     projectId: string;
+    setProjectStatuses: React.Dispatch<React.SetStateAction<ProjectStatusModel[]>>;
+    projectStatuses: ProjectStatusModel[];
 }
 
 const StatusContainer: React.FC<StatusContainerProps> = ({
     projectStatus,
-    setUserProject,
-    userProject,
     projectId,
     revalidateTaskData,
     setRevalidateTaskData,
+    setProjectStatuses,
+    projectStatuses,
 }) => {
     const BASE_API_URL = `/api/projects/${projectId}/status/${projectStatus._id}`;
 
@@ -73,7 +72,7 @@ const StatusContainer: React.FC<StatusContainerProps> = ({
     }, [revalidateTaskData]);
 
     const handleStatusTitleChange = async (e: string) => {
-        if (!projectId || typeof projectId !== "string" || !userProject) {
+        if (!projectId || typeof projectId !== "string") {
             return message.error("Could not get project ID");
         }
 
@@ -89,19 +88,15 @@ const StatusContainer: React.FC<StatusContainerProps> = ({
             return message.error("Could not update status");
         }
 
-        const { statuses = [] } = userProject;
-
-        const updatedStatuses = statuses.map(status =>
+        const updatedStatuses = projectStatuses.map(status =>
             status._id === projectStatus._id ? { ...status, title: e } : status,
         );
 
-        const updatedProject = { ...userProject, statuses: updatedStatuses };
-
-        setUserProject(updatedProject);
+        setProjectStatuses(updatedStatuses);
     };
 
     const handleStatusDelete = async () => {
-        if (!projectId || typeof projectId !== "string" || !userProject) {
+        if (!projectId || typeof projectId !== "string") {
             return message.error("Could not get project ID");
         }
 
@@ -111,13 +106,9 @@ const StatusContainer: React.FC<StatusContainerProps> = ({
             return message.error("Could not delete status");
         }
 
-        const { statuses = [] } = userProject;
+        const updatedStatuses = projectStatuses.filter(status => status._id !== projectStatus._id);
 
-        const updatedStatuses = statuses.filter(status => status._id !== projectStatus._id);
-
-        const updatedProject = { ...userProject, statuses: updatedStatuses };
-
-        setUserProject(updatedProject);
+        setProjectStatuses(updatedStatuses);
     };
 
     return (
@@ -190,7 +181,7 @@ const StatusContainer: React.FC<StatusContainerProps> = ({
                 setShow={setShowCreateNewProject}
                 show={showCreateNewProject}
                 projectId={projectId}
-                statusId={projectStatus._id}
+                statusId={String(projectStatus._id)}
                 setProjectStatusTasks={setProjectStatusTasks}
             />
 
