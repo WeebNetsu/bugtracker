@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { TasksCollection } from "@/db/collections";
+import { ProjectStatusCollection, ProjectsCollection, TasksCollection } from "@/db/collections";
 import { AvailableRequestMethods, ErrorResponseModel, SimpleResponseModel } from "@/models/requests";
 import { checkApiSupabaseAuth, notAuthResponse, simpleResponse } from "@/utils/requests";
 import { checkStrEmpty, isValidNumber } from "@netsu/js-utils";
@@ -14,6 +14,20 @@ const putHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespon
     if (!data) {
         const resp: SimpleResponseModel = {
             reason: "Data not provided",
+        };
+
+        return simpleResponse(res, resp, 400);
+    }
+    if (
+        !projectId ||
+        typeof projectId !== "string" ||
+        !statusId ||
+        typeof statusId !== "string" ||
+        !taskId ||
+        typeof taskId !== "string"
+    ) {
+        const resp: SimpleResponseModel = {
+            reason: "ID is invalid",
         };
 
         return simpleResponse(res, resp, 400);
@@ -60,6 +74,19 @@ const putHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespon
 
             return simpleResponse(res, resp, 404);
         }
+
+        const status = await ProjectStatusCollection.findOne({
+            _id: new ObjectId(newStatusId),
+            projectId: new ObjectId(projectId),
+        });
+
+        if (!status) {
+            const resp: SimpleResponseModel = {
+                reason: "Could not find new status",
+            };
+
+            return simpleResponse(res, resp, 404);
+        }
     }
 
     if (
@@ -81,10 +108,20 @@ const putHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespon
 
     if (!user) return notAuthResponse(res);
 
+    const project = await ProjectsCollection.findOne({ _id: new ObjectId(projectId), ownerId: user.id });
+
+    if (!project) {
+        const resp: SimpleResponseModel = {
+            reason: "Could not find project",
+        };
+
+        return simpleResponse(res, resp, 404);
+    }
+
     const originalTask = await TasksCollection.findOne({
         _id: new ObjectId(taskId),
-        statusId,
-        projectId: new ObjectId(projectId),
+        statusId: new ObjectId(statusId),
+        projectId: project._id,
     });
 
     if (!originalTask) {
@@ -98,15 +135,15 @@ const putHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespon
     const newTask = await TasksCollection.updateOne(
         {
             _id: new ObjectId(taskId),
-            statusId,
-            projectId: new ObjectId(projectId),
+            statusId: new ObjectId(statusId),
+            projectId: project._id,
         },
         {
             $set: {
                 description: description ?? originalTask.description,
                 archived: archived ?? originalTask.archived,
                 order: newOrder ?? originalTask.order,
-                statusId: newStatusId ?? originalTask.statusId,
+                statusId: new ObjectId(newStatusId) ?? originalTask.statusId,
                 title: title ?? originalTask.title,
             },
         },
@@ -127,7 +164,7 @@ const putHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespon
             await TasksCollection.updateMany(
                 {
                     projectId: new ObjectId(projectId),
-                    statusId: newStatusId,
+                    statusId: new ObjectId(newStatusId),
                     _id: {
                         $ne: new ObjectId(taskId),
                     },
@@ -141,7 +178,7 @@ const putHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespon
             await TasksCollection.updateMany(
                 {
                     projectId: new ObjectId(projectId),
-                    statusId: statusId,
+                    statusId: new ObjectId(statusId),
                     _id: {
                         $ne: new ObjectId(taskId),
                     },
@@ -153,7 +190,7 @@ const putHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespon
             await TasksCollection.updateMany(
                 {
                     projectId: new ObjectId(projectId),
-                    statusId: statusId,
+                    statusId: new ObjectId(statusId),
                     _id: {
                         $ne: new ObjectId(taskId),
                     },

@@ -15,7 +15,7 @@ interface TaskModel {
      * as TODO/IN PROGRESS/COMPLETED - these statuses
      * can be found on the project model
      */
-    statusId?: string;
+    statusId?: ObjectId;
     title: string;
     description?: string;
     createdAt: Date;

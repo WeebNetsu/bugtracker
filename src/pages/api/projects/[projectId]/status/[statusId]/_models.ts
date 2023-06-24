@@ -1,4 +1,4 @@
-import ProjectModel, { ProjectStatusModel } from "@/models/project";
+import ProjectStatusModel from "@/models/projectStatus";
 
 // requests
 export interface SingleProjectStatusPutRequestBodyModel {
@@ -7,9 +7,5 @@ export interface SingleProjectStatusPutRequestBodyModel {
 
 // responses
 export interface SingleProjectStatusPutResponseModel {
-    data: ProjectModel;
-}
-
-export interface SingleProjectStatusDeleteResponseModel {
-    data: ProjectModel;
+    data: ProjectStatusModel;
 }

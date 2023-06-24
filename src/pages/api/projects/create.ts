@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { ProjectsCollection } from "@/db/collections";
+import { ProjectStatusCollection, ProjectsCollection } from "@/db/collections";
 import {
     AvailableRequestMethods,
     ErrorResponseModel,
@@ -9,7 +9,6 @@ import {
 import { checkApiSupabaseAuth, notAuthResponse, simpleResponse } from "@/utils/requests";
 import { checkStrEmpty } from "@netsu/js-utils";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { v4 as uuidv4 } from "uuid";
 import { ProjectsCreatePostRequestBodyModel } from "./_models";
 
 const postHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleResponseModel>) => {
@@ -34,14 +33,28 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespo
     const newProject = await ProjectsCollection.insertOne({
         createdAt: new Date(),
         ownerId: user.id,
-        statuses:
-            statuses?.map(status => ({
-                _id: uuidv4(),
-                ...status,
-            })) ?? [],
         title,
         description,
     });
+
+    const newStatuses = await ProjectStatusCollection.insertMany(
+        (statuses ?? []).map(status => ({
+            projectId: newProject.insertedId,
+            createdAt: new Date(),
+            orderIndex: status.orderIndex,
+            title: status.title,
+        })),
+    );
+
+    if (!newStatuses.acknowledged) {
+        const resp: SimpleResponseModel = {
+            reason: "Could not create statuses",
+        };
+
+        // todo undo project creation
+
+        return simpleResponse(res, resp, 500);
+    }
 
     const response: SuccessResponseModel = {
         _id: newProject.insertedId,
