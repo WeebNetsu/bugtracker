@@ -1,4 +1,5 @@
-import ProjectModel, { ProjectStatusModel } from "@/models/project";
+import ProjectModel from "@/models/project";
+import ProjectStatusModel from "@/models/projectStatus";
 import { AvailableRequestMethods } from "@/models/requests";
 import TaskModel from "@/models/task";
 import { SingleProjectStatusPutRequestBodyModel } from "@/pages/api/projects/[projectId]/status/[statusId]/_models";
@@ -118,8 +119,6 @@ const StatusContainer: React.FC<StatusContainerProps> = ({
 
         setUserProject(updatedProject);
     };
-
-    // if (loading) return <Loader />;
 
     return (
         <div className={styles.statusContainer} style={{ height: statusHeight }}>

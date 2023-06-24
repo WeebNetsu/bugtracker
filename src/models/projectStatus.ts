@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
  * multiple tasks
  */
 interface ProjectStatusModel {
-    _id: string;
+    _id: ObjectId;
     /**
      * ID of the project this status is linked to
      */
@@ -19,6 +19,7 @@ interface ProjectStatusModel {
      * The order in which the statuses should be, aka its index in the array
      */
     orderIndex: number;
+    createdAt: Date;
 }
 
 export default ProjectStatusModel;

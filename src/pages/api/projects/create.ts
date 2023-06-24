@@ -38,12 +38,17 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespo
     });
 
     const newStatuses = await ProjectStatusCollection.insertMany(
-        (statuses ?? []).map(status => ({ ...status, projectId: newProject.insertedId })),
+        (statuses ?? []).map(status => ({
+            projectId: newProject.insertedId,
+            createdAt: new Date(),
+            orderIndex: status.orderIndex,
+            title: status.title,
+        })),
     );
 
     if (!newStatuses.acknowledged) {
         const resp: SimpleResponseModel = {
-            reason: "Could not create task",
+            reason: "Could not create statuses",
         };
 
         // todo undo project creation

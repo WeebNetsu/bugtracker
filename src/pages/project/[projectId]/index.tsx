@@ -1,10 +1,15 @@
 import Loader from "@/components/ui/Loader";
 import StatusContainer from "@/components/ui/projectStatus/ProjectStatusContainer";
 import ProjectModel from "@/models/project";
+import ProjectStatusModel from "@/models/projectStatus";
 import { AvailableRequestMethods } from "@/models/requests";
 import { SingleProjectGetResponseModel } from "@/pages/api/projects/[projectId]/_models";
 import { SpecificProjectStatusTaskPutRequestModel } from "@/pages/api/projects/[projectId]/status/[statusId]/tasks/[taskId]/_models";
-import { SingleProjectStatusPostRequestBodyModel } from "@/pages/api/projects/[projectId]/status/_models";
+import {
+    ProjectStatusesPostRequestBodyModel,
+    ProjectsStatusesGetResponseModel,
+    SingleProjectStatusPostResponseModel,
+} from "@/pages/api/projects/[projectId]/status/_models";
 import { parseApiResponse, sendGetRequest, sendPostRequest, uiHandleRequestFailed } from "@/utils/requests";
 import { checkStrEmpty, formatToHumanDate } from "@netsu/js-utils";
 import { useUser } from "@supabase/auth-helpers-react";
@@ -12,13 +17,13 @@ import { Button, Input, Space, Typography, message } from "antd";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
-import { v4 as uuidv4 } from "uuid";
 
 const SpecificProjectPage: React.FC = () => {
     const user = useUser();
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [userProject, setUserProject] = useState<ProjectModel | undefined>();
+    const [projectStatuses, setProjectStatuses] = useState<ProjectStatusModel[]>([]);
     const [newStatusTitle, setNewStatusTitle] = useState("");
     const [revalidateTaskData, setRevalidateTaskData] = useState(false);
 
@@ -40,15 +45,26 @@ const SpecificProjectPage: React.FC = () => {
             setLoading(true);
             try {
                 const getProjectReq = await sendGetRequest(`/api/projects/${projectId}`);
+                const getProjectStatusesReq = await sendGetRequest(`/api/projects/${projectId}/status`);
 
                 if (!getProjectReq.ok) {
                     await uiHandleRequestFailed(getProjectReq);
                     return setLoading(false);
                 }
 
-                const resp: SingleProjectGetResponseModel = await parseApiResponse(getProjectReq);
+                if (!getProjectStatusesReq.ok) {
+                    await uiHandleRequestFailed(getProjectStatusesReq);
+                    return setLoading(false);
+                }
 
-                setUserProject(resp.data);
+                const projResp: SingleProjectGetResponseModel = await parseApiResponse(getProjectReq);
+
+                const projStatusesResp: ProjectsStatusesGetResponseModel = await parseApiResponse(
+                    getProjectStatusesReq,
+                );
+
+                setUserProject(projResp.data);
+                setProjectStatuses(projStatusesResp.data);
                 setLoading(false);
             } catch (error) {
                 setLoading(false);
@@ -69,29 +85,19 @@ const SpecificProjectPage: React.FC = () => {
             return message.error("Could not get project ID");
         }
 
-        const { statuses = [] } = userProject;
-
-        const newStatus = {
-            _id: uuidv4(),
-            orderIndex: statuses.length,
+        const updateStatusData: ProjectStatusesPostRequestBodyModel = {
             title: newStatusTitle,
         };
 
-        const updateStatusData: SingleProjectStatusPostRequestBodyModel = {
-            data: newStatus,
-        };
+        const newStatusReq = await sendPostRequest(`/api/projects/${projectId}/status`, updateStatusData);
 
-        const updated = await sendPostRequest(`/api/projects/${projectId}/status`, updateStatusData);
-
-        if (!updated.ok) {
+        if (!newStatusReq.ok) {
             return message.error("Could not update project statuses");
         }
 
-        statuses.push(newStatus);
+        const { data: newStatus }: SingleProjectStatusPostResponseModel = await parseApiResponse(newStatusReq);
 
-        const updatedProject = { ...userProject, statuses };
-
-        setUserProject(updatedProject);
+        setProjectStatuses(ps => [...ps, newStatus]);
         setNewStatusTitle("");
     };
 
@@ -167,7 +173,7 @@ const SpecificProjectPage: React.FC = () => {
             >
                 <DragDropContext onDragEnd={onDragEnd}>
                     <Space>
-                        {userProject.statuses
+                        {projectStatuses
                             .sort((prev, curr) => prev.orderIndex - curr.orderIndex)
                             .map(projectStatus => (
                                 <Droppable droppableId={projectStatus._id} key={projectStatus._id}>

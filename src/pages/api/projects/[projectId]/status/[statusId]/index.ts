@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { ProjectStatusCollection } from "@/db/collections";
+import { ProjectStatusCollection, TasksCollection } from "@/db/collections";
 import ProjectStatusModel from "@/models/projectStatus";
 import { AvailableRequestMethods, ErrorResponseModel, SimpleResponseModel } from "@/models/requests";
 import { checkApiSupabaseAuth, notAuthResponse, simpleResponse } from "@/utils/requests";
@@ -10,9 +10,6 @@ import { SingleProjectStatusPutRequestBodyModel, SingleProjectStatusPutResponseM
 const putHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleResponseModel>) => {
     const { statusId } = req.query;
     const { data } = req.body as SingleProjectStatusPutRequestBodyModel;
-
-    // if only intellisense worked with this
-    // if(!checkPathParametersValid(projectId, statusId)){}
 
     if (!statusId || typeof statusId !== "string") {
         const resp: SimpleResponseModel = {
@@ -48,11 +45,14 @@ const putHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRespon
 
     const updateData: ProjectStatusModel = { ...oldStatus, ...data };
 
-    const updateStatus = await ProjectStatusCollection.findOneAndUpdate(new ObjectId(statusId), {
-        $set: {
-            ...updateData,
+    const updateStatus = await ProjectStatusCollection.findOneAndUpdate(
+        { _id: status._id },
+        {
+            $set: {
+                ...updateData,
+            },
         },
-    });
+    );
 
     if (!updateStatus.ok || !updateStatus.value) {
         const resp: SimpleResponseModel = {
@@ -84,11 +84,25 @@ const deleteHandler = async (req: NextApiRequest, res: NextApiResponse<SimpleRes
 
     if (!user) return notAuthResponse(res);
 
-    const deletedStatus = await ProjectStatusCollection.deleteOne(new ObjectId(statusId));
+    const deletedStatus = await ProjectStatusCollection.deleteOne({
+        _id: new ObjectId(statusId),
+    });
 
     if (!deletedStatus.acknowledged) {
         const resp: SimpleResponseModel = {
             reason: "Could not delete status",
+        };
+
+        return simpleResponse(res, resp, 500);
+    }
+
+    const deletedTasks = await TasksCollection.deleteMany({
+        statusId: new ObjectId(statusId),
+    });
+
+    if (!deletedTasks.acknowledged) {
+        const resp: SimpleResponseModel = {
+            reason: "Could not delete status tasks - please report to an admin",
         };
 
         return simpleResponse(res, resp, 500);

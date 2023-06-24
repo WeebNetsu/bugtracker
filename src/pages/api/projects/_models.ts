@@ -1,5 +1,4 @@
 import ProjectModel from "@/models/project";
-import ProjectStatusModel from "@/models/projectStatus";
 
 export interface ProjectsCreatePostRequestBodyModel {
     /**
@@ -13,7 +12,10 @@ export interface ProjectsCreatePostRequestBodyModel {
     /**
      * Available project statuses
      */
-    statuses?: Omit<Omit<ProjectStatusModel, "_id">, "projectId">[];
+    statuses?: {
+        title: string;
+        orderIndex: number;
+    }[];
 }
 
 export interface ProjectsGetResponseModel {
