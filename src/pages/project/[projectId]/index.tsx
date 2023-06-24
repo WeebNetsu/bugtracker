@@ -3,7 +3,11 @@ import StatusContainer from "@/components/ui/projectStatus/ProjectStatusContaine
 import ProjectModel from "@/models/project";
 import ProjectStatusModel from "@/models/projectStatus";
 import { AvailableRequestMethods } from "@/models/requests";
-import { SingleProjectGetResponseModel } from "@/pages/api/projects/[projectId]/_models";
+import {
+    SingleProjectGetResponseModel,
+    SingleProjectPutRequestBodyModel,
+    SingleProjectPutResponseModel,
+} from "@/pages/api/projects/[projectId]/_models";
 import { SpecificProjectStatusTaskPutRequestModel } from "@/pages/api/projects/[projectId]/status/[statusId]/tasks/[taskId]/_models";
 import {
     ProjectStatusesPostRequestBodyModel,
@@ -101,14 +105,74 @@ const SpecificProjectPage: React.FC = () => {
         setNewStatusTitle("");
     };
 
+    const handleProjectTitleChange = async (projectTitle: string) => {
+        if (checkStrEmpty(projectTitle)) {
+            return message.error("Title cannot be empty");
+        }
+
+        if (!projectId || typeof projectId !== "string" || !userProject) {
+            return message.error("Could not get project ID");
+        }
+
+        const updateProjectData: SingleProjectPutRequestBodyModel = {
+            data: {
+                title: projectTitle,
+            },
+        };
+
+        const newProjReq = await sendPostRequest(
+            `/api/projects/${projectId}`,
+            updateProjectData,
+            AvailableRequestMethods.PUT,
+        );
+
+        if (!newProjReq.ok) {
+            return message.error("Could not update project");
+        }
+
+        const { data: newProject }: SingleProjectPutResponseModel = await parseApiResponse(newProjReq);
+
+        setUserProject({ ...newProject, title: projectTitle });
+    };
+
+    const handleProjectDescChange = async (projectDesc: string) => {
+        if (checkStrEmpty(projectDesc)) {
+            return message.error("Title cannot be empty");
+        }
+
+        if (!projectId || typeof projectId !== "string" || !userProject) {
+            return message.error("Could not get project ID");
+        }
+
+        const updateProjectData: SingleProjectPutRequestBodyModel = {
+            data: {
+                description: projectDesc,
+            },
+        };
+
+        const newProjReq = await sendPostRequest(
+            `/api/projects/${projectId}`,
+            updateProjectData,
+            AvailableRequestMethods.PUT,
+        );
+
+        if (!newProjReq.ok) {
+            return message.error("Could not update project");
+        }
+
+        const { data: newProject }: SingleProjectPutResponseModel = await parseApiResponse(newProjReq);
+
+        setUserProject({ ...newProject, description: projectDesc });
+    };
+
     const onDragEnd = async (e: DropResult) => {
         if (!e.destination) {
             return;
         }
 
-        if (e.destination.index === e.source.index) {
-            return;
-        }
+        // if (e.destination.index === e.source.index) {
+        //     return;
+        // }
 
         const taskId = e.draggableId;
         const newStatusId = e.destination.droppableId;
@@ -157,10 +221,21 @@ const SpecificProjectPage: React.FC = () => {
                     margin: 0,
                     padding: 0,
                 }}
+                editable={{
+                    onChange: handleProjectTitleChange,
+                    triggerType: ["text"],
+                }}
             >
                 {userProject.title}
             </Typography.Title>
-            <Typography>{userProject.description}</Typography>
+            <Typography.Text
+                editable={{
+                    onChange: handleProjectDescChange,
+                    triggerType: ["text"],
+                }}
+            >
+                {userProject.description}
+            </Typography.Text>
             <Typography>Created on {formatToHumanDate(userProject.createdAt)}</Typography>
 
             <Space
