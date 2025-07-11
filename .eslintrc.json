@@ -1,3 +1,52 @@
 {
-	"extends": "next/core-web-vitals"
+    "env": {
+        "browser": true,
+        "es2021": true,
+        "node": true
+    },
+    "extends": ["plugin:react/recommended", "airbnb"],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "plugins": ["react", "@typescript-eslint", "prettier"],
+    "rules": {
+        "react/function-component-definition": 0,
+        "indent": "off",
+        "react/jsx-filename-extension": "off",
+        "consistent-return": "off",
+        "react/jsx-indent": "off",
+        "func-names": "off",
+        "arrow-body-style": "off",
+        "import/no-absolute-path": "off",
+        "import/no-unresolved": 0,
+        "import/extensions": 0,
+        "react/jsx-indent-props": "off",
+        "react/require-default-props": "off",
+        "no-underscore-dangle": "off",
+        "react/jsx-one-expression-per-line": "off",
+        "no-unused-vars": "warn",
+        "max-len": "off",
+        "import/order": "off",
+        "no-useless-escape": "off",
+        "operator-linebreak": "off",
+        "jsx-a11y/anchor-is-valid": "warn",
+        "no-shadow": "warn",
+        "react/jsx-wrap-multilines": "off",
+        "implicit-arrow-linebreak": "off",
+        "function-paren-newline": "off",
+        "no-nested-ternary": "off",
+        "react/jsx-no-useless-fragment": "off",
+        "react/no-array-index-key": "off",
+        "jsx-a11y/control-has-associated-label": "off",
+        "no-confusing-arrow": "off",
+        "object-curly-newline": "off",
+        "jsx-a11y/label-has-associated-control": "off",
+        "react/jsx-props-no-spreading": "off",
+        "no-plusplus": "off"
+    }
 }
